@@ -11,7 +11,8 @@
     "voice": "node tools/make-voice.mjs",
     "voice:sample": "node tools/make-voice.mjs --sample",
     "voice:make": "node tools/make-voice.mjs --make",
-    "voice:list": "node tools/make-voice.mjs --list"
+    "voice:list": "node tools/make-voice.mjs --list",
+    "voice:try": "node tools/voice-try.mjs"
   },
   "devDependencies": {
     "vite": "^6.4.4"
