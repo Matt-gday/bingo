@@ -734,7 +734,7 @@ button {
 
 .caller-big {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* he stays put whatever his expression; only the bubble grows to fit the text */
   gap: 10px;
 }
 .caller-big img {
@@ -756,20 +756,6 @@ button {
   height: 14px;
   border-radius: 3px;
 }
-.caller-big.wince img {
-  width: 72px;
-  height: 72px;
-}
-.caller-big.wince .speech {
-  padding: 12px 16px;
-  border-radius: 20px;
-  font: 600 17px/21px var(--font-display);
-}
-.caller-big.wince .speech::before {
-  left: -5px;
-  top: 20px;
-}
-
 .foot-note {
   margin: auto 0 0;
   text-align: center;

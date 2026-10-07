@@ -339,7 +339,6 @@ export function checkingScreen(game) {
   </main>`);
   const discs = el.querySelector('.discs');
   discRow(game.checking.evaluation.items, discs);
-  const callerBig = el.querySelector('.caller-big');
   const bubble = callerBubble(game, el);
   const live = el.querySelector('[data-live]');
   const note = el.querySelector('[data-note]');
@@ -355,7 +354,6 @@ export function checkingScreen(game) {
       paintDiscs(discs, c.evaluation.order, c.revealed, c.stage === 'waiting' ? c.index : -1);
       setClass(discs, 'final', game.isFinalReveal);
       const failed = c.stage === 'failed';
-      setClass(callerBig, 'wince', failed); // a smaller bubble, so the next-number card fits underneath
       // Once the caller has finished, the next number starts and appears underneath.
       const restarted = game.restartedAfterFalseCall;
       live.hidden = !restarted;
