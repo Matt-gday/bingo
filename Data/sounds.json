@@ -108,7 +108,7 @@
       "group": "Winning and losing",
       "prompt": "A joyful, uplifting win celebration jingle with a bright ascending melody that climbs higher and higher and ends on a big happy final chord, played on xylophone, glockenspiel, warm strings and a soft bouncy bass, with light applause and a gentle crowd cheer at the end, fun and triumphant, full and rich, not a tinkly piano, no harsh horns, no whistles, not too loud",
       "seconds": 3.5,
-      "variants": 3,
+      "variants": 6,
       "volume": 0.6,
       "when": "The player wins a stage."
     },
