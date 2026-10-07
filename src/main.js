@@ -80,7 +80,6 @@ function startGame() {
   game.on((type, data) => {
     if (type === 'say') {
       if (starting) return; // start() emits both a greeting and the first number
-      if (data.kind === 'lock' && !config.voice.speakMarksLocked) return;
       voice.speak(data.spoken ?? data.text);
     } else if (type === 'pause') {
       voice.cancel();

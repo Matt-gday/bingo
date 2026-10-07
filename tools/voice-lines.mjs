@@ -26,7 +26,6 @@ export function collectLines({ callerLines, patterns, regulars }) {
   ];
 
   for (const line of callerLines.game.start) add('start of the game', line);
-  // "Marks locked!" is left out on purpose: it is on screen for a second every call, so the game never says it aloud.
   for (const line of callerLines.game.tooSlow) add('too slow', line);
   for (const line of callerLines.game.pause) add('pause', line);
 

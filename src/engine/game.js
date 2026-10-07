@@ -192,7 +192,6 @@ export class Game {
     if (this.sitOut > 0) this.sitOut -= 1;
     this.phase = 'locking';
     this.lockElapsed = 0;
-    this.say(sayLine(this.callerLines, 'marksLocked', {}), 'talking', 'lock');
     this.emit('lock');
   }
 

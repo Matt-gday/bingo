@@ -74,9 +74,6 @@
       "Eyes down, everyone!",
       "Here we go. Good luck!"
     ],
-    "marksLocked": [
-      "Marks locked!"
-    ],
     "stageOpens": [
       "Now we're playing for {pattern}.",
       "Next up: {pattern}!"
@@ -114,11 +111,21 @@
     ]
   },
   "shoutTest": {
-    "intro": ["Give me your best BINGO so I know how loud you are."],
-    "listening": ["Go on, shout it!"],
-    "good": ["That'll do nicely!"],
-    "quiet": ["I couldn't quite hear you. Try again, a bit louder!"],
-    "denied": ["I can't hear you, the microphone is switched off. Hold to call works just as well!"]
+    "intro": [
+      "Give me your best BINGO so I know how loud you are."
+    ],
+    "listening": [
+      "Go on, shout it!"
+    ],
+    "good": [
+      "That'll do nicely!"
+    ],
+    "quiet": [
+      "I couldn't quite hear you. Try again, a bit louder!"
+    ],
+    "denied": [
+      "I can't hear you, the microphone is switched off. Hold to call works just as well!"
+    ]
   },
   "shout": {
     "denied": "The microphone is switched off, so hold the button to call bingo instead."
