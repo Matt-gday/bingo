@@ -52,10 +52,10 @@
     {
       "id": "lock-thud",
       "group": "Marking",
-      "prompt": "A chunky cartoon padlock clicking shut with a satisfying small thud, short",
-      "seconds": 0.8,
-      "variants": 2,
-      "volume": 0.8,
+      "prompt": "A low, soft, rounded thud, like a heavy rubber stamp or a wooden block landing gently on a thick cushion, deep and warm and muffled with a short weighty body, satisfying and solid, no click, no clack, no high-pitched tones, no metallic ring, not loud",
+      "seconds": 0.7,
+      "variants": 4,
+      "volume": 0.85,
       "when": "The ring runs out and the marks lock."
     },
     {

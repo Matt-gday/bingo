@@ -8,9 +8,12 @@
     },
     "lock-thud": {
       "files": [
-        "lock-thud-1-99e96f80b7.mp3"
+        "lock-thud-1-f89879c0c4.mp3",
+        "lock-thud-2-2e70dc558b.mp3",
+        "lock-thud-3-62e44817a7.mp3",
+        "lock-thud-4-1d6b52dca0.mp3"
       ],
-      "volume": 0.8
+      "volume": 0.85
     },
     "win-fanfare": {
       "files": [
@@ -21,12 +24,15 @@
   },
   "hashes": {
     "mark-pop-1": "e667e058b9",
-    "lock-thud-1": "99e96f80b7",
+    "lock-thud-1": "f89879c0c4",
     "win-fanfare-1": "5b793311fd",
     "win-fanfare-2": "08a477f7be",
     "win-fanfare-3": "5e1d3c1023",
     "win-fanfare-4": "23bc0d27d9",
     "win-fanfare-5": "b7a3cbcbd2",
-    "win-fanfare-6": "111c40ddc6"
+    "win-fanfare-6": "111c40ddc6",
+    "lock-thud-2": "2e70dc558b",
+    "lock-thud-3": "62e44817a7",
+    "lock-thud-4": "1d6b52dca0"
   }
 }
