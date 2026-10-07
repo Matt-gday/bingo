@@ -106,10 +106,7 @@ function sync() {
     result: () => resultScreen(game, { onAgain: startGame, onChange: showStart }),
     pause: () => pauseScreen(game, {
       onQuit: showStart,
-      onResume: () => {
-        voice.speak('Eyes down, everyone!');
-        game.resume();
-      },
+      onResume: () => game.resume(),
     }),
   };
   show(wanted, builders[wanted]);
