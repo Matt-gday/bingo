@@ -33,21 +33,21 @@
     {
       "id": "relaxed",
       "name": "Relaxed",
-      "secondsPerCall": 12,
+      "secondsPerCall": 10,
       "creditMultiplier": 1,
       "useNicknames": true
     },
     {
       "id": "steady",
       "name": "Steady",
-      "secondsPerCall": 9,
+      "secondsPerCall": 7,
       "creditMultiplier": 1.5,
       "useNicknames": true
     },
     {
       "id": "quick",
       "name": "Quick",
-      "secondsPerCall": 6,
+      "secondsPerCall": 5,
       "creditMultiplier": 3,
       "useNicknames": false
     }
@@ -66,10 +66,10 @@
     "holdToCallSeconds": 1
   },
   "check": {
-    "firstDelayMs": 900,
-    "delayGrowth": 1.25,
-    "finalDelayMs": 2500,
-    "resultBeatMs": 900
+    "firstDelayMs": 1800,
+    "delayGrowth": 1.3,
+    "finalDelayMs": 5000,
+    "resultBeatMs": 3500
   },
   "falseCall": {
     "sitOutCalls": 2,

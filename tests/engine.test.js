@@ -148,6 +148,20 @@ test('a call lasts the speed setting, then locks, then the next number comes', (
   assert.equal(game.called.length, 2);
 });
 
+test('tapping the ball ends the call early and locks the mark', () => {
+  const game = newGame();
+  const first = game.currentNumber;
+  game.tapSquare(0, 1, 1);
+  game.skipCall();
+  assert.equal(game.phase, 'locking');
+  assert.equal(game.squareState(0, 1, 1), 'locked');
+  game.skipCall(); // does nothing during the lock moment
+  runFor(game, config.marking.lockMomentMs + 50);
+  assert.equal(game.phase, 'calling');
+  assert.notEqual(game.currentNumber, first);
+  assert.equal(game.called.length, 2);
+});
+
 test('one movable mark per call, and it locks when the ring runs out', () => {
   const game = newGame();
   game.tapSquare(0, 0, 0);
@@ -210,7 +224,7 @@ test('a full game with a correct claim is won after the check', () => {
   assert.equal(game.screen, 'checking');
   assert.equal(game.phase, 'checking');
   const before = game.callElapsed;
-  runFor(game, 20000);
+  runFor(game, 40000);
   assert.equal(game.callElapsed, before, 'the ring is stopped during the check');
   assert.equal(game.phase, 'won');
   assert.equal(game.screen, 'result');
@@ -232,7 +246,7 @@ test('a bad claim is caught during the check, then the game goes on', () => {
   game.openShout();
   game.submitClaim();
   assert.equal(game.screen, 'checking');
-  runFor(game, 3000);
+  runFor(game, 40000);
   assert.equal(game.screen, 'falseCall');
   assert.equal(game.falseCall.reason, 'notCalled');
   assert.equal(game.sitOut, 2);

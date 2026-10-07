@@ -211,6 +211,12 @@ button {
   height: 92px;
   flex-shrink: 0;
 }
+.ball-wrap.tappable {
+  cursor: pointer;
+}
+.ball-wrap.tappable:active .ball {
+  transform: scale(0.94);
+}
 .ball-wrap svg.ring {
   position: absolute;
   inset: 0;

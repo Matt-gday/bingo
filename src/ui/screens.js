@@ -82,6 +82,10 @@ export function playScreen(game) {
   </main>`);
 
   const ballWrap = el.querySelector('.ball-wrap');
+  ballWrap.classList.add('tappable');
+  ballWrap.setAttribute('role', 'button');
+  ballWrap.setAttribute('aria-label', 'Next number');
+  ballWrap.addEventListener('click', () => game.skipCall());
   const bubble = callerBubble(game, el);
   const cardEls = [...el.querySelectorAll('.card')];
   const targetEl = el.querySelector('[data-target]');

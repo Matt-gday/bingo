@@ -134,6 +134,11 @@ export class Game {
     }
   }
 
+  // The player taps the ball to move on without waiting for the ring.
+  skipCall() {
+    if (this.phase === 'calling' && this.screen === 'cards') this.endCall();
+  }
+
   endCall() {
     this.lockMarks();
     if (this.sitOut > 0) this.sitOut -= 1;
