@@ -15,12 +15,16 @@ export function numberInWords(n) {
   return ones === 0 ? TENS[tens] : `${TENS[tens]}-${ONES[ones]}`;
 }
 
-// What the caller says for a number, for example "Legs eleven!" or "Four and seven, forty-seven!".
+// What the caller says for a number, for example "Eight, Garden gate!" or "Four and seven, forty-seven!".
+// A nickname that already contains the number ("Legs eleven") is said on its own; any other nickname
+// has the number read first, so the player always hears which number it is.
 // With nicknames off (Quick speed) he just says the number.
 export function callText(number, callerLines, useNicknames) {
   const nickname = callerLines.nicknames[String(number)];
-  if (useNicknames && nickname) return `${nickname}!`;
   const full = numberInWords(number);
+  if (useNicknames && nickname) {
+    return nickname.toLowerCase().includes(full) ? `${nickname}!` : `${capital(full)}, ${nickname}!`;
+  }
   if (!useNicknames || number < 10) return `${capital(full)}!`;
   const tens = Math.floor(number / 10);
   const ones = number % 10;

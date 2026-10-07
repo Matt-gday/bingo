@@ -62,6 +62,13 @@ test('numbers are spoken', () => {
   assert.equal(callText(11, callerLines, true), 'Legs eleven!');
   assert.equal(callText(47, callerLines, true), 'Four and seven, forty-seven!');
   assert.equal(callText(11, callerLines, false), 'Eleven!');
+  assert.equal(callText(8, callerLines, true), 'Eight, Garden gate!');
+  assert.equal(callText(50, callerLines, true), 'Fifty, Half a century!');
+  // every nickname either says its own number or has the number read first
+  for (const [n, nickname] of Object.entries(callerLines.nicknames)) {
+    const said = callText(Number(n), callerLines, true).toLowerCase();
+    assert.ok(said.includes(numberInWords(Number(n))), `${n} / ${nickname}`);
+  }
 });
 
 test('a correct line wins', () => {
