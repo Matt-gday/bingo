@@ -1,7 +1,9 @@
 {
   "note": "Settings for making the caller's recordings with ElevenLabs (see tools/make-voice.mjs). The voice ID is not a secret. The API key is never stored here: it goes in a file called .env.",
   "voiceId": "2Hz9DHqNsF6pwJt0YOtM",
-  "modelId": "eleven_multilingual_v2",
+  "modelId": "eleven_v4",
+  "audioTag": "[warmly, cheerfully, gently]",
+  "audioTagNote": "Eleven v3 and v4 read this as a direction for how to say each line. It is only sent to ElevenLabs. Set it to \"\" for older models.",
   "stability": 0.5,
   "similarityBoost": 0.75,
   "style": 0.3,

@@ -5,6 +5,10 @@
 //   npm run voice:sample   records just three numbers so you can listen first
 //   npm run voice:make     records everything that is missing
 //
+// Delivery: Data/voice.json has an "audioTag" (for example "[warmly, cheerfully]") that is put in front
+// of each line when it is sent. Eleven v3 and v4 read it as a direction for how to say the line.
+// To try one without editing the file: npm run voice:sample -- --tag "[softly, smiling]"
+//
 // To record only some kinds of line, add --only and part of a group name from the list the first
 // command prints. For example: npm run voice:make -- --only numbers
 //
@@ -45,6 +49,10 @@ const input = {
   regulars: readJson('Data/regulars.json'),
 };
 const voice = readJson('Data/voice.json');
+// Try a different delivery without editing the file:  npm run voice:sample -- --tag "[softly, smiling]"
+const option = (name) => (args.includes(name) ? (args[args.indexOf(name) + 1] ?? '') : undefined);
+if (option('--tag') !== undefined) voice.audioTag = option('--tag');
+if (option('--model') !== undefined) voice.modelId = option('--model');
 const only = args.includes('--only') ? (args[args.indexOf('--only') + 1] ?? '') : '';
 const allGroups = collectLines(input);
 const groups = only ? Object.fromEntries(Object.entries(allGroups).filter(([name]) => name.includes(only))) : allGroups;
@@ -62,7 +70,7 @@ manifest.hashes ??= {};
 
 // A clip is remade if the text, the voice or any voice setting changes.
 const fingerprint = (text) => createHash('sha1')
-  .update(JSON.stringify([text, voice.voiceId, voice.modelId, voice.stability, voice.similarityBoost, voice.style, voice.speed]))
+  .update(JSON.stringify([text, voice.voiceId, voice.modelId, voice.audioTag, voice.stability, voice.similarityBoost, voice.style, voice.speed]))
   .digest('hex')
   .slice(0, 12);
 
@@ -108,7 +116,8 @@ let made = 0;
 
 async function record(text) {
   const body = {
-    text,
+    // The tag is only sent to ElevenLabs. The game still looks the clip up by the plain line.
+    text: voice.audioTag ? `${voice.audioTag} ${text}` : text,
     model_id: voice.modelId,
     voice_settings: {
       stability: voice.stability,
