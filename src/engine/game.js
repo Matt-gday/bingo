@@ -400,7 +400,9 @@ export class Game {
     if (this.screen === 'falseCall') {
       this.screen = 'cards';
       if (this.phase === 'calling') {
-        this.say(callText(this.currentNumber, this.callerLines, this.speed.useNicknames), 'talking');
+        // Show the current number again, but do not say it: the false-call line may still be playing
+        // and must be left to finish.
+        this.bubble = { text: callText(this.currentNumber, this.callerLines, this.speed.useNicknames), mood: 'talking' };
       }
     }
   }

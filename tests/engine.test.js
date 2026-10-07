@@ -349,3 +349,16 @@ test('after a false call the caller says only the false-call line, not the next 
   assert.match(heard[0].spoken, /can't see a line there/);
   assert.equal(game.bubble.mood, 'wince');
 });
+
+test('going back to the cards after a false call does not make the caller speak again', () => {
+  const game = new Game({ config, patterns, callerLines, speedId: 'steady', stageIds: ['line'] });
+  game.start();
+  game.openShout();
+  game.submitClaim();
+  const heard = [];
+  game.on((type, data) => type === 'say' && heard.push(data));
+  game.backToCards();
+  assert.equal(heard.length, 0, 'the false-call line is left to finish');
+  assert.equal(game.screen, 'cards');
+  assert.notEqual(game.bubble.mood, 'wince', 'the bubble shows the current number again');
+});
