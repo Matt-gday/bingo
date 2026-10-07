@@ -7,7 +7,7 @@
     {
       "id": "ball-land",
       "group": "Calling",
-      "prompt": "A cute bouncy bingo ball dropping and landing with a soft rubber bounce, playful cartoon sound, short",
+      "prompt": "A soft rubber bingo ball landing with one gentle bounce, a low rounded boop, playful and warm, short, no clicks, not harsh, not loud",
       "seconds": 1,
       "variants": 3,
       "volume": 0.8,
@@ -16,7 +16,7 @@
     {
       "id": "number-flick",
       "group": "Calling",
-      "prompt": "A quick light whoosh with a tiny sparkle, cartoon flick, very short",
+      "prompt": "A quick light airy whoosh with a faint sparkle, soft and short, no clicks, not harsh, not loud",
       "seconds": 0.6,
       "variants": 2,
       "volume": 0.6,
@@ -25,7 +25,7 @@
     {
       "id": "ball-skip",
       "group": "Calling",
-      "prompt": "A crisp light button press followed by a tiny swoosh, cute, very short",
+      "prompt": "A soft light tap followed by a gentle short swoosh, rounded and friendly, no sharp click, not loud",
       "seconds": 0.6,
       "variants": 2,
       "volume": 0.7,
@@ -43,7 +43,7 @@
     {
       "id": "mark-undo",
       "group": "Marking",
-      "prompt": "A tiny soft reverse bubble sucking sound, cute, very short",
+      "prompt": "A tiny reverse bubble sucking pop, soft and rounded, very short, not harsh, not loud",
       "seconds": 0.5,
       "variants": 2,
       "volume": 0.6,
@@ -79,7 +79,7 @@
     {
       "id": "check-tick",
       "group": "The check",
-      "prompt": "A bright happy ding like a correct-answer chime, clean and short",
+      "prompt": "A bright happy ding like a correct-answer chime on a glockenspiel, rounded and warm, short, not harsh, not loud",
       "seconds": 0.7,
       "variants": 3,
       "volume": 0.8,
@@ -153,8 +153,8 @@
     {
       "id": "button-tap",
       "group": "Buttons",
-      "prompt": "A cute chunky button tap click, very short and clean",
-      "seconds": 0.4,
+      "prompt": "A soft cute rounded button tap, a gentle tup, very short, no sharp click, not loud",
+      "seconds": 0.5,
       "variants": 3,
       "volume": 0.6,
       "when": "Any button is tapped."

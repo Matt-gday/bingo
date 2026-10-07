@@ -1,10 +1,39 @@
 {
   "sounds": {
+    "ball-land": {
+      "files": [
+        "ball-land-1-c81f4aa01c.mp3",
+        "ball-land-2-ac147cfc77.mp3",
+        "ball-land-3-547e674aa3.mp3"
+      ],
+      "volume": 0.8
+    },
+    "number-flick": {
+      "files": [
+        "number-flick-1-59112546b8.mp3",
+        "number-flick-2-60bd36b4e0.mp3"
+      ],
+      "volume": 0.6
+    },
+    "ball-skip": {
+      "files": [
+        "ball-skip-1-cda8f9ad4f.mp3",
+        "ball-skip-2-f6c356702e.mp3"
+      ],
+      "volume": 0.7
+    },
     "mark-pop": {
       "files": [
         "mark-pop-1-e667e058b9.mp3"
       ],
       "volume": 0.8
+    },
+    "mark-undo": {
+      "files": [
+        "mark-undo-1-e5d233663e.mp3",
+        "mark-undo-2-cd805d3c75.mp3"
+      ],
+      "volume": 0.6
     },
     "lock-thud": {
       "files": [
@@ -15,9 +44,25 @@
       ],
       "volume": 0.85
     },
+    "check-tick": {
+      "files": [
+        "check-tick-1-60e432c235.mp3",
+        "check-tick-2-35e21ba0a2.mp3",
+        "check-tick-3-b39f671b80.mp3"
+      ],
+      "volume": 0.8
+    },
     "win-fanfare": {
       "files": [
         "win-fanfare-5-b7a3cbcbd2.mp3"
+      ],
+      "volume": 0.6
+    },
+    "button-tap": {
+      "files": [
+        "button-tap-1-7281d2f00a.mp3",
+        "button-tap-2-f3e9c210ad.mp3",
+        "button-tap-3-1874b01db0.mp3"
       ],
       "volume": 0.6
     }
@@ -33,6 +78,21 @@
     "win-fanfare-6": "111c40ddc6",
     "lock-thud-2": "2e70dc558b",
     "lock-thud-3": "62e44817a7",
-    "lock-thud-4": "1d6b52dca0"
+    "lock-thud-4": "1d6b52dca0",
+    "ball-land-1": "c81f4aa01c",
+    "ball-land-2": "ac147cfc77",
+    "ball-land-3": "547e674aa3",
+    "number-flick-1": "59112546b8",
+    "number-flick-2": "60bd36b4e0",
+    "ball-skip-1": "cda8f9ad4f",
+    "ball-skip-2": "f6c356702e",
+    "mark-undo-1": "e5d233663e",
+    "mark-undo-2": "cd805d3c75",
+    "check-tick-1": "60e432c235",
+    "check-tick-2": "35e21ba0a2",
+    "check-tick-3": "b39f671b80",
+    "button-tap-1": "7281d2f00a",
+    "button-tap-2": "f3e9c210ad",
+    "button-tap-3": "1874b01db0"
   }
 }
