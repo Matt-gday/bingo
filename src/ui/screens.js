@@ -295,7 +295,7 @@ export function shoutScreen(game) {
   el.querySelector('[data-back]').addEventListener('click', () => game.closeShout());
 
   function update(_game, now) {
-    setRing(ring, game.callProgress, length);
+    setRing(ring, game.claimProgress, length);
     if (heldSince !== null) {
       const progress = Math.min(1, (now - heldSince) / holdMs);
       fill.style.width = `${progress * 100}%`;

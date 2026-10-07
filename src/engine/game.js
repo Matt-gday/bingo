@@ -82,6 +82,24 @@ export class Game {
     return earlier.slice(-shown).reverse();
   }
 
+  // On the shout screen the player gets a little extra time once the ring has run out,
+  // so a hold that was started near the end can still finish.
+  get graceMs() {
+    return this.config.shout.graceSeconds * 1000;
+  }
+
+  get lockLimitMs() {
+    const lock = this.config.marking.lockMomentMs;
+    return this.screen === 'shout' ? Math.max(lock, this.graceMs) : lock;
+  }
+
+  // How far through the time to call (the ring plus the grace) the player is, from 0 to 1.
+  get claimProgress() {
+    const window = this.callMs + Math.max(this.config.marking.lockMomentMs, this.graceMs);
+    if (this.phase === 'locking') return Math.min(1, (this.callMs + this.lockElapsed) / window);
+    return Math.min(1, this.callElapsed / window);
+  }
+
   get sittingOut() {
     return this.sitOut > 0;
   }
@@ -130,7 +148,7 @@ export class Game {
       if (this.callElapsed >= this.callMs) this.endCall();
     } else if (this.phase === 'locking') {
       this.lockElapsed += dt;
-      if (this.lockElapsed >= this.config.marking.lockMomentMs) this.nextCall();
+      if (this.lockElapsed >= this.lockLimitMs) this.nextCall();
     }
   }
 

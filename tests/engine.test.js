@@ -162,6 +162,27 @@ test('tapping the ball ends the call early and locks the mark', () => {
   assert.equal(game.called.length, 2);
 });
 
+test('on the shout screen the player gets a grace period after the ring runs out', () => {
+  const game = newGame('steady');
+  const first = game.currentNumber;
+  game.openShout();
+  runFor(game, ms('steady') + config.marking.lockMomentMs + 200);
+  assert.equal(game.phase, 'locking', 'still waiting for the claim');
+  assert.equal(game.screen, 'shout');
+  game.submitClaim(); // a claim in the grace period is still taken (no marks, so it is a false call)
+  assert.equal(game.falseCalls, 1);
+  assert.notEqual(game.currentNumber, first, 'the game restarts after the false call');
+});
+
+test('without a claim the next number comes after the grace period', () => {
+  const game = newGame('steady');
+  const first = game.currentNumber;
+  game.openShout();
+  runFor(game, ms('steady') + config.shout.graceSeconds * 1000 + 200);
+  assert.notEqual(game.currentNumber, first);
+  assert.equal(game.screen, 'cards');
+});
+
 test('one movable mark per call, and it locks when the ring runs out', () => {
   const game = newGame();
   game.tapSquare(0, 0, 0);

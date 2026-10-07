@@ -63,7 +63,8 @@
   },
   "shout": {
     "defaultLoudnessThreshold": 0.6,
-    "holdToCallSeconds": 1
+    "holdToCallSeconds": 1,
+    "graceSeconds": 2
   },
   "check": {
     "firstDelayMs": 1800,
