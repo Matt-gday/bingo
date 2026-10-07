@@ -13,7 +13,11 @@
     "voice:make": "node tools/make-voice.mjs --make",
     "voice:list": "node tools/make-voice.mjs --list",
     "voice:try": "node tools/voice-try.mjs",
-    "voice:tester": "node tools/make-voice.mjs --tester"
+    "voice:tester": "node tools/make-voice.mjs --tester",
+    "sounds": "node tools/make-sounds.mjs",
+    "sounds:sample": "node tools/make-sounds.mjs --sample",
+    "sounds:make": "node tools/make-sounds.mjs --make",
+    "sounds:tester": "node tools/make-sounds.mjs --tester"
   },
   "devDependencies": {
     "vite": "^6.4.4"

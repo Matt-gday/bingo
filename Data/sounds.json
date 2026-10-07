@@ -1,0 +1,44 @@
+{
+  "note": "Every sound effect in the game, made with ElevenLabs Sound Effects by tools/make-sounds.mjs. 'prompt' describes the sound, 'seconds' is how long it lasts, 'variants' is how many different takes to make (busy sounds get several so they do not get samey; the game picks one at random), 'volume' is how loud the game plays it from 0 to 1, and 'when' says where it is used. Change a prompt and run the script again to remake just that sound. 'promptInfluence' is how closely ElevenLabs follows the words (0 to 1).",
+  "model": "eleven_text_to_sound_v2",
+  "outputFormat": "mp3_44100_64",
+  "promptInfluence": 0.5,
+  "sounds": [
+    { "id": "ball-land", "group": "Calling", "prompt": "A cute bouncy bingo ball dropping and landing with a soft rubber bounce, playful cartoon sound, short", "seconds": 1, "variants": 3, "volume": 0.8, "when": "A new number is called." },
+    { "id": "number-flick", "group": "Calling", "prompt": "A quick light whoosh with a tiny sparkle, cartoon flick, very short", "seconds": 0.6, "variants": 2, "volume": 0.6, "when": "The called number flies into its pill." },
+    { "id": "ball-skip", "group": "Calling", "prompt": "A crisp light button press followed by a tiny swoosh, cute, very short", "seconds": 0.6, "variants": 2, "volume": 0.7, "when": "The player taps the ball to skip to the next call." },
+
+    { "id": "mark-pop", "group": "Marking", "prompt": "A tiny cute bubble pop, bright and clean, very short", "seconds": 0.5, "variants": 4, "volume": 0.8, "when": "A mark is placed on a square." },
+    { "id": "mark-undo", "group": "Marking", "prompt": "A tiny soft reverse bubble sucking sound, cute, very short", "seconds": 0.5, "variants": 2, "volume": 0.6, "when": "A mark is taken back or moved." },
+    { "id": "lock-thud", "group": "Marking", "prompt": "A chunky cartoon padlock clicking shut with a satisfying small thud, short", "seconds": 0.8, "variants": 2, "volume": 0.8, "when": "The ring runs out and the marks lock." },
+
+    { "id": "claim-whoosh", "group": "Calling bingo", "prompt": "A quick energetic rising whoosh, excited start, short", "seconds": 0.8, "variants": 1, "volume": 0.7, "when": "The player taps Call bingo." },
+    { "id": "too-slow", "group": "Calling bingo", "prompt": "A short comical boing followed by a little deflating squeak, playful not sad", "seconds": 1.2, "variants": 1, "volume": 0.7, "when": "The next number came before the player finished calling." },
+
+    { "id": "check-tick", "group": "The check", "prompt": "A bright happy ding like a correct-answer chime, clean and short", "seconds": 0.7, "variants": 3, "volume": 0.8, "when": "A number in the checked pattern turns out valid." },
+    { "id": "check-cross", "group": "The check", "prompt": "A friendly cartoon wrong-answer buzzer, short, not scary", "seconds": 0.9, "variants": 1, "volume": 0.8, "when": "A number in the checked pattern is not valid." },
+    { "id": "check-build", "group": "The check", "prompt": "A rising tension build with a drum roll swelling louder and louder, then stopping dead, suspenseful and playful", "seconds": 5, "variants": 1, "volume": 0.8, "when": "The slow, dramatic last number of a check." },
+
+    { "id": "win-fanfare", "group": "Winning and losing", "prompt": "A joyful cartoon bingo win fanfare with a party horn, confetti pop and cheering, celebratory and happy", "seconds": 3.5, "variants": 2, "volume": 0.9, "when": "The player wins a stage." },
+    { "id": "false-call", "group": "Winning and losing", "prompt": "A gentle comical sad trombone wah-wah wah-waaah, friendly and short, not harsh", "seconds": 2, "variants": 2, "volume": 0.8, "when": "A claim fails the check." },
+
+    { "id": "countdown-beep", "group": "Pause", "prompt": "A clean friendly countdown beep, single short tone", "seconds": 0.5, "variants": 1, "volume": 0.7, "when": "Each number of the 3, 2, 1 after a pause." },
+    { "id": "countdown-go", "group": "Pause", "prompt": "A higher bright friendly beep with a tiny sparkle, signalling go, short", "seconds": 0.7, "variants": 1, "volume": 0.8, "when": "The game carries on after the 3, 2, 1." },
+    { "id": "pause-on", "group": "Pause", "prompt": "A cute soft click with a short descending tone, pausing", "seconds": 0.8, "variants": 1, "volume": 0.7, "when": "The game pauses." },
+
+    { "id": "button-tap", "group": "Buttons", "prompt": "A cute chunky button tap click, very short and clean", "seconds": 0.4, "variants": 3, "volume": 0.6, "when": "Any button is tapped." },
+
+    { "id": "stage-won", "group": "Coming in later phases", "prompt": "A short bright celebratory jingle with a xylophone and a cheer, upbeat", "seconds": 2.5, "variants": 1, "volume": 0.9, "when": "A stage is won and the night continues." },
+    { "id": "gem-chime", "group": "Coming in later phases", "prompt": "A sparkling magical gem chime, credits earned, short and bright", "seconds": 1.2, "variants": 2, "volume": 0.8, "when": "Credits are banked." },
+    { "id": "prize-drop", "group": "Coming in later phases", "prompt": "A cute chunky toy dropping onto a wooden table with a springy bounce", "seconds": 1, "variants": 3, "volume": 0.8, "when": "A new prize drops onto the table." },
+    { "id": "buy", "group": "Coming in later phases", "prompt": "A cheerful cash register cha-ching with a sparkle, short", "seconds": 1.5, "variants": 1, "volume": 0.9, "when": "A prize is bought." },
+    { "id": "badge-gold", "group": "Coming in later phases", "prompt": "A shimmering golden achievement sparkle with a bright triumphant chime", "seconds": 2, "variants": 1, "volume": 0.9, "when": "A set is finished first (gold badge)." },
+    { "id": "badge-silver", "group": "Coming in later phases", "prompt": "A shimmering silver achievement chime, lighter and gentler than gold", "seconds": 1.8, "variants": 1, "volume": 0.9, "when": "A set is finished later (silver badge)." },
+    { "id": "sold", "group": "Coming in later phases", "prompt": "A rubber stamp thump with a tiny bell ding, short", "seconds": 0.8, "variants": 1, "volume": 0.8, "when": "A prize sells to a regular." },
+    { "id": "ring-close", "group": "Coming in later phases", "prompt": "A tiny clock tick with a soft pop, a countdown closing, very short", "seconds": 0.6, "variants": 1, "volume": 0.6, "when": "A regular's buying ring closes." },
+    { "id": "table-open", "group": "Coming in later phases", "prompt": "A bright shop doorbell ding with a small whoosh, welcoming", "seconds": 1.2, "variants": 1, "volume": 0.8, "when": "The prize table opens." },
+    { "id": "regular-cheer", "group": "Coming in later phases", "prompt": "A short happy crowd hooray cheer, cartoon style", "seconds": 1.5, "variants": 1, "volume": 0.8, "when": "A regular wins." },
+    { "id": "regular-groan", "group": "Coming in later phases", "prompt": "A short sympathetic cartoon aww groan from a small crowd", "seconds": 1.5, "variants": 1, "volume": 0.8, "when": "A regular loses a prize or is told off." },
+    { "id": "regular-gasp", "group": "Coming in later phases", "prompt": "A short comic surprised gasp, oooh, playful", "seconds": 1, "variants": 1, "volume": 0.8, "when": "Someone shouts bingo and the others are shocked." }
+  ]
+}

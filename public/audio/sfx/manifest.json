@@ -1,0 +1,27 @@
+{
+  "sounds": {
+    "mark-pop": {
+      "files": [
+        "mark-pop-1-e667e058b9.mp3"
+      ],
+      "volume": 0.8
+    },
+    "lock-thud": {
+      "files": [
+        "lock-thud-1-99e96f80b7.mp3"
+      ],
+      "volume": 0.8
+    },
+    "win-fanfare": {
+      "files": [
+        "win-fanfare-1-f83ca7cec9.mp3"
+      ],
+      "volume": 0.9
+    }
+  },
+  "hashes": {
+    "mark-pop-1": "e667e058b9",
+    "lock-thud-1": "99e96f80b7",
+    "win-fanfare-1": "f83ca7cec9"
+  }
+}
