@@ -11,6 +11,7 @@ const load = (name) => JSON.parse(readFileSync(new URL(`../Data/${name}.json`, i
 const config = load('config');
 const patterns = load('patterns');
 const callerLines = load('caller-lines');
+const ms = (id) => config.speeds.find((x) => x.id === id).secondsPerCall * 1000;
 const line = patterns.patterns.find((p) => p.id === 'line');
 
 // A card whose numbers are easy to read: column c, row r holds c * 15 + r + 1, centre free.
@@ -137,7 +138,7 @@ function runFor(game, ms) {
 test('a call lasts the speed setting, then locks, then the next number comes', () => {
   const game = newGame('steady');
   const first = game.currentNumber;
-  runFor(game, 4900);
+  runFor(game, ms('steady') - 100);
   assert.equal(game.phase, 'calling');
   runFor(game, 200);
   assert.equal(game.phase, 'locking');
@@ -156,7 +157,7 @@ test('one movable mark per call, and it locks when the ring runs out', () => {
   game.tapSquare(1, 3, 3); // tap again to take it back
   assert.equal(game.pending, null);
   game.tapSquare(0, 1, 1);
-  runFor(game, 5100);
+  runFor(game, ms('steady') + 100);
   assert.equal(game.squareState(0, 1, 1), 'locked');
   assert.equal(game.marks.length, 1);
   game.tapSquare(0, 1, 1); // locked marks can never change
@@ -184,9 +185,9 @@ test('a false call restarts the game and sits the player out for two calls', () 
   game.tapSquare(0, 1, 1);
   assert.equal(game.pending, null, 'cannot mark while sitting out');
   assert.equal(game.canClaim, false);
-  runFor(game, 5100 + config.marking.lockMomentMs + 50);
+  runFor(game, ms('steady') + 100 + config.marking.lockMomentMs + 50);
   assert.equal(game.sitOut, 1);
-  runFor(game, 5100 + config.marking.lockMomentMs + 50);
+  runFor(game, ms('steady') + 100 + config.marking.lockMomentMs + 50);
   assert.equal(game.sitOut, 0);
   game.tapSquare(0, 1, 1);
   assert.notEqual(game.pending, null);
@@ -201,7 +202,7 @@ test('a full game with a correct claim is won after the check', () => {
   game.called = [game.deck[0]];
   game.tapSquare(0, 0, 0);
   for (let c = 1; c < 5; c++) {
-    runFor(game, 3000 + config.marking.lockMomentMs + 50);
+    runFor(game, ms('quick') + config.marking.lockMomentMs + 50);
     game.tapSquare(0, 0, c);
   }
   game.openShout();

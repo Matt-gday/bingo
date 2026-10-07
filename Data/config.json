@@ -33,21 +33,21 @@
     {
       "id": "relaxed",
       "name": "Relaxed",
-      "secondsPerCall": 8,
+      "secondsPerCall": 10,
       "creditMultiplier": 1,
       "useNicknames": true
     },
     {
       "id": "steady",
       "name": "Steady",
-      "secondsPerCall": 5,
+      "secondsPerCall": 7,
       "creditMultiplier": 1.5,
       "useNicknames": true
     },
     {
       "id": "quick",
       "name": "Quick",
-      "secondsPerCall": 3,
+      "secondsPerCall": 5,
       "creditMultiplier": 3,
       "useNicknames": false
     }
