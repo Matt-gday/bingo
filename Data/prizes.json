@@ -1,0 +1,670 @@
+{
+  "note": "Starting prize list. Prices are placeholders to tune. Add a prize by adding an entry here and an image in Images/prizes.",
+  "prizes": [
+    {
+      "id": "zigzag-scissors",
+      "name": "Zigzag scissors",
+      "image": "Images/prizes/prize-zigzag-scissors.png",
+      "tags": [
+        "art-and-craft",
+        "purple"
+      ],
+      "price": 60,
+      "size": "small",
+      "room": "bedroom"
+    },
+    {
+      "id": "washi-tape",
+      "name": "Washi tape stack",
+      "image": "Images/prizes/prize-washi-tape.png",
+      "tags": [
+        "art-and-craft",
+        "rainbow",
+        "mini"
+      ],
+      "price": 50,
+      "size": "small",
+      "room": "bedroom"
+    },
+    {
+      "id": "glitter-glue",
+      "name": "Glitter glue pens",
+      "image": "Images/prizes/prize-glitter-glue.png",
+      "tags": [
+        "art-and-craft",
+        "sparkly"
+      ],
+      "price": 50,
+      "size": "small",
+      "room": "bedroom"
+    },
+    {
+      "id": "sketchbook",
+      "name": "Sketchbook",
+      "image": "Images/prizes/prize-sketchbook.png",
+      "tags": [
+        "art-and-craft",
+        "aqua"
+      ],
+      "price": 70,
+      "size": "medium",
+      "room": "bedroom"
+    },
+    {
+      "id": "pom-poms",
+      "name": "Bag of pom-poms",
+      "image": "Images/prizes/prize-pom-poms.png",
+      "tags": [
+        "art-and-craft",
+        "rainbow",
+        "fluffy"
+      ],
+      "price": 60,
+      "size": "small",
+      "room": "bedroom"
+    },
+    {
+      "id": "bead-kit",
+      "name": "Bead bracelet kit",
+      "image": "Images/prizes/prize-bead-kit.png",
+      "tags": [
+        "art-and-craft",
+        "pink",
+        "sparkly"
+      ],
+      "price": 90,
+      "size": "medium",
+      "room": "bedroom"
+    },
+    {
+      "id": "pink-pencil",
+      "name": "Pink pencil",
+      "image": "Images/prizes/prize-pink-pencil.png",
+      "tags": [
+        "stationery",
+        "pink"
+      ],
+      "price": 80,
+      "size": "small",
+      "room": "bedroom"
+    },
+    {
+      "id": "fluffy-pen",
+      "name": "Fluffy pen",
+      "image": "Images/prizes/prize-fluffy-pen.png",
+      "tags": [
+        "stationery",
+        "purple",
+        "fluffy"
+      ],
+      "price": 60,
+      "size": "small",
+      "room": "bedroom"
+    },
+    {
+      "id": "gel-pens",
+      "name": "Gel pen set",
+      "image": "Images/prizes/prize-gel-pens.png",
+      "tags": [
+        "stationery",
+        "rainbow",
+        "sparkly"
+      ],
+      "price": 70,
+      "size": "small",
+      "room": "bedroom"
+    },
+    {
+      "id": "cat-erasers",
+      "name": "Cat erasers",
+      "image": "Images/prizes/prize-cat-erasers.png",
+      "tags": [
+        "stationery",
+        "animals",
+        "mini"
+      ],
+      "price": 50,
+      "size": "small",
+      "room": "bedroom"
+    },
+    {
+      "id": "stapler",
+      "name": "Stapler",
+      "image": "Images/prizes/prize-stapler.png",
+      "tags": [
+        "stationery",
+        "aqua"
+      ],
+      "price": 40,
+      "size": "small",
+      "room": "bedroom"
+    },
+    {
+      "id": "sticker-sheet",
+      "name": "Sticker sheet",
+      "image": "Images/prizes/prize-sticker-sheet.png",
+      "tags": [
+        "stationery",
+        "art-and-craft",
+        "sparkly"
+      ],
+      "price": 60,
+      "size": "small",
+      "room": "bedroom"
+    },
+    {
+      "id": "recorder",
+      "name": "Recorder",
+      "image": "Images/prizes/prize-recorder.png",
+      "tags": [
+        "music",
+        "aqua"
+      ],
+      "price": 40,
+      "size": "medium",
+      "room": "playroom"
+    },
+    {
+      "id": "ukulele",
+      "name": "Ukulele",
+      "image": "Images/prizes/prize-ukulele.png",
+      "tags": [
+        "music",
+        "pink"
+      ],
+      "price": 110,
+      "size": "large",
+      "room": "playroom"
+    },
+    {
+      "id": "tambourine",
+      "name": "Tambourine",
+      "image": "Images/prizes/prize-tambourine.png",
+      "tags": [
+        "music",
+        "sparkly"
+      ],
+      "price": 70,
+      "size": "medium",
+      "room": "playroom"
+    },
+    {
+      "id": "maracas",
+      "name": "Maracas",
+      "image": "Images/prizes/prize-maracas.png",
+      "tags": [
+        "music",
+        "rainbow"
+      ],
+      "price": 60,
+      "size": "medium",
+      "room": "playroom"
+    },
+    {
+      "id": "kazoo",
+      "name": "Kazoo",
+      "image": "Images/prizes/prize-kazoo.png",
+      "tags": [
+        "music",
+        "purple",
+        "mini"
+      ],
+      "price": 40,
+      "size": "small",
+      "room": "playroom"
+    },
+    {
+      "id": "harmonica",
+      "name": "Harmonica",
+      "image": "Images/prizes/prize-harmonica.png",
+      "tags": [
+        "music",
+        "mini"
+      ],
+      "price": 60,
+      "size": "small",
+      "room": "playroom"
+    },
+    {
+      "id": "skipping-rope",
+      "name": "Skipping rope",
+      "image": "Images/prizes/prize-skipping-rope.png",
+      "tags": [
+        "sport",
+        "pink"
+      ],
+      "price": 50,
+      "size": "medium",
+      "room": "playroom"
+    },
+    {
+      "id": "netball",
+      "name": "Netball",
+      "image": "Images/prizes/prize-netball.png",
+      "tags": [
+        "sport"
+      ],
+      "price": 60,
+      "size": "medium",
+      "room": "playroom"
+    },
+    {
+      "id": "cricket-set",
+      "name": "Cricket bat and ball",
+      "image": "Images/prizes/prize-cricket-set.png",
+      "tags": [
+        "sport"
+      ],
+      "price": 90,
+      "size": "large",
+      "room": "garage"
+    },
+    {
+      "id": "roller-skates",
+      "name": "Roller skates",
+      "image": "Images/prizes/prize-roller-skates.png",
+      "tags": [
+        "sport",
+        "purple",
+        "sparkly"
+      ],
+      "price": 140,
+      "size": "large",
+      "room": "garage"
+    },
+    {
+      "id": "frisbee",
+      "name": "Frisbee",
+      "image": "Images/prizes/prize-frisbee.png",
+      "tags": [
+        "sport",
+        "aqua"
+      ],
+      "price": 40,
+      "size": "medium",
+      "room": "garage"
+    },
+    {
+      "id": "hula-hoop",
+      "name": "Hula hoop",
+      "image": "Images/prizes/prize-hula-hoop.png",
+      "tags": [
+        "sport",
+        "rainbow"
+      ],
+      "price": 60,
+      "size": "large",
+      "room": "playroom"
+    },
+    {
+      "id": "pink-bunny",
+      "name": "Pink bunny",
+      "image": "Images/prizes/prize-pink-bunny.png",
+      "tags": [
+        "soft-toys",
+        "pink",
+        "fluffy",
+        "animals"
+      ],
+      "price": 150,
+      "size": "medium",
+      "room": "bedroom"
+    },
+    {
+      "id": "purple-teddy",
+      "name": "Purple teddy",
+      "image": "Images/prizes/prize-purple-teddy.png",
+      "tags": [
+        "soft-toys",
+        "purple",
+        "fluffy",
+        "animals"
+      ],
+      "price": 150,
+      "size": "medium",
+      "room": "bedroom"
+    },
+    {
+      "id": "rainbow-unicorn",
+      "name": "Rainbow unicorn",
+      "image": "Images/prizes/prize-rainbow-unicorn.png",
+      "tags": [
+        "soft-toys",
+        "rainbow",
+        "sparkly",
+        "animals"
+      ],
+      "price": 180,
+      "size": "medium",
+      "room": "bedroom"
+    },
+    {
+      "id": "aqua-whale",
+      "name": "Aqua whale",
+      "image": "Images/prizes/prize-aqua-whale.png",
+      "tags": [
+        "soft-toys",
+        "aqua",
+        "animals"
+      ],
+      "price": 90,
+      "size": "medium",
+      "room": "bedroom"
+    },
+    {
+      "id": "koala",
+      "name": "Koala",
+      "image": "Images/prizes/prize-koala.png",
+      "tags": [
+        "soft-toys",
+        "fluffy",
+        "animals"
+      ],
+      "price": 100,
+      "size": "medium",
+      "room": "bedroom"
+    },
+    {
+      "id": "sloth-keyring",
+      "name": "Sloth keyring",
+      "image": "Images/prizes/prize-sloth-keyring.png",
+      "tags": [
+        "soft-toys",
+        "mini",
+        "animals"
+      ],
+      "price": 60,
+      "size": "small",
+      "room": "bedroom"
+    },
+    {
+      "id": "meat-tray",
+      "name": "Meat tray",
+      "image": "Images/prizes/prize-meat-tray.png",
+      "tags": [
+        "food"
+      ],
+      "price": 120,
+      "size": "medium",
+      "room": "kitchen"
+    },
+    {
+      "id": "lamingtons",
+      "name": "Lamingtons",
+      "image": "Images/prizes/prize-lamingtons.png",
+      "tags": [
+        "food"
+      ],
+      "price": 50,
+      "size": "small",
+      "room": "kitchen"
+    },
+    {
+      "id": "fairy-bread",
+      "name": "Fairy bread",
+      "image": "Images/prizes/prize-fairy-bread.png",
+      "tags": [
+        "food",
+        "rainbow"
+      ],
+      "price": 60,
+      "size": "small",
+      "room": "kitchen"
+    },
+    {
+      "id": "box-of-chocolates",
+      "name": "Box of chocolates",
+      "image": "Images/prizes/prize-box-of-chocolates.png",
+      "tags": [
+        "food",
+        "pink"
+      ],
+      "price": 80,
+      "size": "medium",
+      "room": "kitchen"
+    },
+    {
+      "id": "gummy-bears",
+      "name": "Jar of gummy bears",
+      "image": "Images/prizes/prize-gummy-bears.png",
+      "tags": [
+        "food",
+        "rainbow",
+        "mini"
+      ],
+      "price": 50,
+      "size": "small",
+      "room": "kitchen"
+    },
+    {
+      "id": "cupcake",
+      "name": "Cupcake",
+      "image": "Images/prizes/prize-cupcake.png",
+      "tags": [
+        "food",
+        "pink",
+        "sparkly"
+      ],
+      "price": 60,
+      "size": "small",
+      "room": "kitchen"
+    },
+    {
+      "id": "tea-towel",
+      "name": "Tea towel",
+      "image": "Images/prizes/prize-tea-towel.png",
+      "tags": [
+        "home"
+      ],
+      "price": 30,
+      "size": "small",
+      "room": "kitchen"
+    },
+    {
+      "id": "pink-mug",
+      "name": "Pink mug",
+      "image": "Images/prizes/prize-pink-mug.png",
+      "tags": [
+        "home",
+        "pink"
+      ],
+      "price": 50,
+      "size": "small",
+      "room": "kitchen"
+    },
+    {
+      "id": "shower-cap",
+      "name": "Shower cap",
+      "image": "Images/prizes/prize-shower-cap.png",
+      "tags": [
+        "home",
+        "aqua"
+      ],
+      "price": 60,
+      "size": "small",
+      "room": "bathroom"
+    },
+    {
+      "id": "rubber-duck",
+      "name": "Rubber duck",
+      "image": "Images/prizes/prize-rubber-duck.png",
+      "tags": [
+        "home",
+        "animals",
+        "mini"
+      ],
+      "price": 50,
+      "size": "small",
+      "room": "bathroom"
+    },
+    {
+      "id": "fluffy-slippers",
+      "name": "Fluffy slippers",
+      "image": "Images/prizes/prize-fluffy-slippers.png",
+      "tags": [
+        "home",
+        "purple",
+        "fluffy"
+      ],
+      "price": 80,
+      "size": "medium",
+      "room": "bedroom"
+    },
+    {
+      "id": "hair-dryer",
+      "name": "Hair dryer",
+      "image": "Images/prizes/prize-hair-dryer.png",
+      "tags": [
+        "home",
+        "purple"
+      ],
+      "price": 150,
+      "size": "medium",
+      "room": "bathroom"
+    },
+    {
+      "id": "garden-gnome",
+      "name": "Garden gnome",
+      "image": "Images/prizes/prize-garden-gnome.png",
+      "tags": [
+        "garden"
+      ],
+      "price": 90,
+      "size": "medium",
+      "room": "garden"
+    },
+    {
+      "id": "frog-watering-can",
+      "name": "Frog watering can",
+      "image": "Images/prizes/prize-frog-watering-can.png",
+      "tags": [
+        "garden",
+        "animals"
+      ],
+      "price": 80,
+      "size": "medium",
+      "room": "garden"
+    },
+    {
+      "id": "potted-succulent",
+      "name": "Potted succulent",
+      "image": "Images/prizes/prize-potted-succulent.png",
+      "tags": [
+        "garden",
+        "mini"
+      ],
+      "price": 50,
+      "size": "small",
+      "room": "garden"
+    },
+    {
+      "id": "bird-feeder",
+      "name": "Bird feeder",
+      "image": "Images/prizes/prize-bird-feeder.png",
+      "tags": [
+        "garden",
+        "animals"
+      ],
+      "price": 80,
+      "size": "medium",
+      "room": "garden"
+    },
+    {
+      "id": "garden-gloves",
+      "name": "Garden gloves",
+      "image": "Images/prizes/prize-garden-gloves.png",
+      "tags": [
+        "garden",
+        "pink"
+      ],
+      "price": 50,
+      "size": "small",
+      "room": "garden"
+    },
+    {
+      "id": "fairy-door",
+      "name": "Fairy door",
+      "image": "Images/prizes/prize-fairy-door.png",
+      "tags": [
+        "garden",
+        "sparkly",
+        "mini"
+      ],
+      "price": 70,
+      "size": "small",
+      "room": "garden"
+    },
+    {
+      "id": "hammer",
+      "name": "Hammer",
+      "image": "Images/prizes/prize-hammer.png",
+      "tags": [
+        "tools"
+      ],
+      "price": 60,
+      "size": "medium",
+      "room": "garage"
+    },
+    {
+      "id": "tape-measure",
+      "name": "Tape measure",
+      "image": "Images/prizes/prize-tape-measure.png",
+      "tags": [
+        "tools",
+        "aqua"
+      ],
+      "price": 50,
+      "size": "small",
+      "room": "garage"
+    },
+    {
+      "id": "pink-tool-kit",
+      "name": "Pink tool kit",
+      "image": "Images/prizes/prize-pink-tool-kit.png",
+      "tags": [
+        "tools",
+        "pink",
+        "mini"
+      ],
+      "price": 90,
+      "size": "small",
+      "room": "garage"
+    },
+    {
+      "id": "torch",
+      "name": "Torch",
+      "image": "Images/prizes/prize-torch.png",
+      "tags": [
+        "tools"
+      ],
+      "price": 60,
+      "size": "medium",
+      "room": "garage"
+    },
+    {
+      "id": "hot-glue-gun",
+      "name": "Hot glue gun",
+      "image": "Images/prizes/prize-hot-glue-gun.png",
+      "tags": [
+        "tools",
+        "art-and-craft"
+      ],
+      "price": 80,
+      "size": "medium",
+      "room": "garage"
+    },
+    {
+      "id": "screwdriver-set",
+      "name": "Screwdriver set",
+      "image": "Images/prizes/prize-screwdriver-set.png",
+      "tags": [
+        "tools",
+        "rainbow",
+        "mini"
+      ],
+      "price": 70,
+      "size": "small",
+      "room": "garage"
+    }
+  ]
+}

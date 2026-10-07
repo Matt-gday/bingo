@@ -1,0 +1,109 @@
+{
+  "note": "Every tunable number in the game. All values are first guesses. Nothing in the code should hard-code these.",
+  "gameName": "Solo Bingo",
+  "gameNameNote": "Working title. The final name is not chosen yet, so read the name from here wherever it appears.",
+  "cards": {
+    "columns": {
+      "B": [
+        1,
+        15
+      ],
+      "I": [
+        16,
+        30
+      ],
+      "N": [
+        31,
+        45
+      ],
+      "G": [
+        46,
+        60
+      ],
+      "O": [
+        61,
+        75
+      ]
+    },
+    "freeCentre": true,
+    "playerCards": 2,
+    "sharedNumbersBetweenPlayerCards": 7
+  },
+  "speeds": [
+    {
+      "id": "relaxed",
+      "name": "Relaxed",
+      "secondsPerCall": 8,
+      "creditMultiplier": 1,
+      "useNicknames": true
+    },
+    {
+      "id": "steady",
+      "name": "Steady",
+      "secondsPerCall": 5,
+      "creditMultiplier": 1.5,
+      "useNicknames": true
+    },
+    {
+      "id": "quick",
+      "name": "Quick",
+      "secondsPerCall": 3,
+      "creditMultiplier": 3,
+      "useNicknames": false
+    }
+  ],
+  "marking": {
+    "marksPerCall": 1,
+    "recentCallsShown": 4,
+    "lockMomentMs": 700
+  },
+  "pause": {
+    "pausesPerGame": 1,
+    "resumeCountdownSeconds": 3
+  },
+  "shout": {
+    "defaultLoudnessThreshold": 0.6,
+    "holdToCallSeconds": 1
+  },
+  "check": {
+    "firstDelayMs": 900,
+    "delayGrowth": 1.25,
+    "finalDelayMs": 2500,
+    "resultBeatMs": 900
+  },
+  "falseCall": {
+    "sitOutCalls": 2,
+    "creditPenaltyShare": 0.25
+  },
+  "stageWon": {
+    "nextStageCountdownSeconds": 3
+  },
+  "credits": {
+    "forPlaying": 2,
+    "closenessMaxShareOfPayout": 0.4,
+    "note": "Closeness consolation: when a bot wins a stage, the player earns up to this share of the stage payout, scaled by how much of the pattern they had correctly marked."
+  },
+  "prizeTable": {
+    "slots": 6,
+    "soldBeatMs": 1200,
+    "firstBotDelaySeconds": 3,
+    "secondsBetweenBotArrivals": 4,
+    "desperationSpeedUp": 0.6,
+    "speedScaleBySetting": {
+      "relaxed": 1.6,
+      "steady": 1.0,
+      "quick": 0.6
+    }
+  },
+  "sets": {
+    "targetShare": 0.6,
+    "badges": {
+      "firstToFinish": "gold",
+      "later": "silver"
+    }
+  },
+  "design": {
+    "designWidth": 390,
+    "designHeight": 844
+  }
+}

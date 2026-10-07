@@ -1,0 +1,148 @@
+{
+  "note": "Everything the caller says appears in his speech bubble, whether or not the voice is on. Numbers without a nickname are read digit by digit and then in full, for example 'Four and seven, forty-seven'. This is a starter list of traditional calls with the ruder ones left out; edit freely. On Quick speed he drops the nicknames and just says the number.",
+  "nicknames": {
+    "1": "Kelly's eye",
+    "2": "One little duck",
+    "3": "Cup of tea",
+    "4": "Knock at the door",
+    "5": "Man alive",
+    "6": "Half a dozen",
+    "7": "Lucky seven",
+    "8": "Garden gate",
+    "9": "Doctor's orders",
+    "10": "Uncle Ben",
+    "11": "Legs eleven",
+    "12": "One dozen",
+    "13": "Unlucky for some",
+    "14": "Valentine's Day",
+    "15": "Young and keen",
+    "16": "Sweet sixteen",
+    "17": "Dancing queen",
+    "18": "Coming of age",
+    "19": "Goodbye teens",
+    "20": "One score",
+    "21": "Key of the door",
+    "22": "Two little ducks",
+    "23": "Thee and me",
+    "24": "Two dozen",
+    "25": "Duck and dive",
+    "26": "Pick and mix",
+    "27": "Gateway to heaven",
+    "29": "Rise and shine",
+    "31": "Get up and run",
+    "32": "Buckle my shoe",
+    "33": "All the threes",
+    "34": "Ask for more",
+    "35": "Jump and jive",
+    "36": "Three dozen",
+    "37": "More than eleven",
+    "38": "Christmas cake",
+    "39": "Steps",
+    "40": "Life begins",
+    "41": "Time for fun",
+    "42": "Winnie the Pooh",
+    "43": "Down on your knees",
+    "44": "All the fours",
+    "45": "Halfway there",
+    "46": "Up to tricks",
+    "48": "Four dozen",
+    "50": "Half a century",
+    "51": "Tweak of the thumb",
+    "52": "Weeks in a year",
+    "53": "Stuck in the tree",
+    "54": "Clean the floor",
+    "55": "Snakes alive",
+    "57": "Heinz varieties",
+    "58": "Make them wait",
+    "59": "Brighton line",
+    "60": "Five dozen",
+    "61": "Baker's bun",
+    "62": "Tickety-boo",
+    "63": "Tickle me",
+    "66": "Clickety click",
+    "67": "Made in heaven",
+    "68": "Saving grace",
+    "70": "Three score and ten",
+    "71": "Bang on the drum",
+    "72": "Six dozen",
+    "73": "Queen bee",
+    "74": "Candy store",
+    "75": "Strive and strive"
+  },
+  "game": {
+    "start": [
+      "Eyes down, everyone!",
+      "Here we go. Good luck!"
+    ],
+    "marksLocked": [
+      "Marks locked!"
+    ],
+    "stageOpens": [
+      "Now we're playing for {pattern}.",
+      "Next up: {pattern}!"
+    ],
+    "checking": [
+      "Let's have a look at that card."
+    ],
+    "win": [
+      "Every number checks out. We have a winner!",
+      "That's {pattern}. Well played!"
+    ],
+    "falseCall": {
+      "notCalled": [
+        "Ooh, unlucky. I haven't called {number} yet."
+      ],
+      "usedOnOtherCard": [
+        "Not quite. {number} is already on your other card."
+      ],
+      "noPattern": [
+        "I can't see {pattern} there, I'm afraid."
+      ]
+    },
+    "botFalseCall": [
+      "Sit down, {name}, that's not {pattern}."
+    ],
+    "botWins": [
+      "{name} has it! Well done, {name}.",
+      "That's {pattern} for {name}."
+    ],
+    "pause": [
+      "No peeking! Your cards are covered."
+    ]
+  },
+  "prizeTable": {
+    "opening": [
+      "Right, who's after what tonight?"
+    ],
+    "hint": [
+      "{name}'s after anything {set} tonight.",
+      "{name} is taking {possessive} time over that {prize}.",
+      "Keep an eye on {name}."
+    ],
+    "reaction": [
+      "Snatched from under {possessive} nose!",
+      "{name} has done it again. Sold!",
+      "Ooh, {name} wanted that one."
+    ],
+    "nudge": [
+      "That {prize} would finish your {set} set, you know.",
+      "You're only {amount} away from finishing {set}."
+    ],
+    "leaving": [
+      "{name} has left the table.",
+      "That's {name} done for the night."
+    ],
+    "banter": [
+      "Who puts a meat tray next to a unicorn?",
+      "Lovely selection tonight, if I do say so myself."
+    ],
+    "closing": [
+      "That's the table closed for tonight!"
+    ]
+  },
+  "home": [
+    "{name}'s been asking where you were.",
+    "Good to see you back!",
+    "The table has new prizes tonight."
+  ]
+}

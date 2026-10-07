@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2 New player</title>
+<!-- Design reference only: a static picture of one moment. Read it for colours, sizes, spacing and type. Do not reuse its structure as app code. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>body{margin:0}
+a{color:#1A1446}a:hover{color:#1A1446}</style>
+</head>
+<body>
+<div style="position: relative; overflow: hidden; width: 390px; height: 844px; box-sizing: border-box; padding: 44px 20px 20px; background: linear-gradient(170deg, #5236D6 0%, #7B45E6 45%, #C257D9 100%); color: #FFFFFF; font-family: 'Nunito', system-ui, sans-serif">
+
+<div style="position: absolute; left: -130px; top: -150px; width: 440px; height: 440px; border-radius: 50%; background: rgba(255, 255, 255, 0.07)"></div>
+<div style="position: absolute; right: -140px; bottom: -160px; width: 420px; height: 420px; border-radius: 50%; background: rgba(255, 255, 255, 0.08)"></div>
+
+<div style="position: relative; height: 780px; display: flex; flex-direction: column; gap: 16px">
+
+<div style="display: flex; align-items: center; gap: 10px; height: 44px">
+<a href="Welcome.dc.html" aria-label="Back" style="width: 44px; height: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: #FFFFFF; color: #2B1B6B; box-shadow: 0 3px 0 rgba(43, 27, 107, 0.25); text-decoration: none">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+</a>
+<h1 style="margin: 0; font: 700 28px/1 'Fredoka', system-ui, sans-serif">New player</h1>
+</div>
+
+<div style="align-self: center; width: 112px; height: 112px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #FFFFFF; box-shadow: 0 6px 0 rgba(43, 27, 107, 0.3)">
+<svg width="92" height="92" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#9DB4FF"></circle><circle cx="9" cy="11" r="1.8" fill="#2B1B6B"></circle><circle cx="17" cy="11" r="1.8" fill="#2B1B6B"></circle><path d="M8 15.5h10a5 5 0 0 1-10 0z" fill="#2B1B6B"></path></svg>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="player-name" style="font: 600 15px/18px 'Fredoka', system-ui, sans-serif">Your name</label>
+<input id="player-name" type="text" value="Matt" style="height: 52px; box-sizing: border-box; padding: 0 16px; border: 0; border-radius: 18px; background: #FFFFFF; color: #2B1B6B; box-shadow: 0 4px 0 rgba(43, 27, 107, 0.3); font: 600 20px/1 'Fredoka', system-ui, sans-serif">
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font: 600 15px/18px 'Fredoka', system-ui, sans-serif">Pick a face</h2>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 14px; border-radius: 22px; background: #FFFFFF; box-shadow: 0 5px 0 rgba(43, 27, 107, 0.3)">
+<button aria-label="Big grin face" aria-pressed="true" style="height: 64px; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 50%; background: #2EE6D6; cursor: pointer"><svg width="54" height="54" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#9DB4FF"></circle><circle cx="9" cy="11" r="1.8" fill="#2B1B6B"></circle><circle cx="17" cy="11" r="1.8" fill="#2B1B6B"></circle><path d="M8 15.5h10a5 5 0 0 1-10 0z" fill="#2B1B6B"></path></svg></button>
+<button aria-label="Smile face" aria-pressed="false" style="height: 64px; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 50%; background: #F1ECFF; cursor: pointer"><svg width="54" height="54" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#9DB4FF"></circle><circle cx="9" cy="11.5" r="1.8" fill="#2B1B6B"></circle><circle cx="17" cy="11.5" r="1.8" fill="#2B1B6B"></circle><path d="M8.5 16c1.2 1.8 2.8 2.6 4.5 2.6s3.3-.8 4.5-2.6" stroke="#2B1B6B" stroke-width="1.8" stroke-linecap="round" fill="none"></path></svg></button>
+<button aria-label="Wink face" aria-pressed="false" style="height: 64px; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 50%; background: #F1ECFF; cursor: pointer"><svg width="54" height="54" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#9DB4FF"></circle><circle cx="9" cy="11.5" r="1.8" fill="#2B1B6B"></circle><path d="M15 11.5h4" stroke="#2B1B6B" stroke-width="1.8" stroke-linecap="round"></path><path d="M8.5 16c1.2 1.8 2.8 2.6 4.5 2.6s3.3-.8 4.5-2.6" stroke="#2B1B6B" stroke-width="1.8" stroke-linecap="round" fill="none"></path></svg></button>
+<button aria-label="Surprised face" aria-pressed="false" style="height: 64px; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 50%; background: #F1ECFF; cursor: pointer"><svg width="54" height="54" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#9DB4FF"></circle><circle cx="9" cy="11" r="1.8" fill="#2B1B6B"></circle><circle cx="17" cy="11" r="1.8" fill="#2B1B6B"></circle><ellipse cx="13" cy="17.5" rx="2.6" ry="2.2" fill="#2B1B6B"></ellipse></svg></button>
+<button aria-label="Cheeky face" aria-pressed="false" style="height: 64px; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 50%; background: #F1ECFF; cursor: pointer"><svg width="54" height="54" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#9DB4FF"></circle><circle cx="9" cy="11" r="1.8" fill="#2B1B6B"></circle><circle cx="17" cy="11" r="1.8" fill="#2B1B6B"></circle><path d="M9 16.5c2.5 1.6 5.5 1 8-1.5" stroke="#2B1B6B" stroke-width="1.8" stroke-linecap="round" fill="none"></path></svg></button>
+<button aria-label="Sleepy face" aria-pressed="false" style="height: 64px; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 50%; background: #F1ECFF; cursor: pointer"><svg width="54" height="54" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#9DB4FF"></circle><path d="M7 11.5h4M15 11.5h4" stroke="#2B1B6B" stroke-width="1.8" stroke-linecap="round"></path><path d="M10 17h6" stroke="#2B1B6B" stroke-width="1.8" stroke-linecap="round"></path></svg></button>
+<button aria-label="Rosy cheeks face" aria-pressed="false" style="height: 64px; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 50%; background: #F1ECFF; cursor: pointer"><svg width="54" height="54" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#9DB4FF"></circle><circle cx="9" cy="11" r="1.8" fill="#2B1B6B"></circle><circle cx="17" cy="11" r="1.8" fill="#2B1B6B"></circle><circle cx="6.5" cy="15" r="1.6" fill="#FF8FCB"></circle><circle cx="19.5" cy="15" r="1.6" fill="#FF8FCB"></circle><path d="M9.5 16c1 1.3 2.2 1.9 3.5 1.9s2.5-.6 3.5-1.9" stroke="#2B1B6B" stroke-width="1.8" stroke-linecap="round" fill="none"></path></svg></button>
+<button aria-label="Determined face" aria-pressed="false" style="height: 64px; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 50%; background: #F1ECFF; cursor: pointer"><svg width="54" height="54" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#9DB4FF"></circle><path d="M7 8.5l4 1.5M19 8.5l-4 1.5" stroke="#2B1B6B" stroke-width="1.6" stroke-linecap="round"></path><circle cx="9" cy="12" r="1.8" fill="#2B1B6B"></circle><circle cx="17" cy="12" r="1.8" fill="#2B1B6B"></circle><path d="M9.5 17.5h7" stroke="#2B1B6B" stroke-width="1.8" stroke-linecap="round"></path></svg></button>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font: 600 15px/18px 'Fredoka', system-ui, sans-serif">Pick a colour</h2>
+<div style="display: flex; justify-content: space-between; gap: 8px">
+<button aria-label="Periwinkle" aria-pressed="true" style="width: 48px; height: 48px; box-sizing: border-box; border: 4px solid #FFFFFF; border-radius: 50%; background: #9DB4FF; box-shadow: 0 0 0 3px #2EE6D6; cursor: pointer"></button>
+<button aria-label="Aqua" aria-pressed="false" style="width: 48px; height: 48px; box-sizing: border-box; border: 4px solid #FFFFFF; border-radius: 50%; background: #6FE9DD; cursor: pointer"></button>
+<button aria-label="Pink" aria-pressed="false" style="width: 48px; height: 48px; box-sizing: border-box; border: 4px solid #FFFFFF; border-radius: 50%; background: #FF8FCB; cursor: pointer"></button>
+<button aria-label="Lilac" aria-pressed="false" style="width: 48px; height: 48px; box-sizing: border-box; border: 4px solid #FFFFFF; border-radius: 50%; background: #D9B8FF; cursor: pointer"></button>
+<button aria-label="Mint" aria-pressed="false" style="width: 48px; height: 48px; box-sizing: border-box; border: 4px solid #FFFFFF; border-radius: 50%; background: #A6F2C4; cursor: pointer"></button>
+<button aria-label="Sky" aria-pressed="false" style="width: 48px; height: 48px; box-sizing: border-box; border: 4px solid #FFFFFF; border-radius: 50%; background: #8FD3FF; cursor: pointer"></button>
+</div>
+</div>
+
+<a href="HowTo.dc.html" style="margin-top: auto; margin-bottom: 6px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 30px; background: #2EE6D6; color: #1A1446; box-shadow: 0 6px 0 #0E9287; font: 700 24px/1 'Fredoka', system-ui, sans-serif; text-decoration: none">Let's play!</a>
+
+</div>
+</div>
+</body>
+</html>

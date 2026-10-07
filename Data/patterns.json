@@ -1,0 +1,443 @@
+{
+  "note": "Patterns are data. 'lines' means any complete rows, columns or diagonals on one card. 'all' means every square on one card. 'grid' is a fixed shape; 'anyOf' is satisfied by any one of several shapes. The centre square is free and always counts as marked. The first three are used by the staged night. The rest are for later, as a pattern of the night.",
+  "nightLengths": [
+    {
+      "id": "short",
+      "name": "Just a line",
+      "blurb": "Short game, small prize",
+      "stages": [
+        "line"
+      ]
+    },
+    {
+      "id": "medium",
+      "name": "A line, then two lines",
+      "blurb": "Two chances to shout",
+      "stages": [
+        "line",
+        "two-lines"
+      ]
+    },
+    {
+      "id": "full",
+      "name": "The full night",
+      "blurb": "Line, two lines, then full house",
+      "stages": [
+        "line",
+        "two-lines",
+        "full-house"
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "line",
+      "name": "One line",
+      "spoken": "a line",
+      "rule": "lines",
+      "count": 1,
+      "payout": 20,
+      "instruction": "Complete any row, column or diagonal on one card."
+    },
+    {
+      "id": "two-lines",
+      "name": "Two lines",
+      "spoken": "two lines",
+      "rule": "lines",
+      "count": 2,
+      "payout": 40,
+      "instruction": "Finish a second line on the same card."
+    },
+    {
+      "id": "full-house",
+      "name": "Full house",
+      "spoken": "a full house",
+      "rule": "all",
+      "payout": 80,
+      "instruction": "Fill every square on one card."
+    },
+    {
+      "id": "four-corners",
+      "name": "Four corners",
+      "rule": "grid",
+      "payout": 35,
+      "later": true,
+      "instruction": "Mark the four corner squares on one card.",
+      "grid": [
+        [
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "letter-x",
+      "name": "Letter X",
+      "rule": "grid",
+      "payout": 45,
+      "later": true,
+      "instruction": "Mark both diagonals on one card.",
+      "grid": [
+        [
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "plus",
+      "name": "Plus sign",
+      "rule": "grid",
+      "payout": 45,
+      "later": true,
+      "instruction": "Mark the middle row and the middle column on one card.",
+      "grid": [
+        [
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "postage-stamp",
+      "name": "Postage stamp",
+      "rule": "anyOf",
+      "payout": 30,
+      "later": true,
+      "instruction": "Mark a block of four squares in any corner of one card.",
+      "grids": [
+        [
+          [
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "picture-frame",
+      "name": "Picture frame",
+      "rule": "grid",
+      "payout": 60,
+      "later": true,
+      "instruction": "Mark the whole outer edge of one card.",
+      "grid": [
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "heart",
+      "name": "Heart",
+      "rule": "grid",
+      "payout": 50,
+      "later": true,
+      "instruction": "Mark the heart shape on one card.",
+      "grid": [
+        [
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          0,
+          1,
+          1,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0
+        ]
+      ]
+    }
+  ]
+}

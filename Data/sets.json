@@ -1,0 +1,159 @@
+{
+  "note": "A set is finished when the prices of the prizes you own with that tag add up to the target. Targets are about 60 percent of the set's total value, so no set can become impossible. Recalculate targets if prizes or prices change.",
+  "targetShare": 0.6,
+  "sets": [
+    {
+      "id": "art-and-craft",
+      "name": "Art & Craft",
+      "family": "thing",
+      "badge": "Images/badges/badge-art-and-craft.png",
+      "prizeCount": 8,
+      "totalValue": 520,
+      "target": 310
+    },
+    {
+      "id": "stationery",
+      "name": "Stationery",
+      "family": "thing",
+      "badge": "Images/badges/badge-stationery.png",
+      "prizeCount": 6,
+      "totalValue": 360,
+      "target": 220
+    },
+    {
+      "id": "music",
+      "name": "Music",
+      "family": "thing",
+      "badge": "Images/badges/badge-music.png",
+      "prizeCount": 6,
+      "totalValue": 380,
+      "target": 230
+    },
+    {
+      "id": "sport",
+      "name": "Sport",
+      "family": "thing",
+      "badge": "Images/badges/badge-sport.png",
+      "prizeCount": 6,
+      "totalValue": 440,
+      "target": 260
+    },
+    {
+      "id": "soft-toys",
+      "name": "Soft Toys",
+      "family": "thing",
+      "badge": "Images/badges/badge-soft-toys.png",
+      "prizeCount": 6,
+      "totalValue": 730,
+      "target": 440
+    },
+    {
+      "id": "food",
+      "name": "Food",
+      "family": "thing",
+      "badge": "Images/badges/badge-food.png",
+      "prizeCount": 6,
+      "totalValue": 420,
+      "target": 250
+    },
+    {
+      "id": "home",
+      "name": "Home",
+      "family": "thing",
+      "badge": "Images/badges/badge-home.png",
+      "prizeCount": 6,
+      "totalValue": 420,
+      "target": 250
+    },
+    {
+      "id": "garden",
+      "name": "Garden",
+      "family": "thing",
+      "badge": "Images/badges/badge-garden.png",
+      "prizeCount": 6,
+      "totalValue": 420,
+      "target": 250
+    },
+    {
+      "id": "tools",
+      "name": "Tools",
+      "family": "thing",
+      "badge": "Images/badges/badge-tools.png",
+      "prizeCount": 6,
+      "totalValue": 410,
+      "target": 250
+    },
+    {
+      "id": "pink",
+      "name": "Pink",
+      "family": "colour",
+      "badge": "Images/badges/badge-pink.png",
+      "prizeCount": 10,
+      "totalValue": 810,
+      "target": 490
+    },
+    {
+      "id": "purple",
+      "name": "Purple",
+      "family": "colour",
+      "badge": "Images/badges/badge-purple.png",
+      "prizeCount": 7,
+      "totalValue": 680,
+      "target": 410
+    },
+    {
+      "id": "aqua",
+      "name": "Aqua",
+      "family": "colour",
+      "badge": "Images/badges/badge-aqua.png",
+      "prizeCount": 7,
+      "totalValue": 390,
+      "target": 230
+    },
+    {
+      "id": "rainbow",
+      "name": "Rainbow",
+      "family": "colour",
+      "badge": "Images/badges/badge-rainbow.png",
+      "prizeCount": 9,
+      "totalValue": 660,
+      "target": 400
+    },
+    {
+      "id": "fluffy",
+      "name": "Fluffy",
+      "family": "feel",
+      "badge": "Images/badges/badge-fluffy.png",
+      "prizeCount": 6,
+      "totalValue": 600,
+      "target": 360
+    },
+    {
+      "id": "sparkly",
+      "name": "Sparkly",
+      "family": "feel",
+      "badge": "Images/badges/badge-sparkly.png",
+      "prizeCount": 9,
+      "totalValue": 790,
+      "target": 470
+    },
+    {
+      "id": "mini",
+      "name": "Mini",
+      "family": "feel",
+      "badge": "Images/badges/badge-mini.png",
+      "prizeCount": 11,
+      "totalValue": 640,
+      "target": 380
+    },
+    {
+      "id": "animals",
+      "name": "Animals",
+      "family": "feel",
+      "badge": "Images/badges/badge-animals.png",
+      "prizeCount": 10,
+      "totalValue": 990,
+      "target": 590
+    }
+  ]
+}

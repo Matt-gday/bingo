@@ -1,0 +1,19 @@
+{
+  "name": "solo-bingo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "test": "node --test tests/"
+  },
+  "devDependencies": {
+    "vite": "^6.4.4"
+  },
+  "dependencies": {
+    "@fontsource-variable/fredoka": "^5.3.0",
+    "@fontsource-variable/nunito": "^5.3.0"
+  }
+}
