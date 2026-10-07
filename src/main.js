@@ -6,38 +6,33 @@ import config from '../Data/config.json';
 import patterns from '../Data/patterns.json';
 import callerLines from '../Data/caller-lines.json';
 import { Game } from './engine/game.js';
+import { createSettings } from './settings.js';
+import { Mic } from './audio/mic.js';
+import { Voice } from './audio/voice.js';
 import {
-  startScreen, playScreen, shoutScreen, checkingScreen, falseCallScreen, resultScreen,
+  startScreen, playScreen, checkingScreen, falseCallScreen, resultScreen,
 } from './ui/screens.js';
+import { shoutScreen, testScreen } from './ui/shoutScreens.js';
+import { pauseScreen } from './ui/pauseScreen.js';
 
 const root = document.getElementById('app');
 document.title = config.gameName;
 
-// Phase 1 plays one line. Later phases will let the player pick the night's length.
+// Phase 2 still plays one line. Later phases will let the player pick the night's length.
 const STAGES = ['line'];
 
-function remembered(key, fallback) {
-  try {
-    return localStorage.getItem(key) ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
-function remember(key, value) {
-  try {
-    localStorage.setItem(key, value);
-  } catch {
-    // Saving is a convenience here, so it is fine if the browser says no.
-  }
-}
+const settings = createSettings(config);
+const mic = new Mic(config);
+const voice = new Voice(config, settings);
 
-let speedId = remembered('speed', 'steady');
-if (!config.speeds.some((s) => s.id === speedId)) speedId = config.speeds[0].id;
+if (!config.speeds.some((s) => s.id === settings.get('speedId'))) settings.set('speedId', config.speeds[0].id);
 
 let game = null;
-let current = null; // { name, el, update }
+let current = null; // { name, el, update, destroy }
+let playAfterTest = false;
 
 function show(name, build) {
+  current?.destroy?.();
   current = { name, ...build() };
   root.replaceChildren(current.el);
   window.scrollTo(0, 0);
@@ -45,20 +40,50 @@ function show(name, build) {
 
 function showStart() {
   game = null;
+  voice.cancel();
   show('start', () => startScreen({
     config,
-    chosenSpeed: speedId,
-    onChoose: (id) => {
-      speedId = id;
-      remember('speed', id);
+    chosenSpeed: settings.get('speedId'),
+    voice,
+    onChoose: (id) => settings.set('speedId', id),
+    onPlay: () => {
+      voice.unlock(); // phones only allow speech after a tap
+      if (settings.get('shoutTested')) startGame();
+      else showTest(true);
     },
-    onPlay: startGame,
+    onTest: () => showTest(false),
+  }));
+}
+
+function showTest(thenPlay) {
+  playAfterTest = thenPlay;
+  show('test', () => testScreen({
+    config,
+    callerLines,
+    mic,
+    settings,
+    onDone: (result) => {
+      voice.unlock();
+      if (result !== 'back' && playAfterTest) startGame();
+      else showStart();
+    },
   }));
 }
 
 function startGame() {
-  game = new Game({ config, patterns, callerLines, speedId, stageIds: STAGES });
+  game = new Game({
+    config, patterns, callerLines, speedId: settings.get('speedId'), stageIds: STAGES,
+  });
+  game.on((type, data) => {
+    if (type === 'say') {
+      if (data.kind === 'lock' && !config.voice.speakMarksLocked) return;
+      voice.speak(data.text);
+    } else if (type === 'pause') {
+      voice.cancel();
+    }
+  });
   game.start();
+  current?.destroy?.();
   current = null;
   if (import.meta.env.DEV) window.__game = game; // for testing in the browser console only
 }
@@ -66,14 +91,17 @@ function startGame() {
 // The screen on show follows what the game says the player should be looking at.
 function sync() {
   if (!game) return;
-  const wanted = { cards: 'play', shout: 'shout', checking: 'checking', falseCall: 'falseCall', result: 'result' }[game.screen];
+  const wanted = game.pauseState
+    ? 'pause'
+    : { cards: 'play', shout: 'shout', checking: 'checking', falseCall: 'falseCall', result: 'result' }[game.screen];
   if (current?.name === wanted) return;
   const builders = {
-    play: () => playScreen(game),
-    shout: () => shoutScreen(game),
+    play: () => playScreen(game, { voice, mic, settings }),
+    shout: () => shoutScreen(game, { mic, settings }),
     checking: () => checkingScreen(game),
     falseCall: () => falseCallScreen(game),
     result: () => resultScreen(game, { onAgain: startGame, onChange: showStart }),
+    pause: () => pauseScreen(game, { onQuit: showStart }),
   };
   show(wanted, builders[wanted]);
 }
@@ -85,10 +113,17 @@ function frame(now) {
   if (game) {
     game.advance(dt);
     sync();
-    current?.update(game, now);
   }
+  current?.update(game, now);
   requestAnimationFrame(frame);
 }
+
+// Switching apps, a phone call or locking the screen covers the game, so nobody can study
+// the cards while the clock is stopped. It does not use up the player's one pause.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) game?.autoPause();
+});
+window.addEventListener('pagehide', () => game?.autoPause());
 
 showStart();
 requestAnimationFrame(frame);

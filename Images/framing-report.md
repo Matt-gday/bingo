@@ -34,7 +34,7 @@ All 77 transparent images use 1024 × 1024 RGBA canvases. Measurements use alpha
 | prizes/prize-meat-tray.png | 820 | 694 | 102 | 102 | 165 | 165 |
 | prizes/prize-netball.png | 818 | 820 | 103 | 103 | 102 | 102 |
 | prizes/prize-pink-bunny.png | 820 | 758 | 102 | 102 | 133 | 133 |
-| prizes/prize-pink-mug.png | 820 | 608 | 102 | 102 | 208 | 208 |
+| prizes/prize-pink-mug.png | 820 | 596 | 102 | 102 | 214 | 214 |
 | prizes/prize-pink-pencil.png | 584 | 820 | 220 | 220 | 102 | 102 |
 | prizes/prize-pink-tool-kit.png | 774 | 820 | 125 | 125 | 102 | 102 |
 | prizes/prize-pom-poms.png | 730 | 820 | 147 | 147 | 102 | 102 |

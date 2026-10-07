@@ -57,6 +57,11 @@
     "recentCallsShown": 4,
     "lockMomentMs": 1000
   },
+  "voice": {
+    "rate": 1.05,
+    "pitch": 1.1,
+    "speakMarksLocked": false
+  },
   "pause": {
     "pausesPerGame": 1,
     "resumeCountdownSeconds": 3
@@ -65,7 +70,17 @@
     "defaultLoudnessThreshold": 0.6,
     "holdToCallSeconds": 1,
     "graceSeconds": 2,
-    "tooSlowMessageSeconds": 2
+    "tooSlowMessageSeconds": 2,
+    "dbFloor": -55,
+    "dbCeiling": -10,
+    "testSeconds": 3.5,
+    "calibrationFactor": 0.8,
+    "minThreshold": 0.2,
+    "maxThreshold": 0.85,
+    "minPeakToAccept": 0.3,
+    "ignoreFirstMs": 400,
+    "sustainMs": 60,
+    "levelNote": "The microphone level is turned into 0 to 1 by mapping dbFloor (silence) to dbCeiling (very loud). Test your shout sets the player's level to calibrationFactor times their best shout, between minThreshold and maxThreshold."
   },
   "check": {
     "firstDelayMs": 1800,

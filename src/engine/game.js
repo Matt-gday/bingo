@@ -46,6 +46,10 @@ export class Game {
     this.result = null;
     this.bubble = { text: '', mood: 'talking' };
     this.notice = null; // a short message over the cards, such as "Too slow!"
+    this.pauseState = null; // null, 'paused' or 'resuming' (the 3, 2, 1)
+    this.pauseReason = null; // 'player' or 'auto'
+    this.pausesLeft = this.config.pause.pausesPerGame;
+    this.resumeMs = 0;
   }
 
   on(listener) {
@@ -141,16 +145,28 @@ export class Game {
       };
       this.emit('tooSlow');
     }
-    this.say(callText(this.currentNumber, this.callerLines, this.speed.useNicknames), 'talking');
+    this.say(callText(this.currentNumber, this.callerLines, this.speed.useNicknames), 'talking', 'call');
     this.emit('call', { number: this.currentNumber });
   }
 
-  say(text, mood = 'talking') {
+  // Everything the caller says goes in his bubble, and the voice reads it out if it is on.
+  say(text, mood = 'talking', kind = 'line') {
     this.bubble = { text, mood };
+    this.emit('say', { text, mood, kind });
   }
 
   advance(dtMs) {
     const dt = Math.min(dtMs, MAX_FRAME_MS);
+    if (this.pauseState === 'paused') return;
+    if (this.pauseState === 'resuming') {
+      this.resumeMs -= dt;
+      if (this.resumeMs <= 0) {
+        this.pauseState = null;
+        this.pauseReason = null;
+        this.emit('resume');
+      }
+      return;
+    }
     if (this.notice) {
       this.notice.msLeft -= dt;
       if (this.notice.msLeft <= 0) this.notice = null;
@@ -175,8 +191,43 @@ export class Game {
     if (this.sitOut > 0) this.sitOut -= 1;
     this.phase = 'locking';
     this.lockElapsed = 0;
-    this.say(sayLine(this.callerLines, 'marksLocked', {}), 'talking');
+    this.say(sayLine(this.callerLines, 'marksLocked', {}), 'talking', 'lock');
     this.emit('lock');
+  }
+
+  // ---- Pausing ----
+
+  get canPause() {
+    return !this.pauseState && this.pausesLeft > 0
+      && (this.phase === 'calling' || this.phase === 'locking') && this.screen === 'cards';
+  }
+
+  get resumeCount() {
+    return Math.max(1, Math.ceil(this.resumeMs / 1000));
+  }
+
+  // The player's one pause for the game.
+  pauseByPlayer() {
+    if (!this.canPause) return;
+    this.pausesLeft -= 1;
+    this.pauseState = 'paused';
+    this.pauseReason = 'player';
+    this.emit('pause');
+  }
+
+  // Switching apps or a phone call: the game covers itself without using up the player's pause.
+  autoPause() {
+    if (this.pauseState || this.phase === 'won' || this.phase === 'drawn' || this.screen === 'result') return;
+    if (this.screen === 'shout') this.screen = 'cards';
+    this.pauseState = 'paused';
+    this.pauseReason = 'auto';
+    this.emit('pause');
+  }
+
+  resume() {
+    if (this.pauseState !== 'paused') return;
+    this.pauseState = 'resuming';
+    this.resumeMs = this.config.pause.resumeCountdownSeconds * 1000;
   }
 
   // ---- Marking ----

@@ -21,7 +21,7 @@ function callerBubble(game, el) {
 
 // ---------- Start ----------
 
-export function startScreen({ config, chosenSpeed, onPlay, onChoose }) {
+export function startScreen({ config, chosenSpeed, voice, onPlay, onChoose, onTest }) {
   const speeds = config.speeds
     .map((s) => `<button class="speed${s.id === chosenSpeed ? ' chosen' : ''}" data-speed="${s.id}">
         <span>${esc(s.name)}</span><small>${s.secondsPerCall} seconds a call · ${s.creditMultiplier}x credits</small>
@@ -33,6 +33,10 @@ export function startScreen({ config, chosenSpeed, onPlay, onChoose }) {
       <h1>${esc(config.gameName)}</h1>
       <p class="tagline">Eyes down! Mark your own cards and call bingo when you think you have a line.</p>
       <div class="speeds">${speeds}</div>
+      <div class="extras">
+        <button class="btn btn-ghost" data-test>${icons.mic(18, 2.6)}Test your shout</button>
+        <button class="btn btn-ghost" data-voice></button>
+      </div>
       <div class="spacer"></div>
       <div class="buttons"><button class="btn btn-aqua" data-play>Play</button></div>
     </div>
@@ -44,6 +48,18 @@ export function startScreen({ config, chosenSpeed, onPlay, onChoose }) {
     });
   });
   el.querySelector('[data-play]').addEventListener('click', onPlay);
+  el.querySelector('[data-test]').addEventListener('click', onTest);
+  const voiceButton = el.querySelector('[data-voice]');
+  const showVoice = () => {
+    voiceButton.hidden = !voice.supported;
+    voiceButton.innerHTML = `${voice.on ? icons.speaker() : icons.speakerOff()}Caller's voice: ${voice.on ? 'on' : 'off'}`;
+  };
+  voiceButton.addEventListener('click', () => {
+    voice.toggle();
+    showVoice();
+    if (voice.on) voice.speak('Eyes down, everyone!');
+  });
+  showVoice();
   return { el, update() {} };
 }
 
@@ -127,7 +143,7 @@ function recentPills(game, container, ballEl) {
 
 // ---------- Play ----------
 
-export function playScreen(game) {
+export function playScreen(game, { voice, mic, settings }) {
   const letters = columnLetters(game.config).map((l) => `<div>${l}</div>`).join('');
   const cardMarkup = (cardIndex) => `<div class="card" data-card="${cardIndex}">${game.cards[cardIndex].grid
     .map((row, r) => row.map((n, c) => (n === 0
@@ -139,9 +155,10 @@ export function playScreen(game) {
       <div class="play-top">
         ${ballMarkup()}
         <div class="caller-row">
-          <img class="caller-small" data-caller alt="">
+          <button class="caller-btn" data-mute aria-label="Caller's voice" aria-pressed="true"><img class="caller-small" data-caller alt=""><span class="mute-badge" data-mute-badge hidden>${icons.speakerOff(14)}</span></button>
           <div class="speech"><span data-bubble></span></div>
         </div>
+        <button class="pause-btn" data-pause aria-label="Pause game">${icons.pause()}</button>
       </div>
       <div class="target-row">
         <div class="target-pill">${patternPreview(game.pattern)}<span data-target></span></div>
@@ -183,7 +200,18 @@ export function playScreen(game) {
       game.tapSquare(card, Number(square.dataset.r), Number(square.dataset.c));
     }
   });
-  callButton.addEventListener('click', () => game.openShout());
+  callButton.addEventListener('click', () => {
+    if (!game.canClaim) return;
+    // The microphone has to be asked for inside the tap, or the phone will not allow it.
+    if (!settings.get('holdToCallMode')) mic.start();
+    game.openShout();
+  });
+  const muteButton = el.querySelector('[data-mute]');
+  const muteBadge = el.querySelector('[data-mute-badge]');
+  muteButton.hidden = false;
+  muteButton.addEventListener('click', () => voice.toggle());
+  const pauseButton = el.querySelector('[data-pause]');
+  pauseButton.addEventListener('click', () => game.pauseByPlayer());
 
   targetEl.textContent = `Stage ${game.stageIndex + 1} of ${game.stages.length}: ${game.pattern.name.toLowerCase()}`;
   const dotCount = game.config.falseCall.sitOutCalls;
@@ -196,6 +224,12 @@ export function playScreen(game) {
   function update() {
     updateBall(ballWrap, game);
     bubble.sync();
+    const voiceOn = voice.on;
+    muteButton.setAttribute('aria-pressed', String(voiceOn));
+    muteButton.hidden = !voice.supported;
+    muteBadge.hidden = voiceOn;
+    pauseButton.disabled = !game.canPause;
+    setClass(pauseButton, 'used', game.pausesLeft === 0);
 
     syncRecent();
     const notice = game.notice;
@@ -237,78 +271,6 @@ export function playScreen(game) {
     if (out) {
       [...dotsEl.children].forEach((dot, i) => setClass(dot, 'on', i < game.sitOut));
       setText(whyEl, game.falseCall?.short ?? '');
-    }
-  }
-  return { el, update };
-}
-
-// ---------- Shout (hold to call) ----------
-
-export function shoutScreen(game) {
-  const R = 108;
-  const length = 2 * Math.PI * R;
-  const holdMs = game.config.shout.holdToCallSeconds * 1000;
-  const el = html(`<main class="screen tense">
-    <div class="shout">
-      <div class="top">
-        <div class="badge">Hold to call</div>
-        <p class="hint">Call before the next number is called.</p>
-      </div>
-      <div class="middle">
-        <div class="mic-rings">
-          <svg viewBox="0 0 220 220" fill="none" aria-hidden="true">
-            <circle cx="110" cy="110" r="${R}" stroke="#fff" stroke-opacity="0.18" stroke-width="3"></circle>
-            <circle class="shout-ring" cx="110" cy="110" r="${R}" stroke="#fff" stroke-width="5" stroke-linecap="round" transform="rotate(-90 110 110)"></circle>
-          </svg>
-          <div class="mic-mid"><div class="mic-core">${icons.mic(52, 2)}</div></div>
-        </div>
-        <h1><span class="small">Call</span><span class="big">BINGO!</span></h1>
-      </div>
-      <div class="bottom">
-        <button class="btn btn-white hold-btn" data-hold><div class="fill"></div><span data-hold-label>Hold to call bingo</span></button>
-        <button class="btn btn-ghost" data-back>${icons.back()}Back to my cards</button>
-      </div>
-    </div>
-  </main>`);
-
-  const ring = el.querySelector('.shout-ring');
-  const fill = el.querySelector('.fill');
-  const label = el.querySelector('[data-hold-label]');
-  const holdButton = el.querySelector('[data-hold]');
-  let heldSince = null;
-
-  const begin = (now) => {
-    if (heldSince === null) heldSince = now ?? performance.now();
-  };
-  const release = () => {
-    heldSince = null;
-    fill.style.width = '0';
-    setText(label, 'Hold to call bingo');
-  };
-
-  holdButton.addEventListener('pointerdown', (event) => {
-    holdButton.setPointerCapture?.(event.pointerId);
-    begin();
-  });
-  holdButton.addEventListener('pointerup', release);
-  holdButton.addEventListener('pointercancel', release);
-  holdButton.addEventListener('contextmenu', (event) => event.preventDefault());
-  holdButton.addEventListener('keydown', (event) => {
-    if ((event.key === ' ' || event.key === 'Enter') && !event.repeat) begin();
-  });
-  holdButton.addEventListener('keyup', release);
-  el.querySelector('[data-back]').addEventListener('click', () => game.closeShout());
-
-  function update(_game, now) {
-    setRing(ring, game.claimProgress, length);
-    if (heldSince !== null) {
-      const progress = Math.min(1, (now - heldSince) / holdMs);
-      fill.style.width = `${progress * 100}%`;
-      setText(label, 'Keep holding...');
-      if (progress >= 1) {
-        heldSince = null;
-        game.submitClaim();
-      }
     }
   }
   return { el, update };

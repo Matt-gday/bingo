@@ -484,3 +484,9 @@ Use case: image-edit. Turn the supplied smiling caller artwork into a mobile app
 Built-in image generation.
 
 Use case: precise-object-edit. Rearrange these EXACT FOUR colourful stubby toy screwdrivers into a balanced compact SQUARE PINWHEEL arrangement. Handles occupy the FOUR CORNERS of a square: pink upper left, purple upper right, aqua lower left, yellow lower right. All four metal tips point inward toward the centre, with a small clear gap between tips. Each screwdriver lies diagonally along its corner-to-centre direction; bottom two must be rotated so their handles are below and their tips point UP toward centre. Overall group width and height EQUAL. Preserve the chunky glossy handles, colours, lilac collars, metal tips, cute 3D toy style and upper-left lighting. All four separate and fully visible, no overlap, no extra objects, no text. True transparent background. Centered square composition, generous clear margins. Do not put four upright screwdrivers in two rows.
+
+## Approved decorated mug replacement
+
+Built-in image edit.
+
+Use case: precise-object-edit. Edit the supplied existing game prize. Add a small simple decorative motif to the front of this pink mug: one raised white daisy with a small aqua centre, bold rounded five petals, centered on front. Add a slim lilac accent around the top rim. Keep the mug predominantly pink and preserve its exact chubby shape, heart-shaped handle, fluted body, angle and proportions. No extra objects or text. Decoration should be cute and restrained, readable at thumbnail size. Preserve glossy smooth 3D toy style, soft upper-left highlights, camera perspective and colour palette. True transparent background with no floor or ground shadow. No text numbers logos watermark. Whole subject centered with clear margins, square1024x1024.

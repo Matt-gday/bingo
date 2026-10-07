@@ -278,3 +278,54 @@ test('a bad claim is caught during the check, then the game goes on', () => {
   assert.equal(game.sitOut, 2);
   assert.equal(game.phase, 'calling');
 });
+
+// ---- Pausing ----
+
+test('the player has one pause; the ring stops and carries on after a 3, 2, 1', () => {
+  const game = newGame('steady');
+  runFor(game, 2000);
+  const before = game.callElapsed;
+  game.pauseByPlayer();
+  assert.equal(game.pauseState, 'paused');
+  assert.equal(game.pausesLeft, 0);
+  runFor(game, 30000);
+  assert.equal(game.callElapsed, before, 'no time passes while paused');
+  game.resume();
+  assert.equal(game.pauseState, 'resuming');
+  runFor(game, 1000);
+  assert.equal(game.callElapsed, before, 'no time passes during the countdown either');
+  runFor(game, config.pause.resumeCountdownSeconds * 1000);
+  assert.equal(game.pauseState, null);
+  runFor(game, 500);
+  assert.ok(game.callElapsed > before);
+  game.pauseByPlayer();
+  assert.equal(game.pauseState, null, 'only one pause per game');
+});
+
+test('pausing is not available during a shout or a check', () => {
+  const game = newGame();
+  game.openShout();
+  assert.equal(game.canPause, false);
+});
+
+test('an automatic pause (switching apps) does not use up the pause', () => {
+  const game = newGame();
+  game.openShout();
+  game.autoPause();
+  assert.equal(game.pauseState, 'paused');
+  assert.equal(game.screen, 'cards', 'the shout screen is closed');
+  assert.equal(game.pausesLeft, 1);
+  game.resume();
+  runFor(game, config.pause.resumeCountdownSeconds * 1000 + 100);
+  assert.equal(game.pauseState, null);
+  game.pauseByPlayer();
+  assert.equal(game.pauseState, 'paused');
+});
+
+test('every line the caller says is announced for the voice', () => {
+  const game = new Game({ config, patterns, callerLines, speedId: 'steady', stageIds: ['line'] });
+  const heard = [];
+  game.on((type, data) => type === 'say' && heard.push(data));
+  game.start();
+  assert.ok(heard.some((h) => h.kind === 'call'));
+});
