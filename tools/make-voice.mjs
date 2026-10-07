@@ -1,5 +1,6 @@
 // Makes the caller's recorded voice with ElevenLabs.
 //
+//   npm run voice:tester   writes voice-tester.html, a page to listen to every line
 //   npm run voice:list     writes every line to Docs/voice-lines.txt so you can read them
 //   npm run voice          counts what would be recorded and spends nothing
 //   npm run voice:sample   records just three numbers so you can listen first
@@ -22,6 +23,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { collectLines, allLines, groupOf } from './voice-lines.mjs';
 import { callText, capital, numberInWords } from '../src/engine/caller.js';
+import { buildTesterPage } from './voice-tester-page.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (path) => JSON.parse(readFileSync(join(root, path), 'utf8'));
@@ -67,7 +69,19 @@ if (only && lines.length === 0) {
 // How a line is delivered: its own tag if it has one, else its group's tag, else the default.
 const lineGroups = groupOf(allGroups);
 const tags = voice.audioTags ?? { default: voice.audioTag ?? '' };
-const tagFor = (text) => (option('--tag') !== undefined ? voice.audioTag : (tags.lines?.[text] ?? tags.groups?.[lineGroups.get(text)] ?? tags.default ?? ''));
+const groupLists = allGroups;
+const regularNames = Object.keys(tags.regulars ?? {}).filter((k) => k !== 'note');
+function tagFor(text) {
+  if (option('--tag') !== undefined) return voice.audioTag;
+  const group = lineGroups.get(text);
+  if (tags.lines?.[text]) return tags.lines[text];
+  const named = regularNames.find((name) => text.split(/[^A-Za-z']+/).includes(name)); // whole words only
+  if (named && group === 'regulars win' && tags.regulars[named].win) return tags.regulars[named].win;
+  if (named && group === 'regulars told off' && tags.regulars[named].toldOff) return tags.regulars[named].toldOff;
+  const entry = tags.groups?.[group];
+  if (Array.isArray(entry)) return entry[(groupLists[group]?.indexOf(text) ?? 0) % entry.length]; // a pool: lines take turns
+  return entry ?? tags.default ?? '';
+}
 
 // Nickname calls get a second tag after the number, so the number stays steady and only the nickname has a mood.
 const nicknameNumber = new Map((allGroups['numbers with nicknames'] ?? []).map((text, i) => [text, i + 1]));
@@ -102,6 +116,45 @@ const fingerprint = (text) => createHash('sha1')
 
 const todo = lines.filter((text) => force || manifest.hashes[text] !== fingerprint(text) || !existsSync(join(outDir, manifest.clips[text] ?? '')));
 const characters = (list) => list.reduce((sum, text) => sum + text.length, 0);
+
+if (args.includes('--tester')) {
+  // Writes voice-tester.html: every line, grouped by theme, with a play button. Spends nothing.
+  const themes = [
+    ['numbers with nicknames', 'Number calls with nicknames', 'The sentence calls: the number, then the nickname. Used on Relaxed and Steady.'],
+    ['plain numbers', 'Plain numbers', 'Just the number. Used on Quick.'],
+    ['numbers read in the card check', 'Numbers in the card check', 'Said slowly, one at a time, when the caller checks a bingo claim.'],
+    ['false calls', 'False calls', 'When a claim fails. The tag changes from line to line so they do not all sound the same.'],
+    ['wins', 'Wins', 'When the player wins a stage.'],
+    ['stage opens', 'A new stage starts', 'Announcing what the next target is.'],
+    ['regulars win', 'The regulars win', 'The caller commentating on a regular who has won. Each regular gets their own attitude.'],
+    ['regulars told off', 'The regulars told off', 'When a regular makes a false call.'],
+  ];
+  const known = new Set(themes.map(([g]) => g));
+  const rowsFor = (list) => list.map((text) => {
+    const file = manifest.clips[text];
+    return { text, file: file && existsSync(join(outDir, file)) ? `${file}` : null, tag: sentText(text) };
+  });
+  const sections = themes.filter(([g]) => groups[g]).map(([g, title, blurb]) => ({ id: g.replace(/\W+/g, '-'), title, blurb, rows: rowsFor(groups[g]) }));
+  const others = Object.keys(groups).filter((g) => !known.has(g)).flatMap((g) => groups[g]);
+  if (others.length) sections.push({ id: 'other', title: 'Other lines', blurb: 'The start of the game, marks locked, too slow and the pause.', rows: rowsFor(others) });
+  const html = buildTesterPage({ title: 'Caller voice tester', sections, audioFolder: 'public/audio/caller/' });
+  writeFileSync(join(root, 'voice-tester.html'), html);
+  const total = sections.reduce((n, sec) => n + sec.rows.length, 0);
+  const ready = sections.reduce((n, sec) => n + sec.rows.filter((r) => r.file).length, 0);
+  console.log(`Wrote voice-tester.html with ${total} lines (${ready} recorded).`);
+  process.exit(0);
+}
+
+if (args.includes('--explain')) {
+  // Shows exactly what would be sent to ElevenLabs for a few lines in each group. Spends nothing.
+  for (const [group, list] of Object.entries(groups)) {
+    console.log(`
+== ${group} ==`);
+    const picks = group.startsWith('regulars') ? list.filter((_, i) => i % 3 === 0).slice(0, 6) : list.slice(0, 4);
+    for (const text of picks) console.log(`  ${sentText(text)}`);
+  }
+  process.exit(0);
+}
 
 if (args.includes('--list')) {
   const text = Object.entries(groups)
@@ -147,6 +200,25 @@ const queue = wantsSample ? sampleTexts.filter((t) => lines.includes(t)) : todo;
 mkdirSync(outDir, { recursive: true });
 let made = 0;
 
+// Windows sometimes refuses a write for a moment (another program is looking at the file), so try again,
+// and if it still will not save, carry on and try again with the next batch instead of stopping.
+async function saveManifest({ final = false } = {}) {
+  for (let attempt = 1; attempt <= 12; attempt++) {
+    try {
+      writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+      return true;
+    } catch (error) {
+      await sleep(300 * attempt);
+      if (attempt === 12) {
+        if (final) throw error;
+        console.warn('    (could not save the list just now; it will be saved with the next batch)');
+        return false;
+      }
+    }
+  }
+  return false;
+}
+
 async function record(text) {
   const body = {
     // The tags are only sent to ElevenLabs. The game still looks the clip up by the plain line.
@@ -187,10 +259,11 @@ try {
     manifest.clips[text] = file;
     manifest.hashes[text] = hash;
     manifest.voice = voice.voiceId;
-    writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`); // saved as we go, so a stop loses nothing
     made += 1;
+    if (made % 5 === 0) await saveManifest(); // saved as we go, so a stop loses little
     await sleep(200);
   }
+  await saveManifest({ final: true });
   console.log(`\nDone. ${made} recorded into public/audio/caller/.\n`);
 } catch (error) {
   console.error(`\nStopped after ${made} recorded: ${error.message}`);

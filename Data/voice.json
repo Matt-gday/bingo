@@ -7,15 +7,26 @@
   "style": 0.3,
   "speed": 1,
   "outputFormat": "mp3_44100_64",
-  "audioTagsNote": "Delivery directions for Eleven v3/v4, written in square brackets and put in front of each line when it is sent to ElevenLabs (they are never spoken, and the game still finds clips by the plain line). The tag for a line is: its own entry in 'lines', else its group's entry in 'groups', else 'default'. Combine any words you like, for example [giggling, delighted] or [worried, gentle]. Group names are the ones printed by 'npm run voice'.",
+  "audioTagsNote": "Delivery directions for Eleven v3/v4, written in square brackets and put in front of each line when it is sent to ElevenLabs (they are never spoken, and the game still finds clips by the plain line). The tag for a line is: its own entry in 'lines', else its group's entry in 'groups', else 'default'. Combine any words you like, for example [giggling, delighted] or [worried, gentle]. Group names are the ones printed by 'npm run voice'. A group entry can be a single tag or a list (a pool): with a list, the lines in that group take turns, so neighbouring lines sound different.",
   "audioTags": {
     "default": "[warmly, cheerfully, gently]",
     "groups": {
       "numbers read in the card check": "[clear, deliberate, building suspense]",
-      "stage opens and wins": "[delighted, joyful, laughing]",
-      "false calls": "[sympathetic, kind, wincing, clear]",
-      "regulars told off": "[playful, mock-stern, giggling]",
-      "regulars win": "[excited, cheering]"
+      "false calls": [
+        "[sympathetic, kind, wincing, clear]",
+        "[teasing, sympathetic, playful, clear]",
+        "[consoling, warm, upbeat, clear]",
+        "[oops, good-natured, chuckling, clear]"
+      ],
+      "regulars told off": "[playfully stern, amused, clear]",
+      "regulars win": "[excited, cheering, clear]",
+      "stage opens": "[bright, announcing, clear]",
+      "wins": [
+        "[delighted, joyful, laughing, clear]",
+        "[proud, warm, applauding, clear]",
+        "[amazed, thrilled, clear]",
+        "[cheering, excited, clear]"
+      ]
     },
     "lines": {
       "Eyes down, everyone!": "[excited, cheerful]",
@@ -95,6 +106,29 @@
         "73": "[bubbly, buzzing, delighted]",
         "74": "[sweet, excited]",
         "75": "[triumphant, delighted, proud]"
+      }
+    },
+    "regulars": {
+      "note": "The caller's attitude towards each regular (the regulars themselves never speak). 'win' is used for lines like 'Dot has it!', 'toldOff' for 'Sit down, Dot'. A name not listed here (a ring-in) uses the group tag.",
+      "Dot": {
+        "win": "[impressed, knowing, teasing, clear]",
+        "toldOff": "[playfully stern, knowing, amused, clear]"
+      },
+      "Mabel": {
+        "win": "[warm, admiring, delighted, clear]",
+        "toldOff": "[kind, surprised, amused, clear]"
+      },
+      "Rex": {
+        "win": "[fond, chuckling, delighted, clear]",
+        "toldOff": "[fondly exasperated, chuckling, clear]"
+      },
+      "Pearl": {
+        "win": "[admiring, grand, delighted, clear]",
+        "toldOff": "[mock-stern, amused, clear]"
+      },
+      "Gus": {
+        "win": "[friendly, jolly, cheering, clear]",
+        "toldOff": "[gruffly amused, friendly, clear]"
       }
     }
   }

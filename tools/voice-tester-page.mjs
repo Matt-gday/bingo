@@ -1,0 +1,145 @@
+// Builds voice-tester.html: one page that lists every recorded line with a play button, grouped by theme,
+// so the voice can be checked before it goes in the game. It works by double-clicking the file
+// (no server needed) because the line list is built into the page and the sound files are linked by path.
+
+const esc = (text) => String(text).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+
+export function buildTesterPage({ title, sections, audioFolder }) {
+  const data = sections.map((section) => ({
+    id: section.id,
+    title: section.title,
+    blurb: section.blurb,
+    rows: section.rows.map((row) => ({ text: row.text, file: row.file ?? null, tag: row.tag ?? '' })),
+  }));
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(title)}</title>
+<style>
+  :root { --purple:#5236d6; --deep:#2b1b6b; --aqua:#2ee6d6; --soft:#f1ecff; --edge:#d6ccfa; --magenta:#c92a86; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:16px/1.4 system-ui, "Segoe UI", sans-serif; color:var(--deep); background:#f7f4ff; }
+  header { background:linear-gradient(170deg,#5236d6,#7b45e6 55%,#c257d9); color:#fff; padding:22px 24px 18px; }
+  header h1 { margin:0 0 4px; font-size:28px; }
+  header p { margin:0; opacity:.9; }
+  .bar { position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:10px 24px; background:#fff; border-bottom:2px solid var(--edge); }
+  .bar input[type=search] { flex:1; min-width:200px; padding:9px 14px; font-size:16px; border:2px solid var(--edge); border-radius:999px; }
+  .bar button, .section button.play-all { border:0; border-radius:999px; padding:9px 16px; font-size:15px; font-weight:700; cursor:pointer; background:var(--aqua); color:#1a1446; }
+  .bar button.stop { background:var(--magenta); color:#fff; }
+  .bar label { font-size:14px; display:flex; gap:6px; align-items:center; }
+  .now { font-size:14px; color:var(--purple); min-width:160px; }
+  main { max-width:1000px; margin:0 auto; padding:16px 24px 80px; }
+  nav { display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 4px; }
+  nav a { text-decoration:none; background:var(--soft); color:var(--deep); padding:6px 12px; border-radius:999px; font-size:14px; font-weight:600; }
+  section.section { margin-top:22px; background:#fff; border:2px solid var(--edge); border-radius:18px; overflow:hidden; }
+  .section > summary { list-style:none; cursor:pointer; padding:14px 18px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; background:var(--soft); }
+  .section > summary h2 { margin:0; font-size:20px; flex:1 1 auto; }
+  .count { font-size:13px; font-weight:700; color:var(--purple); background:#fff; border-radius:999px; padding:2px 10px; }
+  .blurb { padding:10px 18px 0; margin:0; color:#5b4a9e; font-size:14px; }
+  table { width:100%; border-collapse:collapse; }
+  td { padding:7px 14px; border-top:1px solid var(--soft); vertical-align:middle; }
+  td.btn { width:54px; }
+  td.line { font-weight:600; }
+  td.tag { font-size:12px; color:#7c6cc4; width:34%; }
+  .hide-tags td.tag, .hide-tags th.tag { display:none; }
+  button.p { width:38px; height:38px; border:0; border-radius:50%; background:var(--purple); color:#fff; font-size:15px; cursor:pointer; }
+  button.p:disabled { background:#cfc8ee; cursor:not-allowed; }
+  tr.playing td { background:#e8fffc; }
+  tr.playing button.p { background:var(--magenta); }
+  tr.missing td.line { color:#a39bc9; }
+  tr.hidden { display:none; }
+  .none { padding:14px 18px; color:#7c6cc4; }
+  @media (max-width:640px) { td.tag { display:none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>${esc(title)}</h1>
+  <p>Click a ▶ to hear a line. Lines are grouped by theme. The small text shows the delivery tag that was used.</p>
+</header>
+<div class="bar">
+  <input type="search" id="q" placeholder="Search a line, a number or a name...">
+  <label><input type="checkbox" id="auto"> keep going to the next line</label>
+  <label><input type="checkbox" id="tags" checked> show tags</label>
+  <button class="stop" id="stop">■ Stop</button>
+  <span class="now" id="now"></span>
+</div>
+<main>
+  <nav id="jump"></nav>
+  <div id="sections"></div>
+</main>
+<script>
+const FOLDER = ${JSON.stringify(audioFolder)};
+const DATA = ${JSON.stringify(data).replace(/</g, '\\u003c')};
+
+const audio = new Audio();
+let playing = null;      // the row being played
+let queue = [];          // rows still to play when "play all" or "keep going" is on
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
+const rowsAll = [];
+
+function stopAll() {
+  audio.pause(); queue = [];
+  if (playing) playing.classList.remove('playing');
+  playing = null; document.getElementById('now').textContent = '';
+}
+
+function playRow(tr, rest) {
+  if (!tr.dataset.file) return;
+  if (playing) playing.classList.remove('playing');
+  playing = tr; tr.classList.add('playing');
+  if (rest) queue = rest;
+  document.getElementById('now').textContent = tr.dataset.text;
+  audio.src = FOLDER + tr.dataset.file;
+  audio.play().catch(() => {});
+}
+
+function visibleRowsAfter(tr) {
+  const list = rowsAll.filter((r) => !r.classList.contains('hidden') && r.dataset.file);
+  const i = list.indexOf(tr);
+  return i < 0 ? [] : list.slice(i + 1);
+}
+
+audio.addEventListener('ended', () => {
+  if (playing) playing.classList.remove('playing');
+  const next = queue.shift();
+  if (next) playRow(next);
+  else { playing = null; document.getElementById('now').textContent = ''; }
+});
+
+const sectionsEl = document.getElementById('sections');
+const jump = document.getElementById('jump');
+for (const s of DATA) {
+  const det = el('details', 'section'); det.id = s.id; det.open = true; det.className = 'section';
+  const sum = el('summary'); sum.append(el('h2', '', s.title), el('span', 'count', s.rows.length + ' lines'));
+  const all = el('button', 'play-all', '▶ Play all'); all.className = 'play-all';
+  all.addEventListener('click', (e) => { e.preventDefault(); const rs = rowsAll.filter((r) => r.dataset.section === s.id && !r.classList.contains('hidden') && r.dataset.file); if (rs.length) playRow(rs[0], rs.slice(1)); });
+  sum.append(all); det.append(sum);
+  if (s.blurb) det.append(el('p', 'blurb', s.blurb));
+  const table = el('table'); const tbody = el('tbody');
+  for (const row of s.rows) {
+    const tr = el('tr'); tr.dataset.section = s.id; tr.dataset.text = row.text; if (row.file) tr.dataset.file = row.file; else tr.classList.add('missing');
+    const b = el('td', 'btn'); const btn = el('button', 'p', '▶'); btn.className = 'p'; btn.disabled = !row.file; btn.setAttribute('aria-label', 'Play: ' + row.text);
+    btn.addEventListener('click', () => { if (playing === tr && !audio.paused) { stopAll(); return; } playRow(tr, document.getElementById('auto').checked ? visibleRowsAfter(tr) : []); });
+    b.append(btn); tr.append(b, el('td', 'line', row.text + (row.file ? '' : '   (not recorded yet)')), el('td', 'tag', row.tag));
+    tbody.append(tr); rowsAll.push(tr);
+  }
+  table.append(tbody); det.append(table); sectionsEl.append(det);
+  const a = el('a', '', s.title); a.href = '#' + s.id; jump.append(a);
+}
+
+document.getElementById('stop').addEventListener('click', stopAll);
+document.getElementById('tags').addEventListener('change', (e) => document.body.classList.toggle('hide-tags', !e.target.checked));
+document.getElementById('q').addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  for (const r of rowsAll) r.classList.toggle('hidden', q !== '' && !r.dataset.text.toLowerCase().includes(q));
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') stopAll(); });
+</script>
+</body>
+</html>
+`;
+}
