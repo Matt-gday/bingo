@@ -21,7 +21,7 @@ function callerBubble(game, el) {
 
 // ---------- Start ----------
 
-export function startScreen({ config, chosenSpeed, voice, onPlay, onChoose, onTest }) {
+export function startScreen({ config, chosenSpeed, voice, settings, sfx, music, haptics, onPlay, onChoose, onTest }) {
   const speeds = config.speeds
     .map((s) => `<button class="speed${s.id === chosenSpeed ? ' chosen' : ''}" data-speed="${s.id}">
         <span>${esc(s.name)}</span><small>${s.secondsPerCall} seconds a call · ${s.creditMultiplier}x credits</small>
@@ -36,6 +36,9 @@ export function startScreen({ config, chosenSpeed, voice, onPlay, onChoose, onTe
       <div class="extras">
         <button class="btn btn-ghost" data-test>${icons.mic(18, 2.6)}Test your shout</button>
         <button class="btn btn-ghost" data-voice></button>
+        <button class="btn btn-ghost" data-sfx></button>
+        <button class="btn btn-ghost" data-music></button>
+        <button class="btn btn-ghost" data-buzz></button>
         <button class="btn btn-ghost" data-test-voice>Test caller</button>
       </div>
       <div class="spacer"></div>
@@ -68,6 +71,23 @@ export function startScreen({ config, chosenSpeed, voice, onPlay, onChoose, onTe
     showVoice();
     voice.speak('Eyes down, everyone! Can you hear me?');
   });
+  // Sound effects, music and buzz: each is a simple on/off switch kept on this device.
+  const switches = [
+    ['[data-sfx]', 'sfxOn', 'Sounds', () => sfx.play('mark-pop')],
+    ['[data-music]', 'musicOn', 'Music', () => music.sync()],
+    ['[data-buzz]', 'hapticsOn', 'Buzz', () => haptics.buzz(30)],
+  ];
+  for (const [selector, key, label, after] of switches) {
+    const button = el.querySelector(selector);
+    const showState = () => { button.textContent = `${label}: ${settings.get(key) ? 'on' : 'off'}`; };
+    if (key === 'hapticsOn') button.hidden = !haptics.supported;
+    button.addEventListener('click', () => {
+      settings.set(key, !settings.get(key));
+      showState();
+      after();
+    });
+    showState();
+  }
   return { el, update() {} };
 }
 

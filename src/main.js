@@ -9,6 +9,11 @@ import { Game } from './engine/game.js';
 import { createSettings } from './settings.js';
 import { Mic } from './audio/mic.js';
 import { Voice } from './audio/voice.js';
+import { AudioEngine } from './audio/engine.js';
+import { Sfx } from './audio/sfx.js';
+import { Music } from './audio/music.js';
+import { Haptics } from './audio/haptics.js';
+import { attachGameSounds } from './audio/gameSounds.js';
 import {
   startScreen, playScreen, checkingScreen, resultScreen,
 } from './ui/screens.js';
@@ -30,8 +35,39 @@ const STAGES = ['line'];
 
 const settings = createSettings(config);
 const mic = new Mic(config);
-const voice = new Voice(config, settings);
-voice.loadClips(`${import.meta.env.BASE_URL}audio/caller/`);
+const engine = new AudioEngine(); // one audio system shared by the voice, the sound effects and the music
+const voice = new Voice(config, settings, engine);
+const sfx = new Sfx(engine, settings);
+const music = new Music(engine, settings);
+const haptics = new Haptics(settings);
+const audioBase = `${import.meta.env.BASE_URL}audio/`;
+voice.loadClips(`${audioBase}caller/`);
+sfx.loadList(`${audioBase}sfx/`);
+music.loadList(`${audioBase}music/`);
+
+// Phones only allow sound to start from a tap, so the first tap anywhere switches the audio on.
+let audioUnlocked = false;
+function unlockAudio() {
+  if (audioUnlocked || !engine.ensure()) return;
+  audioUnlocked = true;
+  sfx.preload();
+  music.sync();
+}
+for (const type of ['click', 'touchend']) document.addEventListener(type, unlockAudio, { capture: true, passive: true });
+
+// A soft tap sound and a tiny buzz for ordinary buttons (the squares, the ball and the call buttons have their own).
+document.addEventListener('click', (event) => {
+  const button = event.target.closest('button');
+  if (!button || button.disabled || button.classList.contains('sq')) return;
+  if (button.matches('[data-call], [data-hold], [data-mic], [data-mute]')) return;
+  sfx.play('button-tap');
+  haptics.buzz(5);
+});
+
+// Which music belongs with which screen. The music only plays if the player has turned it on.
+const MUSIC_FOR = {
+  start: 'home', test: 'home', play: 'play-loop', shout: 'play-loop', checking: 'play-loop', pause: 'play-loop', result: 'home',
+};
 
 if (!config.speeds.some((s) => s.id === settings.get('speedId'))) settings.set('speedId', config.speeds[0].id);
 
@@ -44,6 +80,7 @@ function show(name, build) {
   current = { name, ...build() };
   root.replaceChildren(current.el);
   window.scrollTo(0, 0);
+  music.play(MUSIC_FOR[name] ?? 'home');
 }
 
 function showStart() {
@@ -53,6 +90,10 @@ function showStart() {
     config,
     chosenSpeed: settings.get('speedId'),
     voice,
+    settings,
+    sfx,
+    music,
+    haptics,
     onChoose: (id) => settings.set('speedId', id),
     onPlay: () => {
       if (settings.get('shoutTested')) startGame();
@@ -85,6 +126,7 @@ function startGame() {
   game = new Game({
     config, patterns, callerLines, speedId: settings.get('speedId'), stageIds: STAGES,
   });
+  attachGameSounds(game, { sfx, haptics, music });
   game.on((type, data) => {
     if (type === 'say') {
       if (starting) return; // start() emits both a greeting and the first number

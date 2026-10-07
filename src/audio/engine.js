@@ -82,12 +82,14 @@ export class AudioEngine {
   }
 
   // Plays a loaded sound. Returns a handle: stop(fadeSeconds) fades it out and stops it.
-  play(buffer, { gain = 1, onended } = {}) {
+  // `rate` plays it faster (higher) or slower (lower); 1 is normal.
+  play(buffer, { gain = 1, rate = 1, onended } = {}) {
     const ctx = this.ctx;
     const source = ctx.createBufferSource();
     const volume = ctx.createGain();
     volume.gain.value = gain;
     source.buffer = buffer;
+    source.playbackRate.value = rate;
     source.connect(volume).connect(ctx.destination);
     let finished = false;
     source.onended = () => {
@@ -106,6 +108,34 @@ export class AudioEngine {
         volume.gain.linearRampToValueAtTime(0, now + fadeSeconds);
         try {
           source.stop(now + fadeSeconds + 0.02);
+        } catch {
+          // Already stopped.
+        }
+      },
+    };
+  }
+
+  // Plays a loaded sound over and over (for music). The handle can change its volume smoothly and fade out.
+  playLoop(buffer, { gain = 0 } = {}) {
+    const ctx = this.ctx;
+    const source = ctx.createBufferSource();
+    const volume = ctx.createGain();
+    volume.gain.value = gain;
+    source.buffer = buffer;
+    source.loop = true;
+    source.connect(volume).connect(ctx.destination);
+    source.start();
+    return {
+      fadeTo(level, seconds = 1) {
+        const now = ctx.currentTime;
+        volume.gain.cancelScheduledValues(now);
+        volume.gain.setValueAtTime(volume.gain.value, now);
+        volume.gain.linearRampToValueAtTime(level, now + seconds);
+      },
+      stop(seconds = 1) {
+        this.fadeTo(0, seconds);
+        try {
+          source.stop(ctx.currentTime + seconds + 0.05);
         } catch {
           // Already stopped.
         }

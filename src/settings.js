@@ -6,6 +6,9 @@ export function createSettings(config) {
   const defaults = {
     speedId: 'steady',
     voiceOn: true,
+    sfxOn: true, // sound effects
+    musicOn: false, // background music, off until the player turns it on
+    hapticsOn: true, // a light buzz on phones that support it
     holdToCallMode: false, // true = always use the hold button and never turn the microphone on
     shoutThreshold: config.shout.defaultLoudnessThreshold,
     shoutTested: false,

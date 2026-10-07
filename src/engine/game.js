@@ -132,7 +132,7 @@ export class Game {
       this.screen = 'result';
       this.result = { outcome: 'drawn' };
       this.say('That was the last ball. No winner tonight!', 'smile');
-      this.emit('end');
+      this.emit('end', { outcome: 'drawn' });
       return;
     }
     this.called.push(this.deck[this.called.length]);
@@ -169,6 +169,9 @@ export class Game {
         this.pauseState = null;
         this.pauseReason = null;
         this.emit('resume');
+      } else if (this.resumeCount !== this.lastCount) {
+        this.lastCount = this.resumeCount;
+        this.emit('countdown', { n: this.lastCount });
       }
       return;
     }
@@ -192,7 +195,10 @@ export class Game {
 
   // The player taps the ball to move on without waiting for the ring.
   skipCall() {
-    if (this.phase === 'calling' && this.screen === 'cards') this.endCall();
+    if (this.phase === 'calling' && this.screen === 'cards') {
+      this.emit('skip');
+      this.endCall();
+    }
   }
 
   endCall() {
@@ -236,6 +242,8 @@ export class Game {
     if (this.pauseState !== 'paused') return;
     this.pauseState = 'resuming';
     this.resumeMs = this.config.pause.resumeCountdownSeconds * 1000;
+    this.lastCount = this.resumeCount;
+    this.emit('countdown', { n: this.lastCount });
   }
 
   // ---- Marking ----
@@ -347,18 +355,19 @@ export class Game {
         c.stage = 'concluded';
         this.phase = 'won';
         this.say(sayLine(this.callerLines, 'win', { pattern: this.pattern.spoken }), 'cheer');
-        this.emit('reveal', { ok: true, last: true });
+        this.emit('reveal', { ok: true, last: true, count: c.index + 1 });
       } else {
         c.index += 1;
         c.waitMs = this.revealDelay(c.evaluation, c.index);
         this.sayChecking();
-        this.emit('reveal', { ok: true });
+        this.emit('reveal', { ok: true, count: c.index });
+        if (this.isFinalReveal) this.emit('build'); // the slow, dramatic last number begins
       }
     } else if (c.stage === 'concluded' && c.elapsed >= this.config.check.resultBeatMs) {
       this.screen = 'result';
       this.result = { outcome: 'win', falseCalls: this.falseCalls, calls: this.called.length };
       this.checking = null;
-      this.emit('end');
+      this.emit('end', { outcome: 'win' });
     }
   }
 
