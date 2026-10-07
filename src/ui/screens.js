@@ -1,6 +1,5 @@
 import { esc, html, setText, setClass, setRing, updateBall, ballMarkup, icons, callerImages, patternPreview, confetti } from './helpers.js';
 import { columnLetters } from '../engine/cards.js';
-import appIcon from '../../Images/logo/app-icon.png';
 
 // Each screen function returns { el, update(game, now) }. update runs every frame
 // and only changes the page when something really changed.
@@ -30,7 +29,7 @@ export function startScreen({ config, chosenSpeed, onPlay, onChoose }) {
     .join('');
   const el = html(`<main class="screen">
     <div class="start">
-      <img class="logo" src="${appIcon}" alt="">
+      <img class="start-caller" src="${callerImages.smile}" alt="">
       <h1>${esc(config.gameName)}</h1>
       <p class="tagline">Eyes down! Mark your own cards and call bingo when you think you have a line.</p>
       <div class="speeds">${speeds}</div>
