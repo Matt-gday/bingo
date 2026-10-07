@@ -29,7 +29,7 @@ export function startScreen({ config, chosenSpeed, onPlay, onChoose }) {
     .join('');
   const el = html(`<main class="screen">
     <div class="start">
-      <img class="start-caller" src="${callerImages.smile}" alt="">
+      <img class="start-caller" src="${callerImages.cheer}" alt="">
       <h1>${esc(config.gameName)}</h1>
       <p class="tagline">Eyes down! Mark your own cards and call bingo when you think you have a line.</p>
       <div class="speeds">${speeds}</div>
