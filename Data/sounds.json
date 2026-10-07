@@ -1,5 +1,5 @@
 {
-  "note": "Every sound effect in the game, made with ElevenLabs Sound Effects by tools/make-sounds.mjs. 'prompt' describes the sound, 'seconds' is how long it lasts, 'variants' is how many different takes to make (busy sounds get several so they do not get samey; the game picks one at random), 'volume' is how loud the game plays it from 0 to 1, and 'when' says where it is used. Change a prompt and run the script again to remake just that sound. 'promptInfluence' is how closely ElevenLabs follows the words (0 to 1). 'keepTakes' (optional) uses only the listed takes of a sound, for example [5].",
+  "note": "Every sound effect in the game, made with ElevenLabs Sound Effects by tools/make-sounds.mjs. 'prompt' describes the sound, 'seconds' is how long it lasts, 'variants' is how many different takes to make (busy sounds get several so they do not get samey; the game picks one at random), 'volume' is how loud the game plays it from 0 to 1, and 'when' says where it is used. Change a prompt and run the script again to remake just that sound. 'promptInfluence' is how closely ElevenLabs follows the words (0 to 1). 'keepTakes' (optional) uses only the listed takes of a sound, for example [5]. 'targetPeakDb' is how loud every sound's loudest moment is made when it is levelled (-12 is moderate; the game then multiplies by each sound's volume).",
   "model": "eleven_text_to_sound_v2",
   "outputFormat": "mp3_44100_64",
   "promptInfluence": 0.5,
@@ -36,9 +36,13 @@
       "group": "Marking",
       "prompt": "A tiny cute bubble pop, bright and clean, very short",
       "seconds": 0.5,
-      "variants": 4,
       "volume": 0.8,
-      "when": "A mark is placed on a square."
+      "when": "A mark is placed on a square.",
+      "keepTakes": [
+        1,
+        2,
+        4
+      ]
     },
     {
       "id": "mark-undo",
@@ -48,15 +52,6 @@
       "variants": 3,
       "volume": 0.6,
       "when": "A mark is taken back or moved."
-    },
-    {
-      "id": "lock-thud",
-      "group": "Marking",
-      "prompt": "A low, soft, rounded thud, like a heavy rubber stamp or a wooden block landing gently on a thick cushion, deep and warm and muffled with a short weighty body, satisfying and solid, no click, no clack, no high-pitched tones, no metallic ring, not loud",
-      "seconds": 0.7,
-      "variants": 4,
-      "volume": 0.85,
-      "when": "The ring runs out and the marks lock."
     },
     {
       "id": "claim-whoosh",
@@ -70,7 +65,7 @@
     {
       "id": "too-slow",
       "group": "Calling bingo",
-      "prompt": "A short comical boing followed by a little deflating squeak, playful not sad",
+      "prompt": "A short comical soft boing with a tiny deflating squeak, playful and rounded, not harsh, not loud",
       "seconds": 1.2,
       "variants": 1,
       "volume": 0.7,
@@ -81,9 +76,11 @@
       "group": "The check",
       "prompt": "A bright happy ding like a correct-answer chime on a glockenspiel, rounded and warm, short, not harsh, not loud",
       "seconds": 0.7,
-      "variants": 3,
-      "volume": 0.8,
-      "when": "A number in the checked pattern turns out valid."
+      "volume": 0.7,
+      "when": "A number in the checked pattern turns out valid.",
+      "keepTakes": [
+        2
+      ]
     },
     {
       "id": "check-cross",
@@ -97,7 +94,7 @@
     {
       "id": "check-build",
       "group": "The check",
-      "prompt": "A rising tension build with a drum roll swelling louder and louder, then stopping dead, suspenseful and playful",
+      "prompt": "A rising suspense build: a soft low drum roll slowly swelling louder with a rising shimmer, then stopping dead, playful tension, smooth, not scary, not harsh",
       "seconds": 5,
       "variants": 1,
       "volume": 0.8,
@@ -117,7 +114,7 @@
     {
       "id": "false-call",
       "group": "Winning and losing",
-      "prompt": "A gentle comical sad trombone wah-wah wah-waaah, friendly and short, not harsh",
+      "prompt": "A gentle comical sad muted trombone wah-wah wah-waaah, soft and friendly, short, not harsh, not loud",
       "seconds": 2,
       "variants": 2,
       "volume": 0.8,
@@ -126,7 +123,7 @@
     {
       "id": "countdown-beep",
       "group": "Pause",
-      "prompt": "A clean friendly countdown beep, single short tone",
+      "prompt": "A clean soft friendly beep, a single short rounded tone like a marimba note, not harsh, not loud",
       "seconds": 0.5,
       "variants": 1,
       "volume": 0.7,
@@ -135,7 +132,7 @@
     {
       "id": "countdown-go",
       "group": "Pause",
-      "prompt": "A higher bright friendly beep with a tiny sparkle, signalling go, short",
+      "prompt": "A bright cheerful higher marimba note with a tiny sparkle, signalling go, short, rounded, not harsh",
       "seconds": 0.7,
       "variants": 1,
       "volume": 0.8,
@@ -144,7 +141,7 @@
     {
       "id": "pause-on",
       "group": "Pause",
-      "prompt": "A cute soft click with a short descending tone, pausing",
+      "prompt": "A soft rounded tap followed by a short gentle descending two-note blip, cute, not harsh, not loud",
       "seconds": 0.8,
       "variants": 1,
       "volume": 0.7,
@@ -174,7 +171,7 @@
     {
       "id": "gem-chime",
       "group": "Coming in later phases",
-      "prompt": "A sparkling magical gem chime, credits earned, short and bright",
+      "prompt": "A sparkling magical gem chime on a celesta, bright and rounded, short, not harsh, not loud",
       "seconds": 1.2,
       "variants": 2,
       "volume": 0.8,
@@ -183,7 +180,7 @@
     {
       "id": "prize-drop",
       "group": "Coming in later phases",
-      "prompt": "A cute chunky toy dropping onto a wooden table with a springy bounce",
+      "prompt": "A cute chunky toy dropping onto a wooden table with one springy bounce, rounded and soft, not loud",
       "seconds": 1,
       "variants": 3,
       "volume": 0.8,
@@ -192,7 +189,7 @@
     {
       "id": "buy",
       "group": "Coming in later phases",
-      "prompt": "A cheerful cash register cha-ching with a sparkle, short",
+      "prompt": "A cheerful cash register cha-ching with a gentle bell, short, rounded, not harsh, not loud",
       "seconds": 1.5,
       "variants": 1,
       "volume": 0.9,
@@ -201,7 +198,7 @@
     {
       "id": "badge-gold",
       "group": "Coming in later phases",
-      "prompt": "A shimmering golden achievement sparkle with a bright triumphant chime",
+      "prompt": "A shimmering golden achievement chime with rising bright notes and a sparkle, joyful and rounded, not harsh, not loud",
       "seconds": 2,
       "variants": 1,
       "volume": 0.9,
@@ -210,7 +207,7 @@
     {
       "id": "badge-silver",
       "group": "Coming in later phases",
-      "prompt": "A shimmering silver achievement chime, lighter and gentler than gold",
+      "prompt": "A shimmering silver achievement chime with a few light rising notes, lighter and gentler than gold, rounded, not harsh, not loud",
       "seconds": 1.8,
       "variants": 1,
       "volume": 0.9,
@@ -219,7 +216,7 @@
     {
       "id": "sold",
       "group": "Coming in later phases",
-      "prompt": "A rubber stamp thump with a tiny bell ding, short",
+      "prompt": "A rubber stamp thump with a tiny soft bell ding, short and rounded, not loud",
       "seconds": 0.8,
       "variants": 1,
       "volume": 0.8,
@@ -228,7 +225,7 @@
     {
       "id": "ring-close",
       "group": "Coming in later phases",
-      "prompt": "A tiny clock tick with a soft pop, a countdown closing, very short",
+      "prompt": "A tiny soft clock tick with a gentle pop, very short, not harsh, not loud",
       "seconds": 0.6,
       "variants": 1,
       "volume": 0.6,
@@ -237,7 +234,7 @@
     {
       "id": "table-open",
       "group": "Coming in later phases",
-      "prompt": "A bright shop doorbell ding with a small whoosh, welcoming",
+      "prompt": "A bright friendly shop doorbell ding with a small soft whoosh, welcoming, rounded, not harsh, not loud",
       "seconds": 1.2,
       "variants": 1,
       "volume": 0.8,
@@ -255,7 +252,7 @@
     {
       "id": "regular-groan",
       "group": "Coming in later phases",
-      "prompt": "A short sympathetic cartoon aww groan from a small crowd",
+      "prompt": "A short sympathetic cartoon aww from a small friendly crowd, soft, not shouty, not loud",
       "seconds": 1.5,
       "variants": 1,
       "volume": 0.8,
@@ -264,11 +261,12 @@
     {
       "id": "regular-gasp",
       "group": "Coming in later phases",
-      "prompt": "A short comic surprised gasp, oooh, playful",
+      "prompt": "A short playful comic gasp, ooh, soft and friendly, not shrill, not loud",
       "seconds": 1,
       "variants": 1,
       "volume": 0.8,
       "when": "Someone shouts bingo and the others are shocked."
     }
-  ]
+  ],
+  "targetPeakDb": -12
 }

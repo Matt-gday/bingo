@@ -24,7 +24,9 @@
     },
     "mark-pop": {
       "files": [
-        "mark-pop-1-e667e058b9.mp3"
+        "mark-pop-1-e667e058b9.mp3",
+        "mark-pop-2-c68d067664.mp3",
+        "mark-pop-4-08154e7617.mp3"
       ],
       "volume": 0.8
     },
@@ -36,20 +38,33 @@
       ],
       "volume": 0.6
     },
-    "lock-thud": {
+    "claim-whoosh": {
       "files": [
-        "lock-thud-1-f89879c0c4.mp3",
-        "lock-thud-2-2e70dc558b.mp3",
-        "lock-thud-3-62e44817a7.mp3",
-        "lock-thud-4-1d6b52dca0.mp3"
+        "claim-whoosh-1-55d7d6014d.mp3"
       ],
-      "volume": 0.85
+      "volume": 0.7
+    },
+    "too-slow": {
+      "files": [
+        "too-slow-1-65c9483bcb.mp3"
+      ],
+      "volume": 0.7
     },
     "check-tick": {
       "files": [
-        "check-tick-1-60e432c235.mp3",
-        "check-tick-2-35e21ba0a2.mp3",
-        "check-tick-3-b39f671b80.mp3"
+        "check-tick-2-35e21ba0a2.mp3"
+      ],
+      "volume": 0.7
+    },
+    "check-cross": {
+      "files": [
+        "check-cross-1-1f5f2d44ba.mp3"
+      ],
+      "volume": 0.8
+    },
+    "check-build": {
+      "files": [
+        "check-build-1-1fc06c2bdc.mp3"
       ],
       "volume": 0.8
     },
@@ -59,12 +74,112 @@
       ],
       "volume": 0.6
     },
+    "false-call": {
+      "files": [
+        "false-call-1-e111a19203.mp3",
+        "false-call-2-f209ba67ff.mp3"
+      ],
+      "volume": 0.8
+    },
+    "countdown-beep": {
+      "files": [
+        "countdown-beep-1-c68cdf1f14.mp3"
+      ],
+      "volume": 0.7
+    },
+    "countdown-go": {
+      "files": [
+        "countdown-go-1-39d0ab5685.mp3"
+      ],
+      "volume": 0.8
+    },
+    "pause-on": {
+      "files": [
+        "pause-on-1-73af76d030.mp3"
+      ],
+      "volume": 0.7
+    },
     "button-tap": {
       "files": [
         "button-tap-2-f3e9c210ad.mp3",
         "button-tap-3-1874b01db0.mp3"
       ],
       "volume": 0.6
+    },
+    "stage-won": {
+      "files": [
+        "stage-won-1-569e27f925.mp3"
+      ],
+      "volume": 0.6
+    },
+    "gem-chime": {
+      "files": [
+        "gem-chime-1-487ac5859f.mp3",
+        "gem-chime-2-e4aa4b66d9.mp3"
+      ],
+      "volume": 0.8
+    },
+    "prize-drop": {
+      "files": [
+        "prize-drop-1-d3de43f4a8.mp3",
+        "prize-drop-2-8b4bec015d.mp3",
+        "prize-drop-3-8d84a3ca04.mp3"
+      ],
+      "volume": 0.8
+    },
+    "buy": {
+      "files": [
+        "buy-1-7fa4ba129c.mp3"
+      ],
+      "volume": 0.9
+    },
+    "badge-gold": {
+      "files": [
+        "badge-gold-1-df8e60e78b.mp3"
+      ],
+      "volume": 0.9
+    },
+    "badge-silver": {
+      "files": [
+        "badge-silver-1-10d68160e1.mp3"
+      ],
+      "volume": 0.9
+    },
+    "sold": {
+      "files": [
+        "sold-1-fdf57d422a.mp3"
+      ],
+      "volume": 0.8
+    },
+    "ring-close": {
+      "files": [
+        "ring-close-1-8568b3e44d.mp3"
+      ],
+      "volume": 0.6
+    },
+    "table-open": {
+      "files": [
+        "table-open-1-ac7b03c2c3.mp3"
+      ],
+      "volume": 0.8
+    },
+    "regular-cheer": {
+      "files": [
+        "regular-cheer-1-a0e2a11b97.mp3"
+      ],
+      "volume": 0.8
+    },
+    "regular-groan": {
+      "files": [
+        "regular-groan-1-322997dbea.mp3"
+      ],
+      "volume": 0.8
+    },
+    "regular-gasp": {
+      "files": [
+        "regular-gasp-1-4480b8b426.mp3"
+      ],
+      "volume": 0.8
     }
   },
   "hashes": {
@@ -94,6 +209,32 @@
     "button-tap-1": "7281d2f00a",
     "button-tap-2": "f3e9c210ad",
     "button-tap-3": "1874b01db0",
-    "mark-undo-3": "2582b95eb5"
+    "mark-undo-3": "2582b95eb5",
+    "mark-pop-2": "c68d067664",
+    "mark-pop-4": "08154e7617",
+    "claim-whoosh-1": "55d7d6014d",
+    "too-slow-1": "65c9483bcb",
+    "check-cross-1": "1f5f2d44ba",
+    "check-build-1": "1fc06c2bdc",
+    "false-call-1": "e111a19203",
+    "false-call-2": "f209ba67ff",
+    "countdown-beep-1": "c68cdf1f14",
+    "countdown-go-1": "39d0ab5685",
+    "pause-on-1": "73af76d030",
+    "stage-won-1": "569e27f925",
+    "gem-chime-1": "487ac5859f",
+    "gem-chime-2": "e4aa4b66d9",
+    "prize-drop-1": "d3de43f4a8",
+    "prize-drop-2": "8b4bec015d",
+    "prize-drop-3": "8d84a3ca04",
+    "buy-1": "7fa4ba129c",
+    "badge-gold-1": "df8e60e78b",
+    "badge-silver-1": "10d68160e1",
+    "sold-1": "fdf57d422a",
+    "ring-close-1": "8568b3e44d",
+    "table-open-1": "ac7b03c2c3",
+    "regular-cheer-1": "a0e2a11b97",
+    "regular-groan-1": "322997dbea",
+    "regular-gasp-1": "4480b8b426"
   }
 }

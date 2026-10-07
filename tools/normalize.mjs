@@ -16,7 +16,7 @@ vm.runInContext(`${readFileSync(require.resolve('lamejs/lame.all.js'), 'utf8')}
 ;this.lamejs = lamejs;`, sandbox);
 const lamejs = sandbox.lamejs;
 
-export const TARGET_PEAK_DB = -3;
+export const TARGET_PEAK_DB = -12; // loud enough to hear clearly, quiet enough that nothing is harsh. The game's per-sound volume does the rest.
 export const SILENT_BELOW_DB = -45; // a take quieter than this is treated as a failed take, not boosted
 
 export async function analyseMp3(mp3) {
@@ -45,11 +45,11 @@ function encodeMp3(samples, sampleRate, kbps = 64) {
 }
 
 // Returns { buffer, beforeDb, afterDb, silent }. A silent take comes back unchanged with silent: true.
-export async function normalizeMp3(mp3) {
+export async function normalizeMp3(mp3, targetDb = TARGET_PEAK_DB) {
   const { samples, sampleRate, peak, peakDb } = await analyseMp3(mp3);
   if (peakDb < SILENT_BELOW_DB) return { buffer: Buffer.from(mp3), beforeDb: peakDb, afterDb: peakDb, silent: true };
-  const gain = 10 ** (TARGET_PEAK_DB / 20) / peak;
+  const gain = 10 ** (targetDb / 20) / peak;
   const scaled = new Float32Array(samples.length);
   for (let i = 0; i < samples.length; i++) scaled[i] = samples[i] * gain;
-  return { buffer: encodeMp3(scaled, sampleRate), beforeDb: peakDb, afterDb: TARGET_PEAK_DB, silent: false };
+  return { buffer: encodeMp3(scaled, sampleRate), beforeDb: peakDb, afterDb: targetDb, silent: false };
 }

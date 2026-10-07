@@ -78,7 +78,7 @@ if (args.includes('--normalize')) {
   const silent = [];
   for (const take of takes.filter((t) => existsSync(join(outDir, fileFor(t))))) {
     const path = join(outDir, fileFor(take));
-    const result = await normalizeMp3(readFileSync(path));
+    const result = await normalizeMp3(readFileSync(path), data.targetPeakDb);
     if (result.silent) {
       silent.push(take.key);
       continue;
@@ -177,7 +177,7 @@ let made = 0;
 try {
   for (const take of queue) {
     process.stdout.write(`  ${String(made + 1).padStart(3)}/${queue.length}  ${take.key}\n`);
-    const result = await normalizeMp3(await make(take));
+    const result = await normalizeMp3(await make(take), data.targetPeakDb);
     if (result.silent) {
       console.warn(`      (that take came out silent, so it was skipped: ${take.key})`);
       made += 1;
