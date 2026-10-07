@@ -1,6 +1,6 @@
 {
   "note": "Settings for making the caller's recordings with ElevenLabs (see tools/make-voice.mjs). The voice ID is not a secret. The API key is never stored here: it goes in a file called .env.",
-  "voiceId": "",
+  "voiceId": "2Hz9DHqNsF6pwJt0YOtM",
   "modelId": "eleven_multilingual_v2",
   "stability": 0.5,
   "similarityBoost": 0.75,
