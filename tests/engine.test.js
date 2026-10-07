@@ -181,6 +181,11 @@ test('without a claim the next number comes after the grace period', () => {
   runFor(game, ms('steady') + config.shout.graceSeconds * 1000 + 200);
   assert.notEqual(game.currentNumber, first);
   assert.equal(game.screen, 'cards');
+  assert.equal(game.falseCalls, 0, 'too slow is not a false call');
+  assert.equal(game.sittingOut, false);
+  assert.ok(game.notice, 'the player is told they were too slow');
+  runFor(game, config.shout.tooSlowMessageSeconds * 1000 + 100);
+  assert.equal(game.notice, null);
 });
 
 test('one movable mark per call, and it locks when the ring runs out', () => {

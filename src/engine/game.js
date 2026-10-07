@@ -45,6 +45,7 @@ export class Game {
     this.falseCall = null;
     this.result = null;
     this.bubble = { text: '', mood: 'talking' };
+    this.notice = null; // a short message over the cards, such as "Too slow!"
   }
 
   on(listener) {
@@ -131,7 +132,15 @@ export class Game {
     this.called.push(this.deck[this.called.length]);
     this.callElapsed = 0;
     this.phase = 'calling';
-    if (this.screen === 'shout') this.screen = 'cards'; // the next number came before the claim
+    if (this.screen === 'shout') {
+      // The next number came before the claim was made. That is not a false call, just too slow.
+      this.screen = 'cards';
+      this.notice = {
+        text: sayLine(this.callerLines, 'tooSlow', {}),
+        msLeft: this.config.shout.tooSlowMessageSeconds * 1000,
+      };
+      this.emit('tooSlow');
+    }
     this.say(callText(this.currentNumber, this.callerLines, this.speed.useNicknames), 'talking');
     this.emit('call', { number: this.currentNumber });
   }
@@ -142,6 +151,10 @@ export class Game {
 
   advance(dtMs) {
     const dt = Math.min(dtMs, MAX_FRAME_MS);
+    if (this.notice) {
+      this.notice.msLeft -= dt;
+      if (this.notice.msLeft <= 0) this.notice = null;
+    }
     if (this.checking) this.advanceChecking(dt);
     if (this.phase === 'calling') {
       this.callElapsed += dt;
@@ -202,6 +215,7 @@ export class Game {
   openShout() {
     if (!this.canClaim) return;
     this.screen = 'shout';
+    this.notice = null;
     this.emit('shout');
   }
 

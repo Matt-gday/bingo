@@ -149,6 +149,7 @@ export function playScreen(game) {
       </div>
       <div class="letters">${letters}</div>
       ${game.cards.map((_, i) => cardMarkup(i)).join('')}
+      <div class="toast" data-toast hidden></div>
       <div class="play-bottom">
         <button class="btn btn-aqua call-bingo" data-call>${icons.mic()}Call bingo!</button>
         <div class="sit-banner" data-sit hidden>
@@ -168,6 +169,7 @@ export function playScreen(game) {
   const cardEls = [...el.querySelectorAll('.card')];
   const targetEl = el.querySelector('[data-target]');
   const recentEl = el.querySelector('[data-recent]');
+  const toastEl = el.querySelector('[data-toast]');
   const callButton = el.querySelector('[data-call]');
   const sitEl = el.querySelector('[data-sit]');
   const dotsEl = el.querySelector('[data-dots]');
@@ -196,6 +198,9 @@ export function playScreen(game) {
     bubble.sync();
 
     syncRecent();
+    const notice = game.notice;
+    toastEl.hidden = !notice;
+    if (notice) setText(toastEl, notice.text);
 
     const justLocked = game.marks.length !== lastLocked;
     lastLocked = game.marks.length;

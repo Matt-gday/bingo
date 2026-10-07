@@ -64,7 +64,8 @@
   "shout": {
     "defaultLoudnessThreshold": 0.6,
     "holdToCallSeconds": 1,
-    "graceSeconds": 2
+    "graceSeconds": 2,
+    "tooSlowMessageSeconds": 2
   },
   "check": {
     "firstDelayMs": 1800,

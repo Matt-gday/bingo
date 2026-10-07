@@ -81,6 +81,9 @@
       "Now we're playing for {pattern}.",
       "Next up: {pattern}!"
     ],
+    "tooSlow": [
+      "Too slow! The next number is out."
+    ],
     "checking": [
       "Let's have a look at that card."
     ],
