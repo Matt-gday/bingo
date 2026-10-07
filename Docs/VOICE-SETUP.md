@@ -13,17 +13,25 @@ Change "British or Australian" to the accent your family prefers.
 
 ## 2. The test paragraphs
 
-Every line here is a real line from the game, so what you hear in the preview is what you will get.
+Every line here is exactly a line the game will say, so what you hear in the preview is what you will get.
 Use one passage at a time, or paste several together if the preview box allows. Listen for numbers that
 stay clear and consistent, and for a voice that sounds friendly in every mood.
 
 **The calls (the most common thing he says)**
 
-> Kelly's eye, one! Eight, Garden gate! Legs eleven! Thirteen, Unlucky for some! Twenty-two, Two little ducks! Four and seven, forty-seven! Five and nine, fifty-nine. Seventy-seven. Seventy-five, Strive and strive!
+> One, Kelly's eye! Eight, Garden gate! Legs eleven! Thirteen, Unlucky for some! Seventeen, Dancing queen! Twenty-two, Two little ducks! Four and seven, forty-seven! Five and six, fifty-six! Sixty-six, Clickety click! Seventy-three, Queen bee! Seventy-five, Strive and strive!
+
+**Numbers with no nickname, and quick-speed plain numbers**
+
+> Two and eight, twenty-eight! Three oh, thirty! Six and four, sixty-four! Seven and seven, seventy-seven! Eleven! Forty-seven! Seventy-five!
+
+**The card check, reading each number slowly**
+
+> Forty-five... Sixty-two... Twelve... Thirty-eight... Seventy-one...
 
 **The big moments**
 
-> Eyes down, everyone! Here we go. Good luck! Let's have a look at that card. Forty-five... Sixty-two... Twelve... Every number checks out. We have a winner! That's a line. Well played!
+> Eyes down, everyone! Every number checks out. We have a winner! That's a line. Well played! That's two lines. Well played! That's a full house. Well played!
 
 **Sympathy (false calls)**
 
@@ -31,14 +39,11 @@ stay clear and consistent, and for a voice that sounds friendly in every mood.
 
 **The regulars (names and banter)**
 
-> Sit down, Dot, that's not two lines. Rex has it! Well done, Rex. That's a full house for Pearl. No peeking! Your cards are covered.
+> Dot has it! Well done, Dot. That's a line for Mabel. Sit down, Pearl, that's not a line. Rex has it! Well done, Rex. That's a full house for Gus.
 
-**A tricky mix to test the voice**
+**Short reminders**
 
-> Marks locked! Too slow! The next number is out. Dancing queen, seventeen! Thirty. Seventy-three, Queen bee! Eighty-one is not a number we have. Seventy. Sixty-six, Clickety click!
-
-(That last passage includes one made-up sentence to see how the voice handles a flat statement. Skip it if you
-would rather keep to real lines.)
+> Marks locked! Too slow! The next number is out. No peeking! Your cards are covered.
 
 ## 3. Connect it to the game
 
