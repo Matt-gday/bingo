@@ -1,16 +1,19 @@
 // The caller's voice. If a recording of a line exists (see tools/make-voice.mjs) it is played;
 // anything without a recording is spoken with the phone's built-in speech.
 
+import { AudioEngine } from './engine.js';
+
 export class Voice {
-  constructor(config, settings) {
+  constructor(config, settings, engine = new AudioEngine()) {
     this.settings = settings;
+    this.engine = engine;
+    this.handle = null; // the recording that is playing now, so it can be faded out
     this.config = config.voice;
     this.synth = typeof window !== 'undefined' ? window.speechSynthesis : null;
     this.chosen = null;
     this.current = null;
     this.clips = {}; // line of text -> recording file name
     this.clipBase = '';
-    this.player = null;
     this.protecting = false; // a line that must be heard in full (the false call) is playing
     this.synth?.addEventListener?.('voiceschanged', () => {
       this.chosen = null;
@@ -48,23 +51,33 @@ export class Voice {
       .catch(() => {});
   }
 
+  // Fade out whatever recording is playing, so a new line never chops it off abruptly.
+  fadeOut(seconds = (this.config.fadeMs ?? 250) / 1000) {
+    this.handle?.stop(seconds);
+    this.handle = null;
+  }
+
   playClip(file, text) {
-    if (typeof Audio === 'undefined') return false;
+    if (!this.engine.ensure()) return false; // called from a tap, which is what lets the phone play sound
+    const turn = (this.turn = (this.turn ?? 0) + 1);
+    this.fadeOut();
     this.current = null;
     this.synth?.cancel();
-    // One audio element is reused, because phones only let it play after the first tap.
-    this.player ??= new Audio();
-    const turn = (this.turn = (this.turn ?? 0) + 1);
-    this.player.onended = () => {
-      if (turn === this.turn) this.finished();
-    };
-    this.player.src = `${this.clipBase}${file}`;
-    const started = this.player.play();
-    // If the clip is blocked or missing, use the phone's voice. But a line that was simply replaced
-    // by a newer one is "cancelled" by the browser too, and that must not stop the newer line.
-    started?.catch?.(() => {
-      if (turn === this.turn) this.speakWithPhone(text);
-    });
+    this.engine
+      .load(`${this.clipBase}${file}`)
+      .then((buffer) => {
+        if (turn !== this.turn) return; // a newer line has already taken over
+        this.handle = this.engine.play(buffer, {
+          onended: () => {
+            if (turn !== this.turn) return;
+            this.handle = null;
+            this.finished();
+          },
+        });
+      })
+      .catch(() => {
+        if (turn === this.turn) this.speakWithPhone(text); // could not load the recording: use the phone's voice
+      });
     return true;
   }
 
@@ -95,10 +108,14 @@ export class Voice {
 
   speakWithPhone(text) {
     if (!this.supported) return;
-    this.player?.pause();
+    this.fadeOut();
+    this.turn = (this.turn ?? 0) + 1;
     // Leave an idle engine alone. In particular, don't queue and immediately
     // cancel a silent "unlock" utterance before the first real call on iOS.
-    if (this.current || this.synth.speaking || this.synth.pending) this.cancel();
+    if (this.current || this.synth.speaking || this.synth.pending) {
+      this.current = null;
+      this.synth.cancel();
+    }
     if (this.synth.paused) this.synth.resume();
     const utterance = new SpeechSynthesisUtterance(text);
     const voice = this.pickVoice();
@@ -130,8 +147,8 @@ export class Voice {
     clearTimeout(this.protectTimer);
     this.protecting = false;
     this.current = null;
-    this.turn = (this.turn ?? 0) + 1; // a clip that fails after this must not start speaking
-    this.player?.pause();
+    this.turn = (this.turn ?? 0) + 1; // a clip that fails to load after this must not start speaking
+    this.fadeOut(0.1);
     this.synth?.cancel();
   }
 }

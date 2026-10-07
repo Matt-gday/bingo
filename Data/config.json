@@ -59,7 +59,8 @@
   },
   "voice": {
     "rate": 1.05,
-    "pitch": 1.1
+    "pitch": 1.1,
+    "fadeMs": 250
   },
   "pause": {
     "pausesPerGame": 1,
