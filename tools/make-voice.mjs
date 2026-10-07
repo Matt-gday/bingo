@@ -1,5 +1,6 @@
 // Makes the caller's recorded voice with ElevenLabs.
 //
+//   npm run voice:list     writes every line to Docs/voice-lines.txt so you can read them
 //   npm run voice          counts what would be recorded and spends nothing
 //   npm run voice:sample   records just three numbers so you can listen first
 //   npm run voice:make     records everything that is missing
@@ -67,6 +68,15 @@ const fingerprint = (text) => createHash('sha1')
 
 const todo = lines.filter((text) => force || manifest.hashes[text] !== fingerprint(text) || !existsSync(join(outDir, manifest.clips[text] ?? '')));
 const characters = (list) => list.reduce((sum, text) => sum + text.length, 0);
+
+if (args.includes('--list')) {
+  const text = Object.entries(groups)
+    .map(([group, list]) => `== ${group} (${list.length}) ==\n${list.join('\n')}`)
+    .join('\n\n');
+  writeFileSync(join(root, 'Docs/voice-lines.txt'), `${text}\n`);
+  console.log(`Wrote ${lines.length} lines to Docs/voice-lines.txt`);
+  process.exit(0);
+}
 
 console.log('\nCaller recordings\n');
 for (const [group, list] of Object.entries(groups)) console.log(`  ${String(list.length).padStart(4)}  ${group}`);

@@ -10,7 +10,8 @@
     "test": "node --test tests/",
     "voice": "node tools/make-voice.mjs",
     "voice:sample": "node tools/make-voice.mjs --sample",
-    "voice:make": "node tools/make-voice.mjs --make"
+    "voice:make": "node tools/make-voice.mjs --make",
+    "voice:list": "node tools/make-voice.mjs --list"
   },
   "devDependencies": {
     "vite": "^6.4.4"

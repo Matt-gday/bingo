@@ -1,0 +1,497 @@
+== numbers with nicknames (75) ==
+One, Kelly's eye!
+Two, One little duck!
+Three, Cup of tea!
+Four, Knock at the door!
+Five, Man alive!
+Six, Half a dozen!
+Lucky seven!
+Eight, Garden gate!
+Nine, Doctor's orders!
+Ten, Uncle Ben!
+Legs eleven!
+Twelve, One dozen!
+Thirteen, Unlucky for some!
+Fourteen, Valentine's Day!
+Fifteen, Young and keen!
+Sweet sixteen!
+Seventeen, Dancing queen!
+Eighteen, Coming of age!
+Nineteen, Goodbye teens!
+Twenty, One score!
+Twenty-one, Key of the door!
+Twenty-two, Two little ducks!
+Twenty-three, Thee and me!
+Twenty-four, Two dozen!
+Twenty-five, Duck and dive!
+Twenty-six, Pick and mix!
+Twenty-seven, Gateway to heaven!
+Two and eight, twenty-eight!
+Twenty-nine, Rise and shine!
+Three oh, thirty!
+Thirty-one, Get up and run!
+Thirty-two, Buckle my shoe!
+Thirty-three, All the threes!
+Thirty-four, Ask for more!
+Thirty-five, Jump and jive!
+Thirty-six, Three dozen!
+Thirty-seven, More than eleven!
+Thirty-eight, Christmas cake!
+Thirty-nine, Steps!
+Forty, Life begins!
+Forty-one, Time for fun!
+Forty-two, Winnie the Pooh!
+Forty-three, Down on your knees!
+Forty-four, All the fours!
+Forty-five, Halfway there!
+Forty-six, Up to tricks!
+Four and seven, forty-seven!
+Forty-eight, Four dozen!
+Four and nine, forty-nine!
+Fifty, Half a century!
+Fifty-one, Tweak of the thumb!
+Fifty-two, Weeks in a year!
+Fifty-three, Stuck in the tree!
+Fifty-four, Clean the floor!
+Fifty-five, Snakes alive!
+Five and six, fifty-six!
+Fifty-seven, Heinz varieties!
+Fifty-eight, Make them wait!
+Fifty-nine, Brighton line!
+Sixty, Five dozen!
+Sixty-one, Baker's bun!
+Sixty-two, Tickety-boo!
+Sixty-three, Tickle me!
+Six and four, sixty-four!
+Six and five, sixty-five!
+Sixty-six, Clickety click!
+Sixty-seven, Made in heaven!
+Sixty-eight, Saving grace!
+Six and nine, sixty-nine!
+Seventy, Three score and ten!
+Seventy-one, Bang on the drum!
+Seventy-two, Six dozen!
+Seventy-three, Queen bee!
+Seventy-four, Candy store!
+Seventy-five, Strive and strive!
+
+== plain numbers (75) ==
+One!
+Two!
+Three!
+Four!
+Five!
+Six!
+Seven!
+Eight!
+Nine!
+Ten!
+Eleven!
+Twelve!
+Thirteen!
+Fourteen!
+Fifteen!
+Sixteen!
+Seventeen!
+Eighteen!
+Nineteen!
+Twenty!
+Twenty-one!
+Twenty-two!
+Twenty-three!
+Twenty-four!
+Twenty-five!
+Twenty-six!
+Twenty-seven!
+Twenty-eight!
+Twenty-nine!
+Thirty!
+Thirty-one!
+Thirty-two!
+Thirty-three!
+Thirty-four!
+Thirty-five!
+Thirty-six!
+Thirty-seven!
+Thirty-eight!
+Thirty-nine!
+Forty!
+Forty-one!
+Forty-two!
+Forty-three!
+Forty-four!
+Forty-five!
+Forty-six!
+Forty-seven!
+Forty-eight!
+Forty-nine!
+Fifty!
+Fifty-one!
+Fifty-two!
+Fifty-three!
+Fifty-four!
+Fifty-five!
+Fifty-six!
+Fifty-seven!
+Fifty-eight!
+Fifty-nine!
+Sixty!
+Sixty-one!
+Sixty-two!
+Sixty-three!
+Sixty-four!
+Sixty-five!
+Sixty-six!
+Sixty-seven!
+Sixty-eight!
+Sixty-nine!
+Seventy!
+Seventy-one!
+Seventy-two!
+Seventy-three!
+Seventy-four!
+Seventy-five!
+
+== numbers read in the card check (75) ==
+One...
+Two...
+Three...
+Four...
+Five...
+Six...
+Seven...
+Eight...
+Nine...
+Ten...
+Eleven...
+Twelve...
+Thirteen...
+Fourteen...
+Fifteen...
+Sixteen...
+Seventeen...
+Eighteen...
+Nineteen...
+Twenty...
+Twenty-one...
+Twenty-two...
+Twenty-three...
+Twenty-four...
+Twenty-five...
+Twenty-six...
+Twenty-seven...
+Twenty-eight...
+Twenty-nine...
+Thirty...
+Thirty-one...
+Thirty-two...
+Thirty-three...
+Thirty-four...
+Thirty-five...
+Thirty-six...
+Thirty-seven...
+Thirty-eight...
+Thirty-nine...
+Forty...
+Forty-one...
+Forty-two...
+Forty-three...
+Forty-four...
+Forty-five...
+Forty-six...
+Forty-seven...
+Forty-eight...
+Forty-nine...
+Fifty...
+Fifty-one...
+Fifty-two...
+Fifty-three...
+Fifty-four...
+Fifty-five...
+Fifty-six...
+Fifty-seven...
+Fifty-eight...
+Fifty-nine...
+Sixty...
+Sixty-one...
+Sixty-two...
+Sixty-three...
+Sixty-four...
+Sixty-five...
+Sixty-six...
+Sixty-seven...
+Sixty-eight...
+Sixty-nine...
+Seventy...
+Seventy-one...
+Seventy-two...
+Seventy-three...
+Seventy-four...
+Seventy-five...
+
+== fixed lines (5) ==
+Eyes down, everyone!
+Here we go. Good luck!
+Marks locked!
+Too slow! The next number is out.
+No peeking! Your cards are covered.
+
+== lines about the pattern (13) ==
+Now we're playing for a line.
+Next up: a line!
+Every number checks out. We have a winner!
+That's a line. Well played!
+I can't see a line there, I'm afraid.
+Now we're playing for two lines.
+Next up: two lines!
+That's two lines. Well played!
+I can't see two lines there, I'm afraid.
+Now we're playing for a full house.
+Next up: a full house!
+That's a full house. Well played!
+I can't see a full house there, I'm afraid.
+
+== lines about the regulars (91) ==
+Sit down, Dot, that's not a line.
+Dot has it! Well done, Dot.
+That's a line for Dot.
+Sit down, Mabel, that's not a line.
+Mabel has it! Well done, Mabel.
+That's a line for Mabel.
+Sit down, Rex, that's not a line.
+Rex has it! Well done, Rex.
+That's a line for Rex.
+Sit down, Pearl, that's not a line.
+Pearl has it! Well done, Pearl.
+That's a line for Pearl.
+Sit down, Gus, that's not a line.
+Gus has it! Well done, Gus.
+That's a line for Gus.
+Sit down, Jerry, that's not a line.
+Jerry has it! Well done, Jerry.
+That's a line for Jerry.
+Sit down, Noreen, that's not a line.
+Noreen has it! Well done, Noreen.
+That's a line for Noreen.
+Sit down, Kev, that's not a line.
+Kev has it! Well done, Kev.
+That's a line for Kev.
+Sit down, Lorraine, that's not a line.
+Lorraine has it! Well done, Lorraine.
+That's a line for Lorraine.
+Sit down, Trev, that's not a line.
+Trev has it! Well done, Trev.
+That's a line for Trev.
+Sit down, Deb, that's not a line.
+Deb has it! Well done, Deb.
+That's a line for Deb.
+Sit down, Bruce, that's not a line.
+Bruce has it! Well done, Bruce.
+That's a line for Bruce.
+Sit down, Joyce, that's not a line.
+Joyce has it! Well done, Joyce.
+That's a line for Joyce.
+Sit down, Dot, that's not two lines.
+That's two lines for Dot.
+Sit down, Mabel, that's not two lines.
+That's two lines for Mabel.
+Sit down, Rex, that's not two lines.
+That's two lines for Rex.
+Sit down, Pearl, that's not two lines.
+That's two lines for Pearl.
+Sit down, Gus, that's not two lines.
+That's two lines for Gus.
+Sit down, Jerry, that's not two lines.
+That's two lines for Jerry.
+Sit down, Noreen, that's not two lines.
+That's two lines for Noreen.
+Sit down, Kev, that's not two lines.
+That's two lines for Kev.
+Sit down, Lorraine, that's not two lines.
+That's two lines for Lorraine.
+Sit down, Trev, that's not two lines.
+That's two lines for Trev.
+Sit down, Deb, that's not two lines.
+That's two lines for Deb.
+Sit down, Bruce, that's not two lines.
+That's two lines for Bruce.
+Sit down, Joyce, that's not two lines.
+That's two lines for Joyce.
+Sit down, Dot, that's not a full house.
+That's a full house for Dot.
+Sit down, Mabel, that's not a full house.
+That's a full house for Mabel.
+Sit down, Rex, that's not a full house.
+That's a full house for Rex.
+Sit down, Pearl, that's not a full house.
+That's a full house for Pearl.
+Sit down, Gus, that's not a full house.
+That's a full house for Gus.
+Sit down, Jerry, that's not a full house.
+That's a full house for Jerry.
+Sit down, Noreen, that's not a full house.
+That's a full house for Noreen.
+Sit down, Kev, that's not a full house.
+That's a full house for Kev.
+Sit down, Lorraine, that's not a full house.
+That's a full house for Lorraine.
+Sit down, Trev, that's not a full house.
+That's a full house for Trev.
+Sit down, Deb, that's not a full house.
+That's a full house for Deb.
+Sit down, Bruce, that's not a full house.
+That's a full house for Bruce.
+Sit down, Joyce, that's not a full house.
+That's a full house for Joyce.
+
+== false calls that name a number (150) ==
+Ooh, unlucky. I haven't called one yet.
+Not quite. one is already on your other card.
+Ooh, unlucky. I haven't called two yet.
+Not quite. two is already on your other card.
+Ooh, unlucky. I haven't called three yet.
+Not quite. three is already on your other card.
+Ooh, unlucky. I haven't called four yet.
+Not quite. four is already on your other card.
+Ooh, unlucky. I haven't called five yet.
+Not quite. five is already on your other card.
+Ooh, unlucky. I haven't called six yet.
+Not quite. six is already on your other card.
+Ooh, unlucky. I haven't called seven yet.
+Not quite. seven is already on your other card.
+Ooh, unlucky. I haven't called eight yet.
+Not quite. eight is already on your other card.
+Ooh, unlucky. I haven't called nine yet.
+Not quite. nine is already on your other card.
+Ooh, unlucky. I haven't called ten yet.
+Not quite. ten is already on your other card.
+Ooh, unlucky. I haven't called eleven yet.
+Not quite. eleven is already on your other card.
+Ooh, unlucky. I haven't called twelve yet.
+Not quite. twelve is already on your other card.
+Ooh, unlucky. I haven't called thirteen yet.
+Not quite. thirteen is already on your other card.
+Ooh, unlucky. I haven't called fourteen yet.
+Not quite. fourteen is already on your other card.
+Ooh, unlucky. I haven't called fifteen yet.
+Not quite. fifteen is already on your other card.
+Ooh, unlucky. I haven't called sixteen yet.
+Not quite. sixteen is already on your other card.
+Ooh, unlucky. I haven't called seventeen yet.
+Not quite. seventeen is already on your other card.
+Ooh, unlucky. I haven't called eighteen yet.
+Not quite. eighteen is already on your other card.
+Ooh, unlucky. I haven't called nineteen yet.
+Not quite. nineteen is already on your other card.
+Ooh, unlucky. I haven't called twenty yet.
+Not quite. twenty is already on your other card.
+Ooh, unlucky. I haven't called twenty-one yet.
+Not quite. twenty-one is already on your other card.
+Ooh, unlucky. I haven't called twenty-two yet.
+Not quite. twenty-two is already on your other card.
+Ooh, unlucky. I haven't called twenty-three yet.
+Not quite. twenty-three is already on your other card.
+Ooh, unlucky. I haven't called twenty-four yet.
+Not quite. twenty-four is already on your other card.
+Ooh, unlucky. I haven't called twenty-five yet.
+Not quite. twenty-five is already on your other card.
+Ooh, unlucky. I haven't called twenty-six yet.
+Not quite. twenty-six is already on your other card.
+Ooh, unlucky. I haven't called twenty-seven yet.
+Not quite. twenty-seven is already on your other card.
+Ooh, unlucky. I haven't called twenty-eight yet.
+Not quite. twenty-eight is already on your other card.
+Ooh, unlucky. I haven't called twenty-nine yet.
+Not quite. twenty-nine is already on your other card.
+Ooh, unlucky. I haven't called thirty yet.
+Not quite. thirty is already on your other card.
+Ooh, unlucky. I haven't called thirty-one yet.
+Not quite. thirty-one is already on your other card.
+Ooh, unlucky. I haven't called thirty-two yet.
+Not quite. thirty-two is already on your other card.
+Ooh, unlucky. I haven't called thirty-three yet.
+Not quite. thirty-three is already on your other card.
+Ooh, unlucky. I haven't called thirty-four yet.
+Not quite. thirty-four is already on your other card.
+Ooh, unlucky. I haven't called thirty-five yet.
+Not quite. thirty-five is already on your other card.
+Ooh, unlucky. I haven't called thirty-six yet.
+Not quite. thirty-six is already on your other card.
+Ooh, unlucky. I haven't called thirty-seven yet.
+Not quite. thirty-seven is already on your other card.
+Ooh, unlucky. I haven't called thirty-eight yet.
+Not quite. thirty-eight is already on your other card.
+Ooh, unlucky. I haven't called thirty-nine yet.
+Not quite. thirty-nine is already on your other card.
+Ooh, unlucky. I haven't called forty yet.
+Not quite. forty is already on your other card.
+Ooh, unlucky. I haven't called forty-one yet.
+Not quite. forty-one is already on your other card.
+Ooh, unlucky. I haven't called forty-two yet.
+Not quite. forty-two is already on your other card.
+Ooh, unlucky. I haven't called forty-three yet.
+Not quite. forty-three is already on your other card.
+Ooh, unlucky. I haven't called forty-four yet.
+Not quite. forty-four is already on your other card.
+Ooh, unlucky. I haven't called forty-five yet.
+Not quite. forty-five is already on your other card.
+Ooh, unlucky. I haven't called forty-six yet.
+Not quite. forty-six is already on your other card.
+Ooh, unlucky. I haven't called forty-seven yet.
+Not quite. forty-seven is already on your other card.
+Ooh, unlucky. I haven't called forty-eight yet.
+Not quite. forty-eight is already on your other card.
+Ooh, unlucky. I haven't called forty-nine yet.
+Not quite. forty-nine is already on your other card.
+Ooh, unlucky. I haven't called fifty yet.
+Not quite. fifty is already on your other card.
+Ooh, unlucky. I haven't called fifty-one yet.
+Not quite. fifty-one is already on your other card.
+Ooh, unlucky. I haven't called fifty-two yet.
+Not quite. fifty-two is already on your other card.
+Ooh, unlucky. I haven't called fifty-three yet.
+Not quite. fifty-three is already on your other card.
+Ooh, unlucky. I haven't called fifty-four yet.
+Not quite. fifty-four is already on your other card.
+Ooh, unlucky. I haven't called fifty-five yet.
+Not quite. fifty-five is already on your other card.
+Ooh, unlucky. I haven't called fifty-six yet.
+Not quite. fifty-six is already on your other card.
+Ooh, unlucky. I haven't called fifty-seven yet.
+Not quite. fifty-seven is already on your other card.
+Ooh, unlucky. I haven't called fifty-eight yet.
+Not quite. fifty-eight is already on your other card.
+Ooh, unlucky. I haven't called fifty-nine yet.
+Not quite. fifty-nine is already on your other card.
+Ooh, unlucky. I haven't called sixty yet.
+Not quite. sixty is already on your other card.
+Ooh, unlucky. I haven't called sixty-one yet.
+Not quite. sixty-one is already on your other card.
+Ooh, unlucky. I haven't called sixty-two yet.
+Not quite. sixty-two is already on your other card.
+Ooh, unlucky. I haven't called sixty-three yet.
+Not quite. sixty-three is already on your other card.
+Ooh, unlucky. I haven't called sixty-four yet.
+Not quite. sixty-four is already on your other card.
+Ooh, unlucky. I haven't called sixty-five yet.
+Not quite. sixty-five is already on your other card.
+Ooh, unlucky. I haven't called sixty-six yet.
+Not quite. sixty-six is already on your other card.
+Ooh, unlucky. I haven't called sixty-seven yet.
+Not quite. sixty-seven is already on your other card.
+Ooh, unlucky. I haven't called sixty-eight yet.
+Not quite. sixty-eight is already on your other card.
+Ooh, unlucky. I haven't called sixty-nine yet.
+Not quite. sixty-nine is already on your other card.
+Ooh, unlucky. I haven't called seventy yet.
+Not quite. seventy is already on your other card.
+Ooh, unlucky. I haven't called seventy-one yet.
+Not quite. seventy-one is already on your other card.
+Ooh, unlucky. I haven't called seventy-two yet.
+Not quite. seventy-two is already on your other card.
+Ooh, unlucky. I haven't called seventy-three yet.
+Not quite. seventy-three is already on your other card.
+Ooh, unlucky. I haven't called seventy-four yet.
+Not quite. seventy-four is already on your other card.
+Ooh, unlucky. I haven't called seventy-five yet.
+Not quite. seventy-five is already on your other card.
