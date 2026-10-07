@@ -18,7 +18,10 @@
     "sounds:sample": "node tools/make-sounds.mjs --sample",
     "sounds:make": "node tools/make-sounds.mjs --make",
     "sounds:tester": "node tools/make-sounds.mjs --tester",
-    "sounds:normalize": "node tools/make-sounds.mjs --normalize"
+    "sounds:normalize": "node tools/make-sounds.mjs --normalize",
+    "music": "node tools/make-music.mjs",
+    "music:make": "node tools/make-music.mjs --make",
+    "music:tester": "node tools/make-music.mjs --tester"
   },
   "devDependencies": {
     "lamejs": "^1.2.1",

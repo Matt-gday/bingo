@@ -1,0 +1,28 @@
+{
+  "note": "Background music for the game, made with ElevenLabs Music by tools/make-music.mjs. Each track has a prompt, a length and where it is used. It would sit behind a separate switch that is off by default. Change a prompt and run the script again to remake just that track.",
+  "model": "music_v1",
+  "outputFormat": "mp3_44100_96",
+  "tracks": [
+    {
+      "id": "play-loop",
+      "seconds": 60,
+      "volume": 0.25,
+      "when": "While a night is being played. Kept calm and quiet so the caller's numbers are easy to hear.",
+      "prompt": "A calm, cheerful, cute instrumental loop for a friendly bingo club game, soft marimba, glockenspiel and ukulele with gentle brushed drums and a warm upright bass, relaxed medium tempo, smooth and unobtrusive so spoken numbers are easy to hear, no vocals, a simple repeating phrase that loops well"
+    },
+    {
+      "id": "home",
+      "seconds": 45,
+      "volume": 0.35,
+      "when": "The start and home screens.",
+      "prompt": "A warm, welcoming, cute instrumental theme for a game's home screen, bouncy ukulele and glockenspiel with light hand claps and soft strings, cheerful and inviting, medium tempo, no vocals, loops well"
+    },
+    {
+      "id": "prize-table",
+      "seconds": 45,
+      "volume": 0.3,
+      "when": "The timed prize table (a later phase).",
+      "prompt": "A lively, playful shopping-time instrumental with bouncy marimba, plucky bass, finger snaps and hand claps, upbeat and fun with a cute game-show feel, building a little excitement without being loud, no vocals, loops well"
+    }
+  ]
+}

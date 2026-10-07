@@ -1,0 +1,21 @@
+{
+  "tracks": {
+    "play-loop": {
+      "file": "play-loop-48a034dc7e.mp3",
+      "volume": 0.25
+    },
+    "home": {
+      "file": "home-0a910a0f07.mp3",
+      "volume": 0.35
+    },
+    "prize-table": {
+      "file": "prize-table-525135fe3c.mp3",
+      "volume": 0.3
+    }
+  },
+  "hashes": {
+    "play-loop": "48a034dc7e",
+    "home": "0a910a0f07",
+    "prize-table": "525135fe3c"
+  }
+}
