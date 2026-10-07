@@ -124,7 +124,8 @@ export class Game {
     this.nextCall();
   }
 
-  nextCall() {
+  // `announce: false` is used after a false call, when the caller is about to say something else.
+  nextCall({ announce = true } = {}) {
     if (this.called.length >= this.deck.length) {
       this.phase = 'drawn';
       this.screen = 'result';
@@ -145,7 +146,9 @@ export class Game {
       };
       this.emit('tooSlow');
     }
-    this.say(callText(this.currentNumber, this.callerLines, this.speed.useNicknames), 'talking', 'call');
+    const callLine = callText(this.currentNumber, this.callerLines, this.speed.useNicknames);
+    if (announce) this.say(callLine, 'talking', 'call');
+    else this.bubble = { text: callLine, mood: 'talking' };
     this.emit('call', { number: this.currentNumber });
   }
 
@@ -286,8 +289,8 @@ export class Game {
       config: this.config,
     });
     if (evaluation.result === 'noPattern') {
+      this.screen = 'falseCall'; // leave the shout screen first, so the restart is not mistaken for "too slow"
       this.startFalseCall(evaluation);
-      this.screen = 'falseCall';
       return;
     }
     this.phase = 'checking';
@@ -376,7 +379,7 @@ export class Game {
       failItem: evaluation.failItem,
     };
     // The game restarts at once: the next number is already running.
-    this.nextCall();
+    this.nextCall({ announce: false });
     if (this.phase !== 'drawn') this.say(this.falseCall.text, 'wince', 'line', this.falseCall.spoken);
     this.emit('falseCall');
   }

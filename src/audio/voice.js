@@ -53,9 +53,14 @@ export class Voice {
     this.synth?.cancel();
     // One audio element is reused, because phones only let it play after the first tap.
     this.player ??= new Audio();
+    const turn = (this.turn = (this.turn ?? 0) + 1);
     this.player.src = `${this.clipBase}${file}`;
     const started = this.player.play();
-    started?.catch?.(() => this.speakWithPhone(text)); // blocked or missing: use the phone's voice
+    // If the clip is blocked or missing, use the phone's voice. But a line that was simply replaced
+    // by a newer one is "cancelled" by the browser too, and that must not stop the newer line.
+    started?.catch?.(() => {
+      if (turn === this.turn) this.speakWithPhone(text);
+    });
     return true;
   }
 
@@ -103,6 +108,7 @@ export class Voice {
 
   cancel() {
     this.current = null;
+    this.turn = (this.turn ?? 0) + 1; // a clip that fails after this must not start speaking
     this.player?.pause();
     this.synth?.cancel();
   }

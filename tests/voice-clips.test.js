@@ -59,3 +59,29 @@ test('cancelling stops the recording as well as the phone voice', (t) => {
   voice.cancel();
   assert.ok(log.includes('pause-clip'));
 });
+
+test('a line replaced by a newer one does not stop the newer line when the old one is cancelled', async (t) => {
+  const log = [];
+  const { voice } = withFakes(t);
+  voice.clips['Eight, Garden gate!'] = 'a.mp3';
+  voice.clips['No line'] = 'b.mp3';
+  let rejectFirst;
+  let plays = 0;
+  Object.defineProperty(globalThis, 'Audio', {
+    configurable: true,
+    value: class {
+      pause() { log.push('pause'); }
+      play() {
+        plays += 1;
+        if (plays === 1) return new Promise((_, reject) => { rejectFirst = reject; });
+        return Promise.resolve();
+      }
+    },
+  });
+  voice.player = null;
+  voice.speak('Eight, Garden gate!');
+  voice.speak('No line');
+  rejectFirst(new Error('The play() request was interrupted by a new load request'));
+  await new Promise((resolve) => setTimeout(resolve, 10));
+  assert.deepEqual(log, [], 'nothing was paused or spoken by phone after the older line was cancelled');
+});

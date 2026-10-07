@@ -225,6 +225,7 @@ test('a false call restarts the game and sits the player out for two calls', () 
   game.openShout();
   game.submitClaim(); // nothing near a line: false straight away
   assert.equal(game.screen, 'falseCall');
+  assert.equal(game.notice, null, 'a false call is not "too slow"');
   assert.equal(game.falseCalls, 1);
   assert.equal(game.called.length, 2, 'the next number is already running');
   assert.equal(game.sitOut, 2);
@@ -335,4 +336,16 @@ test('every line the caller says is announced for the voice', () => {
   game.on((type, data) => type === 'say' && heard.push(data));
   game.start();
   assert.ok(heard.some((h) => h.kind === 'call'));
+});
+
+test('after a false call the caller says only the false-call line, not the next number too', () => {
+  const game = new Game({ config, patterns, callerLines, speedId: 'steady', stageIds: ['line'] });
+  game.start();
+  const heard = [];
+  game.on((type, data) => type === 'say' && heard.push(data));
+  game.openShout();
+  game.submitClaim(); // nothing marked: no line to check
+  assert.equal(heard.length, 1);
+  assert.match(heard[0].spoken, /can't see a line there/);
+  assert.equal(game.bubble.mood, 'wince');
 });
