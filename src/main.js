@@ -18,6 +18,13 @@ import { pauseScreen } from './ui/pauseScreen.js';
 const root = document.getElementById('app');
 document.title = config.gameName;
 
+// How things appear comes from Data/config.json, so it can be tuned in one place.
+const motion = document.documentElement.style;
+motion.setProperty('--screen-ms', `${config.animation.screenMs}ms`);
+motion.setProperty('--slide', `${config.animation.slidePx}px`);
+motion.setProperty('--pop-ms', `${config.animation.popMs}ms`);
+motion.setProperty('--stagger-ms', `${config.animation.staggerMs}ms`);
+
 // Phase 2 still plays one line. Later phases will let the player pick the night's length.
 const STAGES = ['line'];
 

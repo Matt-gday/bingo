@@ -292,7 +292,7 @@ function discRow(items, root) {
   root.classList.toggle('many', items.length > 6);
   root.hidden = items.length === 0;
   root.innerHTML = items
-    .map((item) => `<div class="disc" data-n="${item.number}">${item.number}</div>`)
+    .map((item, i) => `<div class="disc" data-n="${item.number}" style="--i:${i}">${item.number}</div>`)
     .join('');
 }
 

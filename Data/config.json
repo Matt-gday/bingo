@@ -122,6 +122,13 @@
       "later": "silver"
     }
   },
+  "animation": {
+    "note": "How things appear. Whole screens fade in calmly (the dark tense screens only fade; the bright ones also slide up a little). Small things such as the next-number card, the buttons and messages pop in with a little spring. All of it switches off when the phone's reduced-motion setting is on.",
+    "screenMs": 260,
+    "slidePx": 14,
+    "popMs": 380,
+    "staggerMs": 70
+  },
   "design": {
     "designWidth": 390,
     "designHeight": 844
