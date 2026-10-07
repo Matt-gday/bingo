@@ -21,6 +21,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { collectLines, allLines, groupOf } from './voice-lines.mjs';
+import { callText, capital, numberInWords } from '../src/engine/caller.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (path) => JSON.parse(readFileSync(join(root, path), 'utf8'));
@@ -68,14 +69,34 @@ const lineGroups = groupOf(allGroups);
 const tags = voice.audioTags ?? { default: voice.audioTag ?? '' };
 const tagFor = (text) => (option('--tag') !== undefined ? voice.audioTag : (tags.lines?.[text] ?? tags.groups?.[lineGroups.get(text)] ?? tags.default ?? ''));
 
+// Nickname calls get a second tag after the number, so the number stays steady and only the nickname has a mood.
+const nicknameNumber = new Map((allGroups['numbers with nicknames'] ?? []).map((text, i) => [text, i + 1]));
+function sentText(text) {
+  const nicknames = voice.audioTags?.nicknames;
+  const n = nicknameNumber.get(text);
+  if (option('--tag') === undefined && nicknames && n) {
+    const pool = nicknames.pool?.length ? nicknames.pool : [''];
+    const tag = nicknames.byNumber?.[String(n)] ?? pool[n % pool.length];
+    const prefix = `${capital(numberInWords(n))}, `;
+    return text.startsWith(prefix)
+      ? `${tags.default} ${prefix}${tag} ${text.slice(prefix.length)}`
+      : `${tag} ${text}`; // the nickname already says the number (Legs eleven), so the tag goes in front
+  }
+  const tag = tagFor(text);
+  return tag ? `${tag} ${text}` : text;
+}
+
 const outDir = join(root, 'public/audio/caller');
 const manifestPath = join(outDir, 'manifest.json');
 const manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, 'utf8')) : { clips: {}, hashes: {} };
 manifest.hashes ??= {};
 
 // A clip is remade if the text, the voice or any voice setting changes.
+// Lines recorded before nickname tags existed keep their original fingerprint, so they are not redone.
 const fingerprint = (text) => createHash('sha1')
-  .update(JSON.stringify([text, voice.voiceId, voice.modelId, tagFor(text), voice.stability, voice.similarityBoost, voice.style, voice.speed]))
+  .update(JSON.stringify(nicknameNumber.has(text) && voice.audioTags?.nicknames && option('--tag') === undefined
+    ? [sentText(text), voice.voiceId, voice.modelId, voice.stability, voice.similarityBoost, voice.style, voice.speed]
+    : [text, voice.voiceId, voice.modelId, tagFor(text), voice.stability, voice.similarityBoost, voice.style, voice.speed]))
   .digest('hex')
   .slice(0, 12);
 
@@ -128,8 +149,8 @@ let made = 0;
 
 async function record(text) {
   const body = {
-    // The tag is only sent to ElevenLabs. The game still looks the clip up by the plain line.
-    text: tagFor(text) ? `${tagFor(text)} ${text}` : text,
+    // The tags are only sent to ElevenLabs. The game still looks the clip up by the plain line.
+    text: sentText(text),
     model_id: voice.modelId,
     voice_settings: {
       stability: voice.stability,
