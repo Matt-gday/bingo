@@ -14,14 +14,18 @@
     },
     "win-fanfare": {
       "files": [
-        "win-fanfare-1-f83ca7cec9.mp3"
+        "win-fanfare-1-69c94413a1.mp3",
+        "win-fanfare-2-bee51ef672.mp3",
+        "win-fanfare-3-f85851208a.mp3"
       ],
-      "volume": 0.9
+      "volume": 0.55
     }
   },
   "hashes": {
     "mark-pop-1": "e667e058b9",
     "lock-thud-1": "99e96f80b7",
-    "win-fanfare-1": "f83ca7cec9"
+    "win-fanfare-1": "69c94413a1",
+    "win-fanfare-2": "bee51ef672",
+    "win-fanfare-3": "f85851208a"
   }
 }
