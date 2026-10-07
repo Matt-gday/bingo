@@ -106,10 +106,10 @@
     {
       "id": "win-fanfare",
       "group": "Winning and losing",
-      "prompt": "A warm, happy little celebration jingle played on a glockenspiel and soft marimba, rising cheerful notes with a gentle sparkle and a light round of applause, smooth and pleasant, no horns, no whistles, not loud",
-      "seconds": 3,
+      "prompt": "A joyful, uplifting win celebration jingle with a bright ascending melody that climbs higher and higher and ends on a big happy final chord, played on xylophone, glockenspiel, warm strings and a soft bouncy bass, with light applause and a gentle crowd cheer at the end, fun and triumphant, full and rich, not a tinkly piano, no harsh horns, no whistles, not too loud",
+      "seconds": 3.5,
       "variants": 3,
-      "volume": 0.55,
+      "volume": 0.6,
       "when": "The player wins a stage."
     },
     {
@@ -160,7 +160,7 @@
     {
       "id": "stage-won",
       "group": "Coming in later phases",
-      "prompt": "A short warm, happy jingle on a xylophone and glockenspiel with a gentle sparkle, upbeat and smooth, no horns, no whistles, not loud",
+      "prompt": "A short joyful ascending jingle on xylophone and glockenspiel with warm strings, the notes climbing upward and ending on a bright happy chord, upbeat and smooth, no harsh horns, not loud",
       "seconds": 2.5,
       "variants": 1,
       "volume": 0.6,
