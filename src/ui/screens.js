@@ -47,6 +47,84 @@ export function startScreen({ config, chosenSpeed, onPlay, onChoose }) {
   return { el, update() {} };
 }
 
+// ---------- The row of recent calls ----------
+
+const SLOT_STEP = 39; // keep in step with --chip-step in style.css
+
+const prefersReducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+// The number lifts out of the ball and shrinks as it flicks into the new pill.
+function flyNumber(fromEl, toEl, text) {
+  const from = fromEl.getBoundingClientRect();
+  const to = toEl.getBoundingClientRect();
+  const dx = from.left + from.width / 2 - (to.left + to.width / 2);
+  const dy = from.top + from.height / 2 - (to.top + to.height / 2);
+  const flyer = document.createElement('div');
+  flyer.className = 'flyer';
+  flyer.textContent = text;
+  flyer.style.left = `${to.left + to.width / 2}px`;
+  flyer.style.top = `${to.top + to.height / 2}px`;
+  document.body.appendChild(flyer);
+  const small = 12 / 34;
+  const animation = flyer.animate(
+    [
+      { transform: `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(1)`, color: '#ffffff' },
+      { transform: `translate(-50%, -50%) translate(0, 0) scale(${small})`, color: '#2b1b6b' },
+    ],
+    { duration: 520, easing: 'cubic-bezier(0.35, 0.9, 0.4, 1)', fill: 'forwards' },
+  );
+  animation.onfinish = () => flyer.remove();
+  animation.oncancel = () => flyer.remove();
+}
+
+// Four fixed slots, newest on the left. A new pill lands in the left slot, the others slide
+// right, and the one on the right zips off the screen.
+function recentPills(game, container, ballEl) {
+  const pills = new Map(); // number -> element
+  let ready = false;
+
+  return function sync() {
+    const wanted = game.recentCalls; // newest first
+    const animate = ready && !prefersReducedMotion();
+
+    // Pills that have dropped out of the last four zip off to the right.
+    for (const [number, pill] of pills) {
+      if (wanted.includes(number)) continue;
+      pills.delete(number);
+      if (animate) {
+        pill.classList.add('leaving');
+        setTimeout(() => pill.remove(), 500);
+      } else {
+        pill.remove();
+      }
+    }
+
+    wanted.forEach((number, slot) => {
+      let pill = pills.get(number);
+      if (!pill) {
+        pill = document.createElement('div');
+        pill.className = 'chip';
+        pill.textContent = `${game.letterOf(number)} ${number}`;
+        pill.style.setProperty('--slot', slot);
+        pill.__slot = slot;
+        if (animate) pill.classList.add('arrive');
+        container.appendChild(pill);
+        pills.set(number, pill);
+        if (animate) {
+          void pill.offsetWidth;
+          pill.classList.add('go');
+          flyNumber(ballEl, pill, `${game.letterOf(number)} ${number}`);
+          setTimeout(() => pill.classList.remove('arrive', 'go'), 900);
+        }
+      } else if (pill.__slot !== slot) {
+        pill.__slot = slot;
+        pill.style.setProperty('--slot', slot);
+      }
+    });
+    ready = true;
+  };
+}
+
 // ---------- Play ----------
 
 export function playScreen(game) {
@@ -110,19 +188,14 @@ export function playScreen(game) {
   dotsEl.innerHTML = '<i></i>'.repeat(dotCount);
 
   const states = new Map();
-  let lastRecent = '';
+  const syncRecent = recentPills(game, recentEl, ballWrap.querySelector('.ball'));
   let lastLocked = 0;
 
   function update() {
     updateBall(ballWrap, game);
     bubble.sync();
 
-    const recent = game.recentCalls.map((n) => `${game.letterOf(n)} ${n}`);
-    const recentKey = recent.join('|');
-    if (recentKey !== lastRecent) {
-      lastRecent = recentKey;
-      recentEl.innerHTML = recent.map((r) => `<div class="chip">${r}</div>`).join('');
-    }
+    syncRecent();
 
     const justLocked = game.marks.length !== lastLocked;
     lastLocked = game.marks.length;

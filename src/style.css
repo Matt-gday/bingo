@@ -316,6 +316,8 @@ button {
   height: 30px;
 }
 .target-pill {
+  min-width: 0;
+  overflow: hidden;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -329,21 +331,52 @@ button {
   white-space: nowrap;
 }
 .recent {
-  display: flex;
-  gap: 4px;
+  --chip-step: 39px; /* a pill is 36px wide with 3px between; keep in step with SLOT_STEP in screens.js */
+  position: relative;
+  flex-shrink: 0;
+  width: calc(var(--chip-step) * 4 - 3px);
+  height: 28px;
 }
 .chip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 36px;
   height: 28px;
-  min-width: 37px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 4px;
   border-radius: 14px;
   background: #fff;
   color: var(--purple-deep);
   box-shadow: 0 2px 0 rgba(26, 20, 70, 0.2);
   font: 600 12px/1 var(--font-display);
+  white-space: nowrap;
+  transform: translateX(calc(var(--slot) * var(--chip-step)));
+  transition: transform 0.4s cubic-bezier(0.3, 0.8, 0.3, 1), opacity 0.25s;
+}
+/* A new pill waits invisibly until the number reaches it. */
+.chip.arrive {
+  opacity: 0;
+}
+.chip.arrive.go {
+  opacity: 1;
+  transition: transform 0.4s cubic-bezier(0.3, 0.8, 0.3, 1), opacity 0.25s ease 0.3s;
+}
+/* The oldest pill zips off the right-hand edge of the screen. */
+.chip.leaving {
+  opacity: 0;
+  transform: translateX(calc(var(--slot) * var(--chip-step) + 260px));
+  transition: transform 0.45s cubic-bezier(0.6, 0, 0.9, 0.6), opacity 0.4s ease-in;
+}
+.flyer {
+  position: fixed;
+  z-index: 50;
+  pointer-events: none;
+  font: 700 34px/1 var(--font-display);
+  white-space: nowrap;
+  text-shadow: 0 2px 0 rgba(26, 20, 70, 0.25);
+  will-change: transform;
 }
 
 .letters {

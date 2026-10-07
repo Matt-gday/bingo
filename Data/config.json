@@ -55,7 +55,7 @@
   "marking": {
     "marksPerCall": 1,
     "recentCallsShown": 4,
-    "lockMomentMs": 700
+    "lockMomentMs": 1000
   },
   "pause": {
     "pausesPerGame": 1,
