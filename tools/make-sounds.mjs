@@ -3,6 +3,7 @@
 //   npm run sounds          lists the sounds and what is still to make (spends nothing)
 //   npm run sounds:sample   makes three so you can listen first
 //   npm run sounds:make     makes everything that is missing
+//   npm run sounds:normalize  brings every sound already made up to an even level (also done to each new sound)
 //   npm run sounds:tester   writes sounds-tester.html, a page to listen to every sound
 //
 // To make only some: add --only and part of a group or sound name, for example
@@ -16,6 +17,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildTesterPage } from './voice-tester-page.mjs';
+import { normalizeMp3 } from './normalize.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -68,6 +70,29 @@ async function saveManifest({ final = false } = {}) {
       if (attempt === 12 && final) throw error;
     }
   }
+}
+
+if (args.includes('--normalize')) {
+  // Re-levels every sound that has already been made. Safe to run again: a sound already at the level stays as it is.
+  let changed = 0;
+  const silent = [];
+  for (const take of takes.filter((t) => existsSync(join(outDir, fileFor(t))))) {
+    const path = join(outDir, fileFor(take));
+    const result = await normalizeMp3(readFileSync(path));
+    if (result.silent) {
+      silent.push(take.key);
+      continue;
+    }
+    if (Math.abs(result.beforeDb - result.afterDb) > 0.5) {
+      writeFileSync(path, result.buffer);
+      changed += 1;
+      console.log(`  ${take.key.padEnd(18)} ${result.beforeDb.toFixed(1)} dB -> ${result.afterDb.toFixed(1)} dB`);
+    }
+  }
+  console.log(`
+${changed} sounds re-levelled.${silent.length ? ` Silent takes (not changed, best remade): ${silent.join(', ')}` : ''}
+`);
+  process.exit(0);
 }
 
 if (args.includes('--tester')) {
@@ -152,7 +177,13 @@ let made = 0;
 try {
   for (const take of queue) {
     process.stdout.write(`  ${String(made + 1).padStart(3)}/${queue.length}  ${take.key}\n`);
-    writeFileSync(join(outDir, fileFor(take)), await make(take));
+    const result = await normalizeMp3(await make(take));
+    if (result.silent) {
+      console.warn(`      (that take came out silent, so it was skipped: ${take.key})`);
+      made += 1;
+      continue;
+    }
+    writeFileSync(join(outDir, fileFor(take)), result.buffer);
     manifest.hashes[take.key] = fingerprint(take);
     made += 1;
     if (made % 5 === 0) await saveManifest();

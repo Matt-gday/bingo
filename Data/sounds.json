@@ -43,9 +43,9 @@
     {
       "id": "mark-undo",
       "group": "Marking",
-      "prompt": "A tiny reverse bubble sucking pop, soft and rounded, very short, not harsh, not loud",
+      "prompt": "A tiny soft water-drop plop, a quick little descending blip like a bubble gently deflating, rounded and watery, very short, no metallic sounds, no key, lock or latch sounds, no clicks, not harsh, not loud",
       "seconds": 0.5,
-      "variants": 2,
+      "variants": 3,
       "volume": 0.6,
       "when": "A mark is taken back or moved."
     },
@@ -155,9 +155,12 @@
       "group": "Buttons",
       "prompt": "A soft cute rounded button tap, a gentle tup, very short, no sharp click, not loud",
       "seconds": 0.5,
-      "variants": 3,
       "volume": 0.6,
-      "when": "Any button is tapped."
+      "when": "Any button is tapped.",
+      "keepTakes": [
+        2,
+        3
+      ]
     },
     {
       "id": "stage-won",
