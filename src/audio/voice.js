@@ -11,6 +11,8 @@ export class Voice {
     this.clips = {}; // line of text -> recording file name
     this.clipBase = '';
     this.player = null;
+    this.protecting = false; // a line that must be heard in full (the false call) is playing
+    this.queued = null; // the next line to say, waiting for the protected one to finish
     this.synth?.addEventListener?.('voiceschanged', () => {
       this.chosen = null;
     });
@@ -54,6 +56,9 @@ export class Voice {
     // One audio element is reused, because phones only let it play after the first tap.
     this.player ??= new Audio();
     const turn = (this.turn = (this.turn ?? 0) + 1);
+    this.player.onended = () => {
+      if (turn === this.turn) this.finished();
+    };
     this.player.src = `${this.clipBase}${file}`;
     const started = this.player.play();
     // If the clip is blocked or missing, use the phone's voice. But a line that was simply replaced
@@ -75,8 +80,19 @@ export class Voice {
     return this.chosen;
   }
 
-  speak(text) {
+  // `protect` marks a line that must be heard in full. Anything said while it is playing waits
+  // until it has finished (only the newest waiting line is kept) instead of cutting it off.
+  speak(text, { protect = false } = {}) {
     if (!this.on || !text) return;
+    if (this.protecting && !protect) {
+      this.queued = text;
+      return;
+    }
+    this.queued = null;
+    this.protecting = protect;
+    clearTimeout(this.protectTimer);
+    // Safety net: if a line never reports that it finished, do not hold everything up for ever.
+    if (protect) this.protectTimer = setTimeout(() => this.finished(), 8000);
     const file = this.clips[text];
     if (file && this.playClip(file, text)) return;
     this.speakWithPhone(text);
@@ -99,14 +115,30 @@ export class Voice {
     // Retain the utterance until completion, including while Safari starts it.
     this.current = utterance;
     const release = () => {
-      if (this.current === utterance) this.current = null;
+      if (this.current === utterance) {
+        this.current = null;
+        this.finished();
+      }
     };
     utterance.onend = release;
     utterance.onerror = release;
     this.synth.speak(utterance);
   }
 
+  // A line has finished playing. If a protected line was playing, say whatever was waiting.
+  finished() {
+    clearTimeout(this.protectTimer);
+    if (!this.protecting) return;
+    this.protecting = false;
+    const waiting = this.queued;
+    this.queued = null;
+    if (waiting) this.speak(waiting);
+  }
+
   cancel() {
+    clearTimeout(this.protectTimer);
+    this.protecting = false;
+    this.queued = null;
     this.current = null;
     this.turn = (this.turn ?? 0) + 1; // a clip that fails after this must not start speaking
     this.player?.pause();

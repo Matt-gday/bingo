@@ -380,7 +380,7 @@ export class Game {
     };
     // The game restarts at once: the next number is already running.
     this.nextCall({ announce: false });
-    if (this.phase !== 'drawn') this.say(this.falseCall.text, 'wince', 'line', this.falseCall.spoken);
+    if (this.phase !== 'drawn') this.say(this.falseCall.text, 'wince', 'falseCall', this.falseCall.spoken);
     this.emit('falseCall');
   }
 

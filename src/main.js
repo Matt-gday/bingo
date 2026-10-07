@@ -80,7 +80,7 @@ function startGame() {
   game.on((type, data) => {
     if (type === 'say') {
       if (starting) return; // start() emits both a greeting and the first number
-      voice.speak(data.spoken ?? data.text);
+      voice.speak(data.spoken ?? data.text, { protect: data.kind === 'falseCall' }); // the false-call line is left to finish
     } else if (type === 'pause') {
       voice.cancel();
     }

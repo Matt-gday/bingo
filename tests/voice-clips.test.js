@@ -85,3 +85,32 @@ test('a line replaced by a newer one does not stop the newer line when the old o
   await new Promise((resolve) => setTimeout(resolve, 10));
   assert.deepEqual(log, [], 'nothing was paused or spoken by phone after the older line was cancelled');
 });
+
+test('a protected line is not cut off: a number called meanwhile waits and plays after it', (t) => {
+  const { voice, log } = withFakes(t);
+  voice.clips['No line'] = 'line.mp3';
+  voice.clips['Eight, Garden gate!'] = 'eight.mp3';
+  voice.speak('No line', { protect: true });
+  voice.speak('Eight, Garden gate!'); // arrives while the false-call line is playing
+  assert.ok(log.includes('clip:./audio/caller/line.mp3'));
+  assert.ok(!log.includes('clip:./audio/caller/eight.mp3'), 'it waits');
+  voice.player.onended(); // the false-call line finishes
+  assert.ok(log.includes('clip:./audio/caller/eight.mp3'), 'then the number is called');
+  assert.equal(voice.protecting, false);
+});
+
+test('only the newest waiting line is kept, and cancelling clears the wait', (t) => {
+  const { voice, log } = withFakes(t);
+  voice.clips = { a: 'a.mp3', b: 'b.mp3', c: 'c.mp3' };
+  voice.speak('a', { protect: true });
+  voice.speak('b');
+  voice.speak('c');
+  voice.player.onended();
+  assert.ok(log.includes('clip:./audio/caller/c.mp3'));
+  assert.ok(!log.includes('clip:./audio/caller/b.mp3'));
+  voice.speak('a', { protect: true });
+  voice.speak('b');
+  voice.cancel();
+  assert.equal(voice.queued, null);
+  assert.equal(voice.protecting, false);
+});
