@@ -123,3 +123,15 @@ test('the ticks in a check rise in pitch, and the build-up stops dead when the a
   assert.ok(!log.some((entry) => entry.url === './sfx/build.mp3'), 'a build-up still loading when the answer arrives never starts');
   assert.ok(log.some((entry) => entry.url === './sfx/x.mp3'));
 });
+
+test('suspending the audio stops all sound and the quiet loop that makes the lock screen show controls', async () => {
+  const { AudioEngine } = await import('../src/audio/engine.js');
+  const log = [];
+  const engine = new AudioEngine();
+  engine.ctx = { suspend() { log.push('ctx-suspend'); }, resume() { log.push('ctx-resume'); } };
+  engine.keepAlive = { pause() { log.push('loop-pause'); }, play() { log.push('loop-play'); return Promise.resolve(); } };
+  engine.suspend();
+  assert.deepEqual(log, ['loop-pause', 'ctx-suspend']);
+  engine.resume();
+  assert.deepEqual(log.slice(2), ['ctx-resume', 'loop-play']);
+});

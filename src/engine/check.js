@@ -45,7 +45,7 @@ export function evaluateClaim({ cards, marks, called, pattern, config }) {
     }
   });
 
-  if (completeOptions.length === 0) return { result: 'noPattern', items: [] };
+  if (completeOptions.length === 0) return { result: 'noPattern', items: [], order: [], failItem: null, reason: null };
 
   const goodCount = (option) => option.items.filter((i) => !i.problem).length;
   const winner = completeOptions.find((option) => goodCount(option) === option.items.length);

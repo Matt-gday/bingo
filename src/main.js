@@ -48,7 +48,8 @@ music.loadList(`${audioBase}music/`);
 // Phones only allow sound to start from a tap, so the first tap anywhere switches the audio on.
 let audioUnlocked = false;
 function unlockAudio() {
-  if (audioUnlocked || !engine.ensure()) return;
+  if (!engine.ensure()) return; // also wakes the audio up again if the phone put it to sleep
+  if (audioUnlocked) return;
   audioUnlocked = true;
   sfx.preload();
   music.sync();
@@ -168,22 +169,60 @@ function sync() {
 
 let last = performance.now();
 function frame(now) {
+  requestAnimationFrame(frame); // always schedule the next frame first, so one error can never freeze the whole game
   const dt = now - last;
   last = now;
-  if (game) {
-    game.advance(dt);
-    sync();
+  try {
+    if (game) {
+      game.advance(dt);
+      sync();
+    }
+    current?.update(game, now);
+  } catch (error) {
+    console.error(error);
   }
-  current?.update(game, now);
-  requestAnimationFrame(frame);
 }
 
 // Switching apps, a phone call or locking the screen covers the game, so nobody can study
 // the cards while the clock is stopped. It does not use up the player's one pause.
+function setLockScreenState(state) {
+  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = state;
+}
+
+// When the phone locks or the game is switched away, all sound stops too (music, effects and the caller).
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) game?.autoPause();
+  if (document.hidden) {
+    game?.autoPause();
+    voice.cancel();
+    engine.suspend();
+    setLockScreenState('paused');
+  } else {
+    engine.resume();
+    setLockScreenState('playing');
+  }
 });
-window.addEventListener('pagehide', () => game?.autoPause());
+window.addEventListener('pagehide', () => {
+  game?.autoPause();
+  engine.suspend();
+});
+
+// The lock screen shows the game's name, and its play and pause buttons work.
+if ('mediaSession' in navigator && typeof MediaMetadata !== 'undefined') {
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: config.gameName,
+    artist: 'Bingo night',
+    artwork: [{ src: `${import.meta.env.BASE_URL}icons/icon-512.png`, sizes: '512x512', type: 'image/png' }],
+  });
+  navigator.mediaSession.setActionHandler('pause', () => {
+    game?.autoPause(); // keep the cards covered and the numbers stopped while the sound is stopped
+    engine.suspend();
+    setLockScreenState('paused');
+  });
+  navigator.mediaSession.setActionHandler('play', () => {
+    engine.resume();
+    setLockScreenState('playing');
+  });
+}
 
 showStart();
 requestAnimationFrame(frame);

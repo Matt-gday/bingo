@@ -318,7 +318,7 @@ function discRow(items, root) {
 
 function paintDiscs(root, order, revealed, currentIndex) {
   const statusOf = new Map();
-  order.forEach((item, i) => {
+  (order ?? []).forEach((item, i) => {
     if (revealed[i]) statusOf.set(item.number, revealed[i]);
     else if (i === currentIndex) statusOf.set(item.number, 'current');
   });

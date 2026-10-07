@@ -116,6 +116,8 @@ test('no complete line means a false call straight away', () => {
   const marks = [0, 1, 2, 3].map((r) => mark(0, r, 0, r + 1, r));
   const result = evaluateClaim({ cards: [card], marks, called: [1, 2, 3, 4], pattern: line, config });
   assert.equal(result.result, 'noPattern');
+  assert.deepEqual(result.order, [], 'the screen can always read the list of numbers, even when there are none');
+  assert.deepEqual(result.items, []);
 });
 
 test('a claim wins if any complete candidate is fully valid', () => {
@@ -416,4 +418,15 @@ test('the number after a false call is called aloud once the caller has finished
   for (let t = 0; t < config.check.afterLineMs + 100; t += 50) game.advance(50);
   assert.equal(heard.length, 2);
   assert.equal(heard[1].kind, 'call', 'then the new number, even if the player has not tapped back');
+});
+
+test('a claim with no complete line leaves the checking screen with a complete, readable state', () => {
+  const game = newGame();
+  game.openShout();
+  game.submitClaim();
+  const c = game.checking;
+  assert.equal(c.stage, 'failed');
+  assert.ok(Array.isArray(c.evaluation.order));
+  assert.ok(Array.isArray(c.evaluation.items));
+  assert.ok(Array.isArray(c.revealed));
 });

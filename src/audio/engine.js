@@ -58,6 +58,18 @@ export class AudioEngine {
     return this.ctx;
   }
 
+  // Stop all sound at once (the phone has locked or the game was switched away), and start it again later.
+  // The quiet looping sound is stopped too, otherwise the phone keeps showing play controls on its lock screen.
+  suspend() {
+    this.keepAlive?.pause?.();
+    this.ctx?.suspend?.();
+  }
+
+  resume() {
+    this.ctx?.resume?.();
+    this.keepAlive?.play?.()?.catch?.(() => {});
+  }
+
   load(url) {
     if (this.buffers.has(url)) return Promise.resolve(this.buffers.get(url));
     if (!this.loading.has(url)) {
