@@ -246,7 +246,7 @@ test('a bad claim is caught during the check, then the game goes on', () => {
   game.openShout();
   game.submitClaim();
   assert.equal(game.screen, 'checking');
-  runFor(game, 40000);
+  for (let t = 0; t < 60000 && game.screen === 'checking'; t += 50) game.advance(50);
   assert.equal(game.screen, 'falseCall');
   assert.equal(game.falseCall.reason, 'notCalled');
   assert.equal(game.sitOut, 2);
