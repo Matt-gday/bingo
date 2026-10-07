@@ -13,7 +13,7 @@
     "groups": {
       "numbers read in the card check": "[clear, deliberate, building suspense]",
       "stage opens and wins": "[delighted, joyful, laughing]",
-      "false calls": "[sympathetic, kind, gently wincing]",
+      "false calls": "[sympathetic, kind, wincing, clear]",
       "regulars told off": "[playful, mock-stern, giggling]",
       "regulars win": "[excited, cheering]"
     },
@@ -22,7 +22,7 @@
       "Here we go. Good luck!": "[excited, warm]",
       "Marks locked!": "[brisk, bright]",
       "Too slow! The next number is out.": "[playfully teasing, sympathetic]",
-      "No peeking! Your cards are covered.": "[playful, giggling, whispering]",
+      "No peeking! Your cards are covered.": "[playful, giggling, teasing, clear]",
       "Thirteen, Unlucky for some!": "[playful, mock-spooky, giggling]"
     },
     "nicknames": {
