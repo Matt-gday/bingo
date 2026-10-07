@@ -1,5 +1,5 @@
 {
-  "note": "Every sound effect in the game, made with ElevenLabs Sound Effects by tools/make-sounds.mjs. 'prompt' describes the sound, 'seconds' is how long it lasts, 'variants' is how many different takes to make (busy sounds get several so they do not get samey; the game picks one at random), 'volume' is how loud the game plays it from 0 to 1, and 'when' says where it is used. Change a prompt and run the script again to remake just that sound. 'promptInfluence' is how closely ElevenLabs follows the words (0 to 1).",
+  "note": "Every sound effect in the game, made with ElevenLabs Sound Effects by tools/make-sounds.mjs. 'prompt' describes the sound, 'seconds' is how long it lasts, 'variants' is how many different takes to make (busy sounds get several so they do not get samey; the game picks one at random), 'volume' is how loud the game plays it from 0 to 1, and 'when' says where it is used. Change a prompt and run the script again to remake just that sound. 'promptInfluence' is how closely ElevenLabs follows the words (0 to 1). 'keepTakes' (optional) uses only the listed takes of a sound, for example [5].",
   "model": "eleven_text_to_sound_v2",
   "outputFormat": "mp3_44100_64",
   "promptInfluence": 0.5,
@@ -108,9 +108,11 @@
       "group": "Winning and losing",
       "prompt": "A joyful, uplifting win celebration jingle with a bright ascending melody that climbs higher and higher and ends on a big happy final chord, played on xylophone, glockenspiel, warm strings and a soft bouncy bass, with light applause and a gentle crowd cheer at the end, fun and triumphant, full and rich, not a tinkly piano, no harsh horns, no whistles, not too loud",
       "seconds": 3.5,
-      "variants": 6,
       "volume": 0.6,
-      "when": "The player wins a stage."
+      "when": "The player wins a stage.",
+      "keepTakes": [
+        5
+      ]
     },
     {
       "id": "false-call",

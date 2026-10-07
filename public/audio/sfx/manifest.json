@@ -14,12 +14,7 @@
     },
     "win-fanfare": {
       "files": [
-        "win-fanfare-1-5b793311fd.mp3",
-        "win-fanfare-2-08a477f7be.mp3",
-        "win-fanfare-3-5e1d3c1023.mp3",
-        "win-fanfare-4-23bc0d27d9.mp3",
-        "win-fanfare-5-b7a3cbcbd2.mp3",
-        "win-fanfare-6-111c40ddc6.mp3"
+        "win-fanfare-5-b7a3cbcbd2.mp3"
       ],
       "volume": 0.6
     }

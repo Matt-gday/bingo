@@ -29,11 +29,16 @@ const manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath
 manifest.sounds ??= {};
 manifest.hashes ??= {};
 
+// Which takes of a sound are used: normally 1 to `variants`, or exactly the numbers listed in `keepTakes`
+// (for example [5] keeps only take 5 of a sound that was tried six times).
+const takeNumbers = (sound) => sound.keepTakes ?? Array.from({ length: sound.variants ?? 1 }, (_, i) => i + 1);
+const takeOf = (sound, n) => ({ sound, n, key: `${sound.id}-${n}` });
+
 const only = option('--only');
 const chosen = data.sounds.filter((s) => !only || s.id.includes(only) || s.group.toLowerCase().includes(only.toLowerCase()));
 
 // One entry for every take of every sound.
-const takes = chosen.flatMap((s) => Array.from({ length: s.variants ?? 1 }, (_, i) => ({ sound: s, n: i + 1, key: `${s.id}-${i + 1}` })));
+const takes = chosen.flatMap((s) => takeNumbers(s).map((n) => takeOf(s, n)));
 const fingerprint = ({ sound, n }) => createHash('sha1')
   .update(JSON.stringify([sound.prompt, sound.seconds, data.promptInfluence, data.model, n]))
   .digest('hex').slice(0, 10);
@@ -45,7 +50,7 @@ function writeManifest() {
   // The game reads this: for each sound, its files and how loud to play it.
   manifest.sounds = {};
   for (const s of data.sounds) {
-    const files = Array.from({ length: s.variants ?? 1 }, (_, i) => ({ sound: s, n: i + 1, key: `${s.id}-${i + 1}` }))
+    const files = takeNumbers(s).map((n) => takeOf(s, n))
       .filter((t) => manifest.hashes[t.key] === fingerprint(t) && existsSync(join(outDir, fileFor(t))))
       .map(fileFor);
     if (files.length) manifest.sounds[s.id] = { files, volume: s.volume ?? 0.8 };
@@ -72,10 +77,10 @@ if (args.includes('--tester')) {
     id: group.replace(/\W+/g, '-').toLowerCase(),
     title: group,
     blurb: '',
-    rows: data.sounds.filter((s) => s.group === group).flatMap((s) => Array.from({ length: s.variants ?? 1 }, (_, i) => {
-      const take = { sound: s, n: i + 1, key: `${s.id}-${i + 1}` };
+    rows: data.sounds.filter((s) => s.group === group).flatMap((s) => takeNumbers(s).map((n) => {
+      const take = takeOf(s, n);
       return {
-        text: `${s.id}${(s.variants ?? 1) > 1 ? ` (take ${i + 1} of ${s.variants})` : ''}: ${s.when}`,
+        text: `${s.id}${takeNumbers(s).length > 1 ? ` (take ${n})` : ''}: ${s.when}`,
         file: isMade(take) ? fileFor(take) : null,
         tag: s.prompt,
       };
