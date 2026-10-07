@@ -12,7 +12,6 @@ export class Voice {
     this.clipBase = '';
     this.player = null;
     this.protecting = false; // a line that must be heard in full (the false call) is playing
-    this.queued = null; // the next line to say, waiting for the protected one to finish
     this.synth?.addEventListener?.('voiceschanged', () => {
       this.chosen = null;
     });
@@ -80,15 +79,11 @@ export class Voice {
     return this.chosen;
   }
 
-  // `protect` marks a line that must be heard in full. Anything said while it is playing waits
-  // until it has finished (only the newest waiting line is kept) instead of cutting it off.
+  // `protect` marks a line that must be heard in full (the false call). Anything else that arrives while
+  // it is playing is skipped, not delayed: a number is only called if it can start the moment it appears.
   speak(text, { protect = false } = {}) {
     if (!this.on || !text) return;
-    if (this.protecting && !protect) {
-      this.queued = text;
-      return;
-    }
-    this.queued = null;
+    if (this.protecting && !protect) return;
     this.protecting = protect;
     clearTimeout(this.protectTimer);
     // Safety net: if a line never reports that it finished, do not hold everything up for ever.
@@ -125,20 +120,15 @@ export class Voice {
     this.synth.speak(utterance);
   }
 
-  // A line has finished playing. If a protected line was playing, say whatever was waiting.
+  // A protected line has finished playing, so the voice is free again.
   finished() {
     clearTimeout(this.protectTimer);
-    if (!this.protecting) return;
     this.protecting = false;
-    const waiting = this.queued;
-    this.queued = null;
-    if (waiting) this.speak(waiting);
   }
 
   cancel() {
     clearTimeout(this.protectTimer);
     this.protecting = false;
-    this.queued = null;
     this.current = null;
     this.turn = (this.turn ?? 0) + 1; // a clip that fails after this must not start speaking
     this.player?.pause();
