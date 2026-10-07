@@ -11,13 +11,34 @@ Paste this into the voice description:
 
 Change "British or Australian" to the accent your family prefers.
 
-## 2. The test paragraph
+## 2. The test paragraphs
 
-Use this for the preview text. It sounds like how he really talks:
+Every line here is a real line from the game, so what you hear in the preview is what you will get.
+Use one passage at a time, or paste several together if the preview box allows. Listen for numbers that
+stay clear and consistent, and for a voice that sounds friendly in every mood.
 
-> Eight, Garden gate! Legs eleven! Four and seven, forty-seven! Ooh, unlucky. I haven't called thirty-four yet.
+**The calls (the most common thing he says)**
 
-Pick the preview with the clearest numbers. He will say about 150 of them, so clarity matters more than character.
+> Kelly's eye, one! Eight, Garden gate! Legs eleven! Thirteen, Unlucky for some! Twenty-two, Two little ducks! Four and seven, forty-seven! Five and nine, fifty-nine. Seventy-seven. Seventy-five, Strive and strive!
+
+**The big moments**
+
+> Eyes down, everyone! Here we go. Good luck! Let's have a look at that card. Forty-five... Sixty-two... Twelve... Every number checks out. We have a winner! That's a line. Well played!
+
+**Sympathy (false calls)**
+
+> Ooh, unlucky. I haven't called thirty-four yet. Not quite. Fifty-two is already on your other card. I can't see a line there, I'm afraid.
+
+**The regulars (names and banter)**
+
+> Sit down, Dot, that's not two lines. Rex has it! Well done, Rex. That's a full house for Pearl. No peeking! Your cards are covered.
+
+**A tricky mix to test the voice**
+
+> Marks locked! Too slow! The next number is out. Dancing queen, seventeen! Thirty. Seventy-three, Queen bee! Eighty-one is not a number we have. Seventy. Sixty-six, Clickety click!
+
+(That last passage includes one made-up sentence to see how the voice handles a flat statement. Skip it if you
+would rather keep to real lines.)
 
 ## 3. Connect it to the game
 
