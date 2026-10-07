@@ -20,7 +20,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { collectLines, allLines } from './voice-lines.mjs';
+import { collectLines, allLines, groupOf } from './voice-lines.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (path) => JSON.parse(readFileSync(join(root, path), 'utf8'));
@@ -63,6 +63,11 @@ if (only && lines.length === 0) {
   process.exit(1);
 }
 
+// How a line is delivered: its own tag if it has one, else its group's tag, else the default.
+const lineGroups = groupOf(allGroups);
+const tags = voice.audioTags ?? { default: voice.audioTag ?? '' };
+const tagFor = (text) => (option('--tag') !== undefined ? voice.audioTag : (tags.lines?.[text] ?? tags.groups?.[lineGroups.get(text)] ?? tags.default ?? ''));
+
 const outDir = join(root, 'public/audio/caller');
 const manifestPath = join(outDir, 'manifest.json');
 const manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, 'utf8')) : { clips: {}, hashes: {} };
@@ -70,7 +75,7 @@ manifest.hashes ??= {};
 
 // A clip is remade if the text, the voice or any voice setting changes.
 const fingerprint = (text) => createHash('sha1')
-  .update(JSON.stringify([text, voice.voiceId, voice.modelId, voice.audioTag, voice.stability, voice.similarityBoost, voice.style, voice.speed]))
+  .update(JSON.stringify([text, voice.voiceId, voice.modelId, tagFor(text), voice.stability, voice.similarityBoost, voice.style, voice.speed]))
   .digest('hex')
   .slice(0, 12);
 
@@ -107,8 +112,15 @@ if (!voice.voiceId) {
   process.exit(1);
 }
 
-// For the sample, three different kinds of line so you can judge the voice properly.
-const sampleTexts = ['Eight, Garden gate!', 'Four and seven, forty-seven!', 'Ooh, unlucky. I haven\'t called thirty-four yet.'];
+// For the sample, one line in each style so you can judge the voice properly.
+const sampleTexts = [
+  'Forty-five...', // the card check
+  "That's a line. Well played!", // a win
+  "Ooh, unlucky. I haven't called thirty-four yet.", // a false call
+  "Sit down, Dot, that's not a line.", // a regular told off
+  'Rex has it! Well done, Rex.', // a regular wins
+  'No peeking! Your cards are covered.', // the pause
+];
 const queue = wantsSample ? sampleTexts.filter((t) => lines.includes(t)) : todo;
 
 mkdirSync(outDir, { recursive: true });
@@ -117,7 +129,7 @@ let made = 0;
 async function record(text) {
   const body = {
     // The tag is only sent to ElevenLabs. The game still looks the clip up by the plain line.
-    text: voice.audioTag ? `${voice.audioTag} ${text}` : text,
+    text: tagFor(text) ? `${tagFor(text)} ${text}` : text,
     model_id: voice.modelId,
     voice_settings: {
       stability: voice.stability,

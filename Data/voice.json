@@ -2,11 +2,28 @@
   "note": "Settings for making the caller's recordings with ElevenLabs (see tools/make-voice.mjs). The voice ID is not a secret. The API key is never stored here: it goes in a file called .env.",
   "voiceId": "2Hz9DHqNsF6pwJt0YOtM",
   "modelId": "eleven_v4",
-  "audioTag": "[warmly, cheerfully, gently]",
-  "audioTagNote": "Eleven v3 and v4 read this as a direction for how to say each line. It is only sent to ElevenLabs. Set it to \"\" for older models.",
   "stability": 0.5,
   "similarityBoost": 0.75,
   "style": 0.3,
   "speed": 1,
-  "outputFormat": "mp3_44100_64"
+  "outputFormat": "mp3_44100_64",
+  "audioTagsNote": "Delivery directions for Eleven v3/v4, written in square brackets and put in front of each line when it is sent to ElevenLabs (they are never spoken, and the game still finds clips by the plain line). The tag for a line is: its own entry in 'lines', else its group's entry in 'groups', else 'default'. Combine any words you like, for example [giggling, delighted] or [worried, gentle]. Group names are the ones printed by 'npm run voice'.",
+  "audioTags": {
+    "default": "[warmly, cheerfully, gently]",
+    "groups": {
+      "numbers read in the card check": "[hushed, building suspense, gentle]",
+      "stage opens and wins": "[delighted, joyful, laughing]",
+      "false calls": "[sympathetic, kind, gently wincing]",
+      "regulars told off": "[playful, mock-stern, giggling]",
+      "regulars win": "[excited, cheering]"
+    },
+    "lines": {
+      "Eyes down, everyone!": "[excited, cheerful]",
+      "Here we go. Good luck!": "[excited, warm]",
+      "Marks locked!": "[brisk, bright]",
+      "Too slow! The next number is out.": "[playfully teasing, sympathetic]",
+      "No peeking! Your cards are covered.": "[playful, giggling, whispering]",
+      "Thirteen, Unlucky for some!": "[playful, mock-spooky, giggling]"
+    }
+  }
 }

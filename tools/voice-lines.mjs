@@ -25,26 +25,26 @@ export function collectLines({ callerLines, patterns, regulars }) {
     ...(regulars.ringIns?.names ?? []).map((r) => r.name),
   ];
 
-  for (const line of callerLines.game.start) add('fixed lines', line);
-  for (const line of callerLines.game.marksLocked) add('fixed lines', line);
-  for (const line of callerLines.game.tooSlow) add('fixed lines', line);
-  for (const line of callerLines.game.pause) add('fixed lines', line);
+  for (const line of callerLines.game.start) add('start of the game', line);
+  for (const line of callerLines.game.marksLocked) add('marks locked', line);
+  for (const line of callerLines.game.tooSlow) add('too slow', line);
+  for (const line of callerLines.game.pause) add('pause', line);
 
   for (const pattern of spoken) {
-    for (const line of callerLines.game.stageOpens) add('lines about the pattern', fillLine(line, { pattern }));
-    for (const line of callerLines.game.win) add('lines about the pattern', fillLine(line, { pattern }));
-    for (const line of callerLines.game.falseCall.noPattern) add('lines about the pattern', fillLine(line, { pattern }));
+    for (const line of callerLines.game.stageOpens) add('stage opens and wins', fillLine(line, { pattern }));
+    for (const line of callerLines.game.win) add('stage opens and wins', fillLine(line, { pattern }));
+    for (const line of callerLines.game.falseCall.noPattern) add('false calls', fillLine(line, { pattern }));
     for (const name of names) {
-      for (const line of callerLines.game.botFalseCall) add('lines about the regulars', fillLine(line, { name, pattern }));
-      for (const line of callerLines.game.botWins) add('lines about the regulars', fillLine(line, { name, pattern }));
+      for (const line of callerLines.game.botFalseCall) add('regulars told off', fillLine(line, { name, pattern }));
+      for (const line of callerLines.game.botWins) add('regulars win', fillLine(line, { name, pattern }));
     }
   }
 
   // False calls that name the number: one clip for every number.
   for (const n of NUMBERS) {
     const number = numberInWords(n);
-    for (const line of callerLines.game.falseCall.notCalled) add('false calls that name a number', fillLine(line, { number }));
-    for (const line of callerLines.game.falseCall.usedOnOtherCard) add('false calls that name a number', fillLine(line, { number }));
+    for (const line of callerLines.game.falseCall.notCalled) add('false calls', fillLine(line, { number }));
+    for (const line of callerLines.game.falseCall.usedOnOtherCard) add('false calls', fillLine(line, { number }));
   }
 
   return Object.fromEntries(Object.entries(groups).map(([group, set]) => [group, [...set]]));
@@ -52,4 +52,11 @@ export function collectLines({ callerLines, patterns, regulars }) {
 
 export function allLines(input) {
   return [...new Set(Object.values(collectLines(input)).flat())];
+}
+
+// Which group each line belongs to (the first group that lists it).
+export function groupOf(groups) {
+  const map = new Map();
+  for (const [group, list] of Object.entries(groups)) for (const line of list) if (!map.has(line)) map.set(line, group);
+  return map;
 }
