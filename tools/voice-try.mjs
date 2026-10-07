@@ -22,24 +22,12 @@ function readKey() {
 
 // [file name, text sent to ElevenLabs]. A = the whole line in one tag (what we have now). B = number steady, nickname coloured.
 const tests = [
-  ['01-A-eight-garden-gate-same-tone', `${base} Eight, Garden gate!`],
-  ['01-B-eight-garden-gate-bright-sing-song', `${base} Eight, [bright, sing-song] Garden gate!`],
-
-  ['02-A-thirteen-unlucky-for-some-same-tone', `${base} Thirteen, Unlucky for some!`],
-  ['02-B-thirteen-unlucky-for-some-spooky-giggle', `${base} Thirteen, [spooky, giggling] Unlucky for some!`],
-
-  ['03-A-seventeen-dancing-queen-same-tone', `${base} Seventeen, Dancing queen!`],
-  ['03-B-seventeen-dancing-queen-musical', `${base} Seventeen, [musical, sing-song, twirling] Dancing queen!`],
-
-  ['04-A-sixty-six-clickety-click-same-tone', `${base} Sixty-six, Clickety click!`],
-  ['04-B-sixty-six-clickety-click-snappy', `${base} Sixty-six, [snappy, rhythmic, bouncy] Clickety click!`],
-
-  ['05-legs-eleven-cheeky', '[cheeky, playful, giggling] Legs eleven!'],
-  ['06-twenty-two-two-little-ducks-bouncy', `${base} Twenty-two, [bouncy, playful, cute] Two little ducks!`],
-  ['07-seventy-three-queen-bee-buzzing', `${base} Seventy-three, [bubbly, buzzing, delighted] Queen bee!`],
-  ['08-three-cup-of-tea-cosy', `${base} Three, [cosy, content, soft] Cup of tea!`],
-  ['09-forty-five-halfway-there-encouraging', `${base} Forty-five, [encouraging, upbeat] Halfway there!`],
-  ['10-seventy-five-last-ball-triumphant', `${base} Seventy-five, [triumphant, delighted, proud] Strive and strive!`],
+  ['11-check-forty-five-clear-deliberate', '[clear, deliberate, building suspense] Forty-five...'],
+  ['11-check-forty-five-tense-steady', '[tense, steady, anticipating] Forty-five...'],
+  ['11-check-forty-five-dramatic-slow', '[dramatic, slow, clear, announcer] Forty-five...'],
+  ['12-check-sixty-two-clear-deliberate', '[clear, deliberate, building suspense] Sixty-two...'],
+  ['12-check-sixty-two-tense-steady', '[tense, steady, anticipating] Sixty-two...'],
+  ['12-check-sixty-two-dramatic-slow', '[dramatic, slow, clear, announcer] Sixty-two...'],
 ];
 
 const key = readKey();
