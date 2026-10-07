@@ -3,3 +3,4 @@ dist
 bingo-app-handoff.zip
 Images/_drafts
 .claude
+.env

@@ -7,7 +7,10 @@
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview --host",
-    "test": "node --test tests/"
+    "test": "node --test tests/",
+    "voice": "node tools/make-voice.mjs",
+    "voice:sample": "node tools/make-voice.mjs --sample",
+    "voice:make": "node tools/make-voice.mjs --make"
   },
   "devDependencies": {
     "vite": "^6.4.4"

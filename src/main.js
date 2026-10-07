@@ -24,6 +24,7 @@ const STAGES = ['line'];
 const settings = createSettings(config);
 const mic = new Mic(config);
 const voice = new Voice(config, settings);
+voice.loadClips(`${import.meta.env.BASE_URL}audio/caller/`);
 
 if (!config.speeds.some((s) => s.id === settings.get('speedId'))) settings.set('speedId', config.speeds[0].id);
 
@@ -80,7 +81,7 @@ function startGame() {
     if (type === 'say') {
       if (starting) return; // start() emits both a greeting and the first number
       if (data.kind === 'lock' && !config.voice.speakMarksLocked) return;
-      voice.speak(data.text);
+      voice.speak(data.spoken ?? data.text);
     } else if (type === 'pause') {
       voice.cancel();
     }

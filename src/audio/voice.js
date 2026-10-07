@@ -1,5 +1,5 @@
-// The caller's voice, using the phone's built-in speech. Recorded voice files
-// can replace this later without changing anything else.
+// The caller's voice. If a recording of a line exists (see tools/make-voice.mjs) it is played;
+// anything without a recording is spoken with the phone's built-in speech.
 
 export class Voice {
   constructor(config, settings) {
@@ -8,6 +8,9 @@ export class Voice {
     this.synth = typeof window !== 'undefined' ? window.speechSynthesis : null;
     this.chosen = null;
     this.current = null;
+    this.clips = {}; // line of text -> recording file name
+    this.clipBase = '';
+    this.player = null;
     this.synth?.addEventListener?.('voiceschanged', () => {
       this.chosen = null;
     });
@@ -31,6 +34,31 @@ export class Voice {
     return this.settings.get('voiceOn');
   }
 
+  // Find out which recordings exist. Without a manifest everything is spoken by the phone.
+  loadClips(baseUrl) {
+    return fetch(`${baseUrl}manifest.json`)
+      .then((response) => (response.ok ? response.json() : null))
+      .then((manifest) => {
+        if (manifest?.clips) {
+          this.clips = manifest.clips;
+          this.clipBase = baseUrl;
+        }
+      })
+      .catch(() => {});
+  }
+
+  playClip(file, text) {
+    if (typeof Audio === 'undefined') return false;
+    this.current = null;
+    this.synth?.cancel();
+    // One audio element is reused, because phones only let it play after the first tap.
+    this.player ??= new Audio();
+    this.player.src = `${this.clipBase}${file}`;
+    const started = this.player.play();
+    started?.catch?.(() => this.speakWithPhone(text)); // blocked or missing: use the phone's voice
+    return true;
+  }
+
   pickVoice() {
     if (this.chosen) return this.chosen;
     const voices = this.synth.getVoices();
@@ -44,6 +72,14 @@ export class Voice {
 
   speak(text) {
     if (!this.on || !text) return;
+    const file = this.clips[text];
+    if (file && this.playClip(file, text)) return;
+    this.speakWithPhone(text);
+  }
+
+  speakWithPhone(text) {
+    if (!this.supported) return;
+    this.player?.pause();
     // Leave an idle engine alone. In particular, don't queue and immediately
     // cancel a silent "unlock" utterance before the first real call on iOS.
     if (this.current || this.synth.speaking || this.synth.pending) this.cancel();
@@ -67,6 +103,7 @@ export class Voice {
 
   cancel() {
     this.current = null;
+    this.player?.pause();
     this.synth?.cancel();
   }
 }

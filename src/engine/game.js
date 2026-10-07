@@ -150,9 +150,10 @@ export class Game {
   }
 
   // Everything the caller says goes in his bubble, and the voice reads it out if it is on.
-  say(text, mood = 'talking', kind = 'line') {
+  // `spoken` is what the voice says when it differs from the bubble (the bubble shows digits).
+  say(text, mood = 'talking', kind = 'line', spoken = text) {
     this.bubble = { text, mood };
-    this.emit('say', { text, mood, kind });
+    this.emit('say', { text, mood, kind, spoken });
   }
 
   advance(dtMs) {
@@ -363,19 +364,21 @@ export class Game {
     const reason = evaluation.result === 'noPattern' ? 'noPattern' : evaluation.reason;
     const number = evaluation.failItem?.number;
     const lines = this.callerLines.game.falseCall[reason];
+    const template = pickOne(lines);
     this.falseCall = {
       reason,
       number,
       headline: this.falseCallHeadline(reason, number),
       short: this.falseCallShort(reason, number),
-      text: fillLine(pickOne(lines), { number, pattern: this.pattern.spoken }),
+      text: fillLine(template, { number, pattern: this.pattern.spoken }),
+      spoken: fillLine(template, { number: number ? numberInWords(number) : number, pattern: this.pattern.spoken }),
       items: evaluation.items,
       order: evaluation.order,
       failItem: evaluation.failItem,
     };
     // The game restarts at once: the next number is already running.
     this.nextCall();
-    if (this.phase !== 'drawn') this.say(this.falseCall.text, 'wince');
+    if (this.phase !== 'drawn') this.say(this.falseCall.text, 'wince', 'line', this.falseCall.spoken);
     this.emit('falseCall');
   }
 
