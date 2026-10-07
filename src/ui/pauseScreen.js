@@ -2,7 +2,7 @@ import { html, setText, callerImages } from './helpers.js';
 
 // The pause cover. It shows nothing about the game, so pausing never gives extra thinking time.
 
-export function pauseScreen(game, { onQuit }) {
+export function pauseScreen(game, { onQuit, onResume }) {
   const line = game.callerLines.game.pause[0];
   const el = html(`<main class="screen tense">
     <div class="pause">
@@ -34,7 +34,7 @@ export function pauseScreen(game, { onQuit }) {
   const buttons = el.querySelector('[data-buttons]');
   const confirmBox = el.querySelector('[data-confirm]');
 
-  el.querySelector('[data-resume]').addEventListener('click', () => game.resume());
+  el.querySelector('[data-resume]').addEventListener('click', onResume);
   el.querySelector('[data-quit]').addEventListener('click', () => { confirmBox.hidden = false; });
   el.querySelector('[data-keep]').addEventListener('click', () => { confirmBox.hidden = true; });
   el.querySelector('[data-really]').addEventListener('click', onQuit);

@@ -7,6 +7,7 @@ export class Voice {
     this.config = config.voice;
     this.synth = typeof window !== 'undefined' ? window.speechSynthesis : null;
     this.chosen = null;
+    this.current = null;
     this.synth?.addEventListener?.('voiceschanged', () => {
       this.chosen = null;
     });
@@ -30,14 +31,6 @@ export class Voice {
     return this.settings.get('voiceOn');
   }
 
-  // Phones only start speaking after a tap, so call this from the Play button.
-  unlock() {
-    if (!this.supported) return;
-    const quiet = new SpeechSynthesisUtterance(' ');
-    quiet.volume = 0;
-    this.synth.speak(quiet);
-  }
-
   pickVoice() {
     if (this.chosen) return this.chosen;
     const voices = this.synth.getVoices();
@@ -51,16 +44,29 @@ export class Voice {
 
   speak(text) {
     if (!this.on || !text) return;
-    this.synth.cancel(); // a new line always cuts off the last one, so he never falls behind
+    // Leave an idle engine alone. In particular, don't queue and immediately
+    // cancel a silent "unlock" utterance before the first real call on iOS.
+    if (this.current || this.synth.speaking || this.synth.pending) this.cancel();
+    if (this.synth.paused) this.synth.resume();
     const utterance = new SpeechSynthesisUtterance(text);
     const voice = this.pickVoice();
     if (voice) utterance.voice = voice;
+    utterance.lang = voice?.lang || 'en-AU';
+    utterance.volume = 1;
     utterance.rate = this.config.rate;
     utterance.pitch = this.config.pitch;
+    // Retain the utterance until completion, including while Safari starts it.
+    this.current = utterance;
+    const release = () => {
+      if (this.current === utterance) this.current = null;
+    };
+    utterance.onend = release;
+    utterance.onerror = release;
     this.synth.speak(utterance);
   }
 
   cancel() {
+    this.current = null;
     this.synth?.cancel();
   }
 }

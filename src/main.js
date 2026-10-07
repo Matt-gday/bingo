@@ -47,7 +47,6 @@ function showStart() {
     voice,
     onChoose: (id) => settings.set('speedId', id),
     onPlay: () => {
-      voice.unlock(); // phones only allow speech after a tap
       if (settings.get('shoutTested')) startGame();
       else showTest(true);
     },
@@ -63,7 +62,6 @@ function showTest(thenPlay) {
     mic,
     settings,
     onDone: (result) => {
-      voice.unlock();
       if (result !== 'back' && playAfterTest) startGame();
       else showStart();
     },
@@ -71,11 +69,16 @@ function showTest(thenPlay) {
 }
 
 function startGame() {
+  // Release microphone capture before starting output, while still in the tap.
+  current?.destroy?.();
+  current = null;
+  let starting = true;
   game = new Game({
     config, patterns, callerLines, speedId: settings.get('speedId'), stageIds: STAGES,
   });
   game.on((type, data) => {
     if (type === 'say') {
+      if (starting) return; // start() emits both a greeting and the first number
       if (data.kind === 'lock' && !config.voice.speakMarksLocked) return;
       voice.speak(data.text);
     } else if (type === 'pause') {
@@ -83,8 +86,8 @@ function startGame() {
     }
   });
   game.start();
-  current?.destroy?.();
-  current = null;
+  starting = false;
+  voice.speak(game.bubble.text); // real speech directly inside the Play tap
   if (import.meta.env.DEV) window.__game = game; // for testing in the browser console only
 }
 
@@ -101,7 +104,13 @@ function sync() {
     checking: () => checkingScreen(game),
     falseCall: () => falseCallScreen(game),
     result: () => resultScreen(game, { onAgain: startGame, onChange: showStart }),
-    pause: () => pauseScreen(game, { onQuit: showStart }),
+    pause: () => pauseScreen(game, {
+      onQuit: showStart,
+      onResume: () => {
+        voice.speak('Eyes down, everyone!');
+        game.resume();
+      },
+    }),
   };
   show(wanted, builders[wanted]);
 }

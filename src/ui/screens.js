@@ -36,6 +36,7 @@ export function startScreen({ config, chosenSpeed, voice, onPlay, onChoose, onTe
       <div class="extras">
         <button class="btn btn-ghost" data-test>${icons.mic(18, 2.6)}Test your shout</button>
         <button class="btn btn-ghost" data-voice></button>
+        <button class="btn btn-ghost" data-test-voice>Test caller</button>
       </div>
       <div class="spacer"></div>
       <div class="buttons"><button class="btn btn-aqua" data-play>Play</button></div>
@@ -60,6 +61,13 @@ export function startScreen({ config, chosenSpeed, voice, onPlay, onChoose, onTe
     if (voice.on) voice.speak('Eyes down, everyone!');
   });
   showVoice();
+  const testVoice = el.querySelector('[data-test-voice]');
+  testVoice.hidden = !voice.supported;
+  testVoice.addEventListener('click', () => {
+    voice.setOn(true);
+    showVoice();
+    voice.speak('Eyes down, everyone! Can you hear me?');
+  });
   return { el, update() {} };
 }
 
@@ -209,7 +217,9 @@ export function playScreen(game, { voice, mic, settings }) {
   const muteButton = el.querySelector('[data-mute]');
   const muteBadge = el.querySelector('[data-mute-badge]');
   muteButton.hidden = false;
-  muteButton.addEventListener('click', () => voice.toggle());
+  muteButton.addEventListener('click', () => {
+    if (voice.toggle()) voice.speak(game.bubble.text);
+  });
   const pauseButton = el.querySelector('[data-pause]');
   pauseButton.addEventListener('click', () => game.pauseByPlayer());
 
