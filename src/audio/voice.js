@@ -140,7 +140,9 @@ export class Voice {
   // A protected line has finished playing, so the voice is free again.
   finished() {
     clearTimeout(this.protectTimer);
+    const wasProtecting = this.protecting;
     this.protecting = false;
+    if (wasProtecting) this.onProtectedFinished?.(); // the game waits for this before calling the next number
   }
 
   cancel() {

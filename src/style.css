@@ -639,6 +639,18 @@ button {
 
 /* ---------- Checking and false call ---------- */
 
+.check-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+  padding-top: 32px;
+}
+.back-cards {
+  margin-top: auto;
+  height: 64px;
+  font-size: 24px;
+}
 .check-head {
   display: flex;
   flex-direction: column;

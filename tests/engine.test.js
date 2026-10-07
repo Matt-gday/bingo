@@ -178,7 +178,8 @@ test('on the shout screen the player gets a grace period after the ring runs out
   assert.equal(game.screen, 'shout');
   game.submitClaim(); // a claim in the grace period is still taken (no marks, so it is a false call)
   assert.equal(game.falseCalls, 1);
-  assert.notEqual(game.currentNumber, first, 'the game restarts after the false call');
+  assert.equal(game.screen, 'checking');
+  assert.equal(game.currentNumber, first, 'the numbers wait while the caller explains');
 });
 
 test('without a claim the next number comes after the grace period', () => {
@@ -219,26 +220,60 @@ test('marks cannot be placed while locked in or on the shout screen', () => {
   assert.equal(game.pending, null);
 });
 
-test('a false call restarts the game and sits the player out for two calls', () => {
+// Lets the caller finish and the next number start after a failed claim.
+function finishFalseCall(game) {
+  game.lineFinished();
+  runFor(game, config.check.afterLineMs + 100);
+}
+
+test('a false call keeps the numbers waiting, then restarts the game and sits the player out for two calls', () => {
   const game = newGame();
   game.tapSquare(0, 0, 0);
   game.openShout();
   game.submitClaim(); // nothing near a line: false straight away
-  assert.equal(game.screen, 'falseCall');
-  assert.equal(game.notice, null, 'a false call is not "too slow"');
+  assert.equal(game.screen, 'checking', 'the same checking screen, not a separate one');
   assert.equal(game.falseCalls, 1);
-  assert.equal(game.called.length, 2, 'the next number is already running');
+  assert.equal(game.called.length, 1, 'no new number while the caller is talking');
+  assert.equal(game.phase, 'checking');
+  runFor(game, 3000);
+  assert.equal(game.called.length, 1, 'still waiting for the caller to finish');
+  finishFalseCall(game);
+  assert.equal(game.called.length, 2, 'the next number starts once he has finished');
+  assert.equal(game.phase, 'calling');
   assert.equal(game.sitOut, 2);
+  assert.equal(game.restartedAfterFalseCall, true);
   game.backToCards();
+  assert.equal(game.screen, 'cards');
   game.tapSquare(0, 1, 1);
   assert.equal(game.pending, null, 'cannot mark while sitting out');
   assert.equal(game.canClaim, false);
-  runFor(game, ms('steady') + 100 + config.marking.lockMomentMs + 50);
+  runFor(game, ms('steady') + config.marking.lockMomentMs + 100);
   assert.equal(game.sitOut, 1);
-  runFor(game, ms('steady') + 100 + config.marking.lockMomentMs + 50);
+  runFor(game, ms('steady') + config.marking.lockMomentMs + 100);
   assert.equal(game.sitOut, 0);
   game.tapSquare(0, 1, 1);
   assert.notEqual(game.pending, null);
+});
+
+test('if the voice never reports back, the next number starts after the longest wait', () => {
+  const game = newGame();
+  game.openShout();
+  game.submitClaim();
+  runFor(game, config.check.failLineMaxMs - 200);
+  assert.equal(game.called.length, 1);
+  runFor(game, 400);
+  assert.equal(game.called.length, 2);
+});
+
+test('with the voice off the line is simply given time to be read', () => {
+  const game = newGame();
+  game.openShout();
+  game.submitClaim();
+  game.lineFinished({ silent: true });
+  runFor(game, config.check.silentFailMs - 200);
+  assert.equal(game.called.length, 1);
+  runFor(game, 400);
+  assert.equal(game.called.length, 2);
 });
 
 test('a full game with a correct claim is won after the check', () => {
@@ -280,10 +315,13 @@ test('a bad claim is caught during the check, then the game goes on', () => {
   game.openShout();
   game.submitClaim();
   assert.equal(game.screen, 'checking');
-  for (let t = 0; t < 60000 && game.screen === 'checking'; t += 50) game.advance(50);
-  assert.equal(game.screen, 'falseCall');
+  for (let t = 0; t < 60000 && game.checking?.stage !== 'failed'; t += 50) game.advance(50);
+  assert.equal(game.screen, 'checking', 'the failure is shown on the checking screen');
+  assert.equal(game.checking.stage, 'failed');
   assert.equal(game.falseCall.reason, 'notCalled');
   assert.equal(game.sitOut, 2);
+  assert.equal(game.phase, 'checking', 'the numbers are paused while the caller explains');
+  finishFalseCall(game);
   assert.equal(game.phase, 'calling');
 });
 
@@ -355,10 +393,27 @@ test('going back to the cards after a false call does not make the caller speak 
   game.start();
   game.openShout();
   game.submitClaim();
+  game.lineFinished();
+  for (let t = 0; t < config.check.afterLineMs + 100; t += 50) game.advance(50);
   const heard = [];
   game.on((type, data) => type === 'say' && heard.push(data));
   game.backToCards();
-  assert.equal(heard.length, 0, 'the false-call line is left to finish');
+  assert.equal(heard.length, 0, 'nothing is said when going back');
   assert.equal(game.screen, 'cards');
   assert.notEqual(game.bubble.mood, 'wince', 'the bubble shows the current number again');
+});
+
+test('the number after a false call is called aloud once the caller has finished', () => {
+  const game = new Game({ config, patterns, callerLines, speedId: 'steady', stageIds: ['line'] });
+  game.start();
+  game.openShout();
+  const heard = [];
+  game.on((type, data) => type === 'say' && heard.push(data));
+  game.submitClaim();
+  assert.equal(heard.length, 1, 'only the false-call line at first');
+  assert.equal(heard[0].kind, 'falseCall');
+  game.lineFinished();
+  for (let t = 0; t < config.check.afterLineMs + 100; t += 50) game.advance(50);
+  assert.equal(heard.length, 2);
+  assert.equal(heard[1].kind, 'call', 'then the new number, even if the player has not tapped back');
 });

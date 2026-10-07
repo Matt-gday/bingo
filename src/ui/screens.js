@@ -286,13 +286,11 @@ export function playScreen(game, { voice, mic, settings }) {
   return { el, update };
 }
 
-// ---------- Checking ----------
+// ---------- Checking (the whole check, including a failed one, is on this one screen) ----------
 
-function discRow(game, root, mode) {
-  // mode 'checking' reads game.checking, mode 'falseCall' reads game.falseCall.
-  const source = mode === 'checking' ? game.checking.evaluation : game.falseCall;
-  const items = source.items;
+function discRow(items, root) {
   root.classList.toggle('many', items.length > 6);
+  root.hidden = items.length === 0;
   root.innerHTML = items
     .map((item) => `<div class="disc" data-n="${item.number}">${item.number}</div>`)
     .join('');
@@ -316,8 +314,9 @@ function paintDiscs(root, order, revealed, currentIndex) {
 }
 
 export function checkingScreen(game) {
+  const dotCount = game.config.falseCall.sitOutCalls;
   const el = html(`<main class="screen tense">
-    <div style="display:flex;flex-direction:column;gap:32px;flex:1;padding-top:40px">
+    <div class="check-page">
       <div class="check-head">
         <div class="pill-label">The caller has your card</div>
         <h1>Checking</h1>
@@ -327,63 +326,48 @@ export function checkingScreen(game) {
         <img data-caller alt="">
         <div class="speech"><span data-bubble></span></div>
       </div>
-      <p class="foot-note">The game is paused while your card is checked.</p>
-    </div>
-  </main>`);
-  const discs = el.querySelector('.discs');
-  discRow(game, discs, 'checking');
-  const bubble = callerBubble(game, el);
-  function update() {
-    const c = game.checking;
-    if (c) {
-      paintDiscs(discs, c.evaluation.order, c.revealed, c.stage === 'waiting' ? c.index : -1);
-      setClass(discs, 'final', game.isFinalReveal);
-    }
-    bubble.sync();
-  }
-  return { el, update };
-}
-
-// ---------- False call ----------
-
-export function falseCallScreen(game) {
-  const fc = game.falseCall;
-  const dotCount = game.config.falseCall.sitOutCalls;
-  const el = html(`<main class="screen tense">
-    <div style="display:flex;flex-direction:column;gap:26px;flex:1;padding-top:28px">
-      <div class="check-head">
-        <div class="pill-label">False call</div>
-        <h1 class="small">${esc(fc.headline)}</h1>
-      </div>
-      <div class="discs"></div>
-      <div class="caller-big wince">
-        <img src="${callerImages.wince}" alt="">
-        <div class="speech"><span>${esc(fc.text)}</span></div>
-      </div>
-      <div class="live-ball-card">
+      <div class="live-ball-card" data-live hidden>
         ${ballMarkup()}
         <div>
           <div class="title">The next number is already out</div>
           <div class="sub"><span class="dots" data-dots>${'<i></i>'.repeat(dotCount)}</span><span data-sit></span></div>
         </div>
       </div>
-      <button class="btn btn-aqua" style="margin-top:auto;height:64px;font-size:24px" data-back>Back to my cards</button>
+      <p class="foot-note" data-note>The game is paused while your card is checked.</p>
+      <button class="btn btn-aqua back-cards" data-back hidden>Back to my cards</button>
     </div>
   </main>`);
   const discs = el.querySelector('.discs');
-  if (fc.items.length) {
-    discRow({ falseCall: fc }, discs, 'falseCall');
-    const revealed = fc.order.map((item) => (item.problem ? 'bad' : 'ok'));
-    paintDiscs(discs, fc.order, revealed, -1);
-  }
+  discRow(game.checking.evaluation.items, discs);
+  const callerBig = el.querySelector('.caller-big');
+  const bubble = callerBubble(game, el);
+  const live = el.querySelector('[data-live]');
+  const note = el.querySelector('[data-note]');
+  const back = el.querySelector('[data-back]');
   const ballWrap = el.querySelector('.ball-wrap');
   const dots = [...el.querySelectorAll('[data-dots] i')];
   const sitText = el.querySelector('[data-sit]');
-  el.querySelector('[data-back]').addEventListener('click', () => game.backToCards());
+  back.addEventListener('click', () => game.backToCards());
+
   function update() {
-    updateBall(ballWrap, game);
-    dots.forEach((dot, i) => setClass(dot, 'on', i < game.sitOut));
-    setText(sitText, game.sitOut > 0 ? `Sitting out ${game.sitOut} ${game.sitOut === 1 ? 'call' : 'calls'}` : 'Back in the game');
+    const c = game.checking;
+    if (c) {
+      paintDiscs(discs, c.evaluation.order, c.revealed, c.stage === 'waiting' ? c.index : -1);
+      setClass(discs, 'final', game.isFinalReveal);
+      const failed = c.stage === 'failed';
+      setClass(callerBig, 'wince', failed); // a smaller bubble, so the next-number card fits underneath
+      // Once the caller has finished, the next number starts and appears underneath.
+      const restarted = game.restartedAfterFalseCall;
+      live.hidden = !restarted;
+      back.hidden = !restarted;
+      note.hidden = failed;
+      if (restarted) {
+        updateBall(ballWrap, game);
+        dots.forEach((dot, i) => setClass(dot, 'on', i < game.sitOut));
+        setText(sitText, game.sitOut > 0 ? `Sitting out ${game.sitOut} ${game.sitOut === 1 ? 'call' : 'calls'}` : 'Back in the game');
+      }
+    }
+    bubble.sync();
   }
   return { el, update };
 }

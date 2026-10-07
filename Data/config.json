@@ -86,7 +86,10 @@
     "firstDelayMs": 1800,
     "delayGrowth": 1.3,
     "finalDelayMs": 5000,
-    "resultBeatMs": 3500
+    "resultBeatMs": 3500,
+    "failLineMaxMs": 6000,
+    "afterLineMs": 700,
+    "silentFailMs": 2500
   },
   "falseCall": {
     "sitOutCalls": 2,

@@ -10,7 +10,7 @@ import { createSettings } from './settings.js';
 import { Mic } from './audio/mic.js';
 import { Voice } from './audio/voice.js';
 import {
-  startScreen, playScreen, checkingScreen, falseCallScreen, resultScreen,
+  startScreen, playScreen, checkingScreen, resultScreen,
 } from './ui/screens.js';
 import { shoutScreen, testScreen } from './ui/shoutScreens.js';
 import { pauseScreen } from './ui/pauseScreen.js';
@@ -70,6 +70,7 @@ function showTest(thenPlay) {
 }
 
 function startGame() {
+  voice.onProtectedFinished = () => game?.lineFinished();
   // Release microphone capture before starting output, while still in the tap.
   current?.destroy?.();
   current = null;
@@ -81,8 +82,13 @@ function startGame() {
     if (type === 'say') {
       if (starting) return; // start() emits both a greeting and the first number
       voice.speak(data.spoken ?? data.text, { protect: data.kind === 'falseCall' }); // the false-call line is left to finish
+    } else if (type === 'falseCall') {
+      // With the voice off there is no line to wait for, so give the player a moment to read it.
+      if (!voice.on) game.lineFinished({ silent: true });
     } else if (type === 'pause') {
       voice.cancel();
+      // The player's own pause gets the caller's "No peeking!". Leaving the app does not talk.
+      if (game.pauseReason === 'player') voice.speak(callerLines.game.pause[0]);
     }
   });
   game.start();
@@ -96,13 +102,12 @@ function sync() {
   if (!game) return;
   const wanted = game.pauseState
     ? 'pause'
-    : { cards: 'play', shout: 'shout', checking: 'checking', falseCall: 'falseCall', result: 'result' }[game.screen];
+    : { cards: 'play', shout: 'shout', checking: 'checking', result: 'result' }[game.screen];
   if (current?.name === wanted) return;
   const builders = {
     play: () => playScreen(game, { voice, mic, settings }),
     shout: () => shoutScreen(game, { mic, settings }),
     checking: () => checkingScreen(game),
-    falseCall: () => falseCallScreen(game),
     result: () => resultScreen(game, { onAgain: startGame, onChange: showStart }),
     pause: () => pauseScreen(game, {
       onQuit: showStart,

@@ -46,6 +46,7 @@ export class Game {
     this.result = null;
     this.bubble = { text: '', mood: 'talking' };
     this.notice = null; // a short message over the cards, such as "Too slow!"
+    this.pendingRestart = null; // after a failed claim, the next number waits for the caller to finish
     this.pauseState = null; // null, 'paused' or 'resuming' (the 3, 2, 1)
     this.pauseReason = null; // 'player' or 'auto'
     this.pausesLeft = this.config.pause.pausesPerGame;
@@ -175,7 +176,11 @@ export class Game {
       this.notice.msLeft -= dt;
       if (this.notice.msLeft <= 0) this.notice = null;
     }
-    if (this.checking) this.advanceChecking(dt);
+    if (this.pendingRestart) {
+      this.pendingRestart.msLeft -= dt;
+      if (this.pendingRestart.msLeft <= 0) this.restartAfterFalseCall();
+    }
+    if (this.checking && this.checking.stage !== 'failed') this.advanceChecking(dt);
     if (this.phase === 'calling') {
       this.callElapsed += dt;
       if (this.callElapsed >= this.callMs) this.endCall();
@@ -289,7 +294,10 @@ export class Game {
       config: this.config,
     });
     if (evaluation.result === 'noPattern') {
-      this.screen = 'falseCall'; // leave the shout screen first, so the restart is not mistaken for "too slow"
+      // No complete line to check: the same checking screen, with nothing to tick and the caller saying why.
+      this.phase = 'checking';
+      this.screen = 'checking';
+      this.checking = { evaluation, index: 0, revealed: [], stage: 'failed', elapsed: 0, waitMs: 0 };
       this.startFalseCall(evaluation);
       return;
     }
@@ -332,7 +340,7 @@ export class Game {
       c.revealed[c.index] = item.problem ? 'bad' : 'ok';
       c.elapsed = 0;
       if (item.problem) {
-        c.stage = 'concluded';
+        c.stage = 'failed'; // the checking screen stays; the next number waits for the caller to finish
         this.startFalseCall(c.evaluation);
         this.emit('reveal', { ok: false });
       } else if (c.index === c.evaluation.order.length - 1) {
@@ -347,14 +355,10 @@ export class Game {
         this.emit('reveal', { ok: true });
       }
     } else if (c.stage === 'concluded' && c.elapsed >= this.config.check.resultBeatMs) {
-      if (this.phase === 'won') {
-        this.screen = 'result';
-        this.result = { outcome: 'win', falseCalls: this.falseCalls, calls: this.called.length };
-        this.emit('end');
-      } else if (this.screen === 'checking') {
-        this.screen = 'falseCall';
-      }
+      this.screen = 'result';
+      this.result = { outcome: 'win', falseCalls: this.falseCalls, calls: this.called.length };
       this.checking = null;
+      this.emit('end');
     }
   }
 
@@ -378,10 +382,28 @@ export class Game {
       order: evaluation.order,
       failItem: evaluation.failItem,
     };
-    // The game restarts at once: the next number is already running.
-    this.nextCall({ announce: false });
-    if (this.phase !== 'drawn') this.say(this.falseCall.text, 'wince', 'falseCall', this.falseCall.spoken);
+    // The numbers stay paused while the caller explains. The next number starts when he has finished
+    // (the voice tells us with lineFinished), or after a short wait if there is no voice.
+    this.pendingRestart = { msLeft: this.config.check.failLineMaxMs };
+    this.say(this.falseCall.text, 'wince', 'falseCall', this.falseCall.spoken);
     this.emit('falseCall');
+  }
+
+  // The caller has finished the false-call line. Start the next number after a short beat.
+  lineFinished({ silent = false } = {}) {
+    if (!this.pendingRestart) return;
+    const beat = silent ? this.config.check.silentFailMs : this.config.check.afterLineMs;
+    this.pendingRestart.msLeft = Math.min(this.pendingRestart.msLeft, beat);
+  }
+
+  restartAfterFalseCall() {
+    this.pendingRestart = null;
+    this.nextCall({ announce: true });
+  }
+
+  // True once the next number is running behind the failed check.
+  get restartedAfterFalseCall() {
+    return this.checking?.stage === 'failed' && !this.pendingRestart && this.phase === 'calling';
   }
 
   falseCallHeadline(reason, number) {
@@ -397,13 +419,11 @@ export class Game {
   }
 
   backToCards() {
-    if (this.screen === 'falseCall') {
+    if (this.screen === 'checking' && this.restartedAfterFalseCall) {
       this.screen = 'cards';
-      if (this.phase === 'calling') {
-        // Show the current number again, but do not say it: the false-call line may still be playing
-        // and must be left to finish.
-        this.bubble = { text: callText(this.currentNumber, this.callerLines, this.speed.useNicknames), mood: 'talking' };
-      }
+      this.checking = null;
+      // Show the current number again, but do not say it: it was already called, and a line may still be playing.
+      this.bubble = { text: callText(this.currentNumber, this.callerLines, this.speed.useNicknames), mood: 'talking' };
     }
   }
 
