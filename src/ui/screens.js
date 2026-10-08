@@ -39,6 +39,7 @@ function startCallerTalk(el, callerEl, { voice, config, callerLines }) {
   // The bubble is only there while he is talking: it pops open as he starts a line, and pops down to nothing
   // as soon as the line has been said, so the whole caller can be seen.
   const bubbleEl = lineEl.parentElement;
+  const rowEl = bubbleEl.parentElement; // gets the class 'talking' while he speaks, which slides him to the left
   bubbleEl.classList.add('gone');
   let closeTimer = null;
   const say = (text, move) => {
@@ -46,10 +47,14 @@ function startCallerTalk(el, callerEl, { voice, config, callerLines }) {
     clearTimeout(closeTimer);
     lineEl.textContent = text;
     bubbleEl.classList.remove('gone', 'pop-out');
+    rowEl.classList.add('talking');
     popIn(bubbleEl);
     emote({ ...move, talkMs: ms });
     if (voice.on && voice.engine.ctx?.state === 'running') voice.speak(text);
-    closeTimer = setTimeout(() => bubbleEl.classList.add('pop-out'), ms + 400);
+    closeTimer = setTimeout(() => {
+      bubbleEl.classList.add('pop-out');
+      rowEl.classList.remove('talking'); // the bubble has gone, so he bounces back to the middle
+    }, ms + 400);
     return ms;
   };
   const chatter = () => {

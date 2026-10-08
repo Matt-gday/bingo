@@ -858,10 +858,17 @@ button {
   width: 176px;
   height: 176px;
   flex-shrink: 0;
+  margin-left: calc(50% - 88px); /* in the middle while he is quiet */
+  transition: margin-left 0.55s cubic-bezier(0.34, 1.5, 0.64, 1);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
+.home-row.talking .start-caller {
+  margin-left: 0; /* slides left to make room for the bubble */
+}
 .home-speech {
+  flex: 0 0 auto;
+  width: calc(100% - 182px);
   min-height: 112px;
   padding: 14px 16px;
   border-radius: 22px;
