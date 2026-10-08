@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glossy style mock-up</title>
+<style>
+  @font-face { font-family: 'Fredoka'; src: url('node_modules/@fontsource-variable/fredoka/files/fredoka-latin-wght-normal.woff2') format('woff2'); font-weight: 300 700; }
+  @font-face { font-family: 'Nunito'; src: url('node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2') format('woff2'); font-weight: 200 1000; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.4 'Nunito', system-ui, sans-serif; color: #2b1b6b; background: #f1ecff; }
+  header { padding: 18px 22px; color: #fff; background: linear-gradient(170deg, #5236d6, #7b45e6 55%, #c257d9); }
+  header h1 { margin: 0 0 4px; font: 700 26px 'Fredoka', sans-serif; }
+  header p { margin: 0; max-width: 820px; opacity: .92; }
+  .wrap { display: flex; flex-wrap: wrap; gap: 26px; justify-content: center; padding: 24px; }
+  .col h2 { margin: 0 0 10px; text-align: center; font: 600 18px 'Fredoka', sans-serif; }
+  .strip { width: 760px; max-width: 100%; margin: 0 auto 30px; padding: 0 24px; }
+  .strip h3 { margin: 0 0 8px; font: 600 16px 'Fredoka', sans-serif; color: #5b4a9e; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .box { padding: 18px; border-radius: 20px; background: linear-gradient(170deg, #5236d6 0%, #7b45e6 45%, #c257d9 100%); display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; }
+  .label { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; text-align: center; font-weight: 800; color: #7c6cc4; margin-bottom: 4px; }
+
+  /* ================= NOW (flat, as the game is today) ================= */
+  .phone { position: relative; overflow: hidden; width: 390px; height: 800px; padding: 16px 16px 14px; border-radius: 30px; color: #fff; background: linear-gradient(170deg, #5236d6 0%, #7b45e6 45%, #c257d9 100%); display: flex; flex-direction: column; gap: 12px; box-shadow: 0 8px 0 rgba(43,27,107,.25); }
+  .top { display: flex; align-items: center; gap: 10px; }
+  .ball-wrap { position: relative; flex: 0 0 92px; width: 92px; height: 92px; }
+  .ball-wrap svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .ball { position: absolute; inset: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 50%; color: #1a1446; background: radial-gradient(circle at 32% 26%, #fff 0%, #8ff7ee 20%, #2ee6d6 58%, #12a99c 100%); box-shadow: 0 4px 0 rgba(26,20,70,.25); }
+  .ball .l { font: 600 13px/1 'Fredoka', sans-serif; }
+  .ball .n { font: 700 36px/1 'Fredoka', sans-serif; }
+  .caller { flex: 0 0 52px; width: 52px; height: 52px; object-fit: contain; }
+  .bubble { position: relative; flex: 1; min-height: 38px; padding: 8px 12px; border-radius: 18px; background: #fff; color: #2b1b6b; box-shadow: 0 4px 0 rgba(43,27,107,.25); font: 600 19px/22px 'Fredoka', sans-serif; }
+  .bubble::before { content: ''; position: absolute; left: -4px; top: 14px; width: 12px; height: 12px; border-radius: 2px; background: #fff; transform: rotate(45deg); }
+  .pausebtn { flex: 0 0 44px; height: 44px; border-radius: 16px; background: #fff; color: #2b1b6b; box-shadow: 0 3px 0 rgba(26,20,70,.25); display: grid; place-items: center; font: 700 22px 'Fredoka', sans-serif; }
+  .row2 { display: flex; justify-content: space-between; align-items: center; height: 30px; }
+  .target { display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 14px; background: rgba(43,27,107,.55); font-size: 12px; font-weight: 800; }
+  .chips { display: flex; gap: 4px; }
+  .chip { height: 28px; min-width: 36px; display: flex; align-items: center; justify-content: center; padding: 0 4px; border-radius: 14px; background: #fff; color: #2b1b6b; box-shadow: 0 2px 0 rgba(26,20,70,.2); font: 600 12px/1 'Fredoka', sans-serif; }
+  .letters { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 0 8px; margin: 0 0 -8px; text-align: center; font: 700 18px/1 'Fredoka', sans-serif; }
+  .card { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px 4px; padding: 8px 8px 10px; border-radius: 22px; background: #fff; box-shadow: 0 6px 0 rgba(43,27,107,.3); }
+  .sq { height: 40px; border: 0; border-radius: 12px; background: #f1ecff; color: #2b1b6b; box-shadow: 0 2px 0 #d6ccfa; font: 600 20px/1 'Fredoka', sans-serif; display: flex; align-items: center; justify-content: center; }
+  .sq.locked, .sq.free { background: #6a3df0; color: #fff; box-shadow: 0 2px 0 #4321b8; }
+  .sq.free { font-size: 12px; letter-spacing: .06em; }
+  .sq.pending { border: 3px solid #12a99c; background: #2ee6d6; color: #1a1446; box-shadow: 0 2px 0 #0e9287; font-weight: 700; }
+  .bottom { margin-top: auto; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 66px; border: 0; border-radius: 26px; font: 700 20px/1 'Fredoka', sans-serif; }
+  .btn.aqua { background: #2ee6d6; color: #1a1446; box-shadow: 0 6px 0 #0e9287; }
+  .btn.white { height: 56px; border-radius: 28px; background: #fff; color: #2b1b6b; box-shadow: 0 5px 0 rgba(0,0,0,.3); font-weight: 600; font-size: 18px; }
+  .btn.ghost { width: auto; height: 44px; padding: 0 20px; border-radius: 22px; background: rgba(255,255,255,.14); color: #fff; font-weight: 600; font-size: 15px; }
+  .disc { width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font: 700 22px/1 'Fredoka', sans-serif; }
+  .disc.wait { background: #3a2fa0; color: #cfcaf7; }
+  .disc.ok { background: #6a3df0; color: #fff; box-shadow: 0 3px 0 #4321b8; }
+  .disc.current { width: 80px; height: 80px; border: 5px solid #fff; background: #6a3df0; color: #fff; font-size: 32px; box-shadow: 0 0 0 6px rgba(46,230,214,.45); }
+  .live { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 22px; background: rgba(255,255,255,.1); font: 600 17px/1.2 'Fredoka', sans-serif; }
+  .meter { position: relative; width: 100%; height: 20px; border-radius: 10px; background: rgba(255,255,255,.16); }
+  .meter i { display: block; width: 56%; height: 20px; border-radius: 10px; background: #2ee6d6; }
+
+  /* ================= GLOSSY (the same things, with a shine) ================= */
+  .g .phone, .g.phone { box-shadow: 0 8px 0 rgba(43,27,107,.25), 0 22px 34px rgba(43,27,107,.28); }
+
+  /* every glossy surface: a bright edge along the top, a soft shade along the bottom, and a curved shine */
+  .g .bubble, .g .chip, .g .card, .g .pausebtn, .g .btn, .g .sq, .g .disc, .g .target, .g .live { position: relative; overflow: hidden; }
+  .g .bubble::after, .g .chip::after, .g .card::after, .g .pausebtn::after, .g .btn::after, .g .disc::after, .g .target::after, .g .live::after {
+    content: ''; position: absolute; left: 7%; right: 7%; top: 4%; height: 42%; border-radius: 999px 999px 70% 70% / 999px 999px 45% 45%;
+    background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.06)); pointer-events: none;
+  }
+  .g .bubble { background: linear-gradient(180deg, #ffffff 0%, #f4efff 100%); box-shadow: 0 4px 0 rgba(43,27,107,.25), 0 10px 16px rgba(43,27,107,.2), inset 0 2px 0 #fff, inset 0 -3px 5px rgba(120,90,200,.16); overflow: visible; }
+  .g .bubble::after { background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,0)); height: 38%; border-radius: 18px 18px 60% 60% / 18px 18px 40% 40%; left: 3%; right: 3%; top: 2px; }
+  .bubble span { position: relative; z-index: 1; }
+  .g .pausebtn { background: linear-gradient(180deg, #fff, #ece4ff); box-shadow: 0 3px 0 rgba(26,20,70,.25), 0 8px 12px rgba(26,20,70,.2), inset 0 2px 0 #fff, inset 0 -3px 4px rgba(120,90,200,.2); }
+  .g .chip { background: linear-gradient(180deg, #fff, #ece4ff); box-shadow: 0 2px 0 rgba(26,20,70,.2), 0 5px 8px rgba(26,20,70,.16), inset 0 1px 0 #fff, inset 0 -2px 3px rgba(120,90,200,.18); }
+  .g .chip::after { height: 46%; }
+  .g .target, .g .live { background: linear-gradient(180deg, rgba(86,60,170,.7), rgba(43,27,107,.62)); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 3px 6px rgba(20,8,70,.25); }
+  .g .live { background: linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,.07)); box-shadow: inset 0 1.5px 0 rgba(255,255,255,.5), 0 8px 14px rgba(20,8,70,.2); }
+  .g .target::after, .g .live::after { opacity: .35; }
+
+  .g .card { background: linear-gradient(180deg, #ffffff 0%, #f6f1ff 60%, #ece4ff 100%); box-shadow: 0 6px 0 rgba(43,27,107,.3), 0 20px 30px rgba(43,27,107,.28), inset 0 2px 0 #fff; overflow: hidden; }
+  .g .card::after { height: 17%; left: 0; right: 0; top: 0; border-radius: 22px 22px 100% 100% / 22px 22px 40% 40%; background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,0)); }
+  .g .sq { background: linear-gradient(180deg, #ffffff 0%, #f1ecff 55%, #e0d5ff 100%); box-shadow: 0 2px 0 #d6ccfa, 0 4px 6px rgba(110,80,200,.18), inset 0 2px 1px #fff, inset 0 -3px 4px rgba(110,80,200,.16); z-index: 1; }
+  .g .sq::before { content: ''; position: absolute; left: 12%; top: 8%; width: 46%; height: 26%; border-radius: 50%; background: radial-gradient(ellipse at 40% 40%, rgba(255,255,255,.95), rgba(255,255,255,0) 72%); pointer-events: none; }
+  .g .sq.locked, .g .sq.free { background: linear-gradient(180deg, #a182ff 0%, #6a3df0 52%, #4a24c9 100%); box-shadow: 0 2px 0 #4321b8, 0 4px 8px rgba(67,33,184,.35), inset 0 2px 1px rgba(255,255,255,.6), inset 0 -3px 5px rgba(20,0,100,.35); }
+  .g .sq.locked::before, .g .sq.free::before { background: radial-gradient(ellipse at 40% 40%, rgba(255,255,255,.7), rgba(255,255,255,0) 72%); }
+  .g .sq.pending { background: linear-gradient(180deg, #9ff8f0 0%, #2ee6d6 50%, #12b3a5 100%); border-color: #12a99c; box-shadow: 0 2px 0 #0e9287, 0 4px 10px rgba(14,146,135,.4), inset 0 2px 1px rgba(255,255,255,.8), inset 0 -3px 5px rgba(0,90,80,.3); }
+
+  .g .btn.aqua { background: linear-gradient(180deg, #a6fbf3 0%, #2ee6d6 46%, #14b5a8 100%); box-shadow: 0 6px 0 #0e9287, 0 16px 22px rgba(14,146,135,.4), inset 0 3px 1px rgba(255,255,255,.85), inset 0 -6px 10px rgba(0,80,70,.25); }
+  .g .btn.white { background: linear-gradient(180deg, #fff, #ece4ff); box-shadow: 0 5px 0 rgba(0,0,0,.3), 0 14px 20px rgba(0,0,0,.22), inset 0 2px 1px #fff, inset 0 -5px 8px rgba(120,90,200,.2); }
+  .g .btn.ghost { background: linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,.1)); box-shadow: inset 0 1.5px 0 rgba(255,255,255,.7), inset 0 -2px 4px rgba(20,8,70,.15), 0 5px 10px rgba(20,8,70,.2); }
+  .g .btn::after { height: 40%; }
+  .g .btn span { position: relative; z-index: 1; }
+  .g .btn.white::after { opacity: .8; }
+
+  .g .ball { background: radial-gradient(circle at 30% 24%, #fff 0%, #a9fbf3 16%, #2ee6d6 52%, #0f9d92 100%); box-shadow: 0 5px 0 rgba(26,20,70,.25), 0 12px 18px rgba(14,60,70,.3), inset -5px -8px 14px rgba(0,70,70,.3), inset 4px 5px 8px rgba(255,255,255,.55); position: absolute; overflow: hidden; }
+  .g .ball::before { content: ''; position: absolute; left: 17%; top: 10%; width: 40%; height: 24%; border-radius: 50%; background: radial-gradient(ellipse at 40% 40%, rgba(255,255,255,.95), rgba(255,255,255,0) 75%); transform: rotate(-24deg); pointer-events: none; }
+  .g .ball .l, .g .ball .n { position: relative; z-index: 1; }
+
+  .g .disc.wait { background: linear-gradient(180deg, rgba(120,100,220,.5), rgba(58,47,160,.8)); box-shadow: inset 0 2px 0 rgba(255,255,255,.3); }
+  .g .disc.ok { background: linear-gradient(180deg, #a182ff 0%, #6a3df0 52%, #4a24c9 100%); box-shadow: 0 3px 0 #4321b8, 0 6px 10px rgba(67,33,184,.35), inset 0 2px 1px rgba(255,255,255,.55), inset 0 -3px 5px rgba(20,0,100,.3); }
+  .g .disc.current { background: linear-gradient(180deg, #a182ff 0%, #6a3df0 52%, #4a24c9 100%); box-shadow: 0 0 0 6px rgba(46,230,214,.45), 0 8px 14px rgba(20,0,100,.35), inset 0 3px 2px rgba(255,255,255,.5); }
+  .g .disc::after { height: 38%; left: 14%; right: 14%; }
+  .g .meter i { background: linear-gradient(180deg, #a6fbf3, #2ee6d6 55%, #14b5a8); box-shadow: inset 0 2px 1px rgba(255,255,255,.7), 0 2px 6px rgba(14,146,135,.4); }
+  .g .meter { box-shadow: inset 0 2px 4px rgba(20,8,70,.3); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Glossy style mock-up</h1>
+  <p>The same screen twice: <b>Now</b> on the left and a <b>Glossy</b> version on the right. Every surface gets a bright edge along the top, a soft shade along the bottom, a curved shine, and a softer shadow, to match the glossy caller. Nothing about the layout changes.</p>
+</header>
+
+<div class="wrap" id="phones"></div>
+
+<div class="strip">
+  <h3>Close-ups of the pieces</h3>
+  <div class="pair">
+    <div class="label"><span>Now</span><span>Glossy</span></div>
+    <div class="box" id="close-flat"></div>
+    <div class="box g" id="close-gloss"></div>
+  </div>
+</div>
+
+<script>
+// ---------- a small play screen, built twice ----------
+function ring() {
+  return `<svg viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="45" stroke="#fff" stroke-opacity=".3" stroke-width="6"/><circle cx="48" cy="48" r="45" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-dasharray="170 283" stroke-dashoffset="-113" transform="rotate(-90 48 48)"/></svg>`;
+}
+const cardA = [[7, 19, 34, 52, 68], [11, 28, 41, 47, 61], [3, 22, 'F', 59, 73], [15, 16, 38, 50, 66], [9, 30, 45, 56, 70]];
+const cardB = [[11, 24, 37, 52, 64], [5, 19, 44, 58, 75], [14, 27, 'F', 49, 68], [2, 30, 33, 60, 71], [8, 21, 40, 46, 62]];
+const lockedA = new Set([7, 19, 52, 68, 28, 59, 66, 9]);
+const lockedB = new Set([24, 37, 44, 14, 60, 8, 62]);
+function card(grid, locked, pending) {
+  return `<div class="card">${grid.flat().map((n) => {
+    if (n === 'F') return '<div class="sq free">FREE</div>';
+    const cls = pending === n ? 'pending' : locked.has(n) ? 'locked' : '';
+    return `<div class="sq ${cls}">${n}</div>`;
+  }).join('')}</div>`;
+}
+function phone(glossy) {
+  return `<div class="col"><h2>${glossy ? 'Glossy' : 'Now'}</h2>
+  <div class="phone ${glossy ? 'g' : ''}">
+    <div class="top">
+      <div class="ball-wrap">${ring()}<div class="ball"><div class="l">B</div><div class="n">11</div></div></div>
+      <img class="caller" src="Images/characters/caller-talking.png" alt="">
+      <div class="bubble"><span>Legs eleven!</span></div>
+      <div class="pausebtn">II</div>
+    </div>
+    <div class="row2">
+      <div class="target">Stage 1 of 1: one line</div>
+      <div class="chips"><div class="chip">O 64</div><div class="chip">G 52</div><div class="chip">I 24</div><div class="chip">B 7</div></div>
+    </div>
+    <div class="letters"><div>B</div><div>I</div><div>N</div><div>G</div><div>O</div></div>
+    ${card(cardA, lockedA, 11)}
+    ${card(cardB, lockedB, null)}
+    <div class="bottom"><button class="btn aqua"><span>🎤 Call bingo!</span></button></div>
+  </div></div>`;
+}
+document.getElementById('phones').innerHTML = phone(false) + phone(true);
+
+// ---------- close-ups ----------
+const close = `
+  <button class="btn aqua" style="width:230px"><span>Call bingo!</span></button>
+  <button class="btn white" style="width:230px"><span>Hold to call bingo</span></button>
+  <button class="btn ghost"><span>Back to my cards</span></button>
+  <div class="chip">B 7</div><div class="chip">G 52</div><div class="pausebtn">II</div>
+  <div class="disc wait">19</div><div class="disc ok">7</div><div class="disc current">34</div>
+  <div class="ball-wrap">${ring()}<div class="ball"><div class="l">G</div><div class="n">47</div></div></div>
+  <div class="bubble" style="flex:0 0 220px"><span>Not quite. Forty-five is already on your other card.</span></div>
+  <div class="live" style="width:100%"><div class="ball-wrap" style="flex:0 0 60px;width:60px;height:60px">${ring()}<div class="ball" style="inset:7px"><div class="n" style="font-size:20px">25</div></div></div><span>The next number is already out</span></div>
+  <div class="meter" style="width:100%"><i></i></div>
+  <div class="sq" style="width:48px">24</div><div class="sq locked" style="width:48px">37</div><div class="sq pending" style="width:48px">11</div><div class="sq free" style="width:48px">FREE</div>`;
+document.getElementById('close-flat').innerHTML = close;
+document.getElementById('close-gloss').innerHTML = close;
+</script>
+</body>
+</html>
