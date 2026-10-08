@@ -3,6 +3,7 @@ import { columnLetters } from '../engine/cards.js';
 import { SpeechBubble } from './speech.js';
 import { attachCaller, emote } from './callerStage.js';
 import { shuffle } from '../engine/rng.js';
+import { popIn, POP_OUT_MS } from './speech.js';
 
 // Each screen function returns { el, update(game, now) }. update runs every frame
 // and only changes the page when something really changed.
@@ -36,10 +37,17 @@ function startCallerTalk(el, callerEl, { voice, config, callerLines }) {
 
   // Voice only if the phone has already allowed sound (after the first tap), never before.
   const say = (text, move) => {
-    lineEl.textContent = text;
-    emote({ ...move, talkMs: voice.estimateMs(text) });
-    if (voice.on && voice.engine.ctx?.state === 'running') voice.speak(text);
-    return voice.estimateMs(text);
+    const bubbleEl = lineEl.parentElement;
+    const ms = voice.estimateMs(text);
+    bubbleEl.classList.add('pop-out'); // the old bubble pops down to nothing...
+    setTimeout(() => {
+      bubbleEl.classList.remove('pop-out');
+      lineEl.textContent = text; // ...and the new one pops open just as he starts to speak
+      popIn(bubbleEl);
+      emote({ ...move, talkMs: ms });
+      if (voice.on && voice.engine.ctx?.state === 'running') voice.speak(text);
+    }, lineEl.textContent ? POP_OUT_MS : 0);
+    return ms + POP_OUT_MS;
   };
   const chatter = () => {
     if (!el.isConnected && timer !== 'first') return; // the start screen has gone

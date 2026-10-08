@@ -7,6 +7,16 @@ const prefersReducedMotion = () => window.matchMedia?.('(prefers-reduced-motion:
 // The caller's speech bubble. It is as tall as its text needs (up to `maxLines`). Longer text scrolls up as the
 // caller speaks, with the spoken rows fading and blurring away through the top of the bubble.
 // The bubble sits in a row that is already tall enough, so its size changing never moves anything around it.
+export const POP_OUT_MS = 140;
+
+// Opens a bubble with a quick pop.
+export function popIn(el) {
+  el.classList.remove('pop-in');
+  void el.offsetWidth; // lets the animation start again
+  el.classList.add('pop-in');
+  el.addEventListener('animationend', () => el.classList.remove('pop-in'), { once: true });
+}
+
 export class SpeechBubble {
   constructor(el, { voice, maxLines = () => 3 }) {
     this.el = el;
@@ -60,7 +70,28 @@ export class SpeechBubble {
 
   update(bubble, now) {
     if (!bubble) return;
-    if (bubble !== this.current) this.begin(bubble, now);
+    if (bubble !== this.current) {
+      // A new line: the old bubble pops down to nothing, then the new one pops open as he starts to speak.
+      const hadText = !!this.current?.text;
+      if (!hadText || prefersReducedMotion()) {
+        this.begin(bubble, now);
+        popIn(this.el);
+      } else if (!this.swapping) {
+        this.swapping = true;
+        this.el.classList.add('pop-out');
+        setTimeout(() => {
+          this.swapping = false;
+          this.el.classList.remove('pop-out');
+          this.swapped = true;
+        }, POP_OUT_MS);
+      }
+      if (this.swapped && !this.swapping) {
+        this.swapped = false;
+        this.begin(bubble, now);
+        popIn(this.el);
+      }
+      if (this.swapping) return;
+    }
     const elapsed = now - this.startedAt;
     const spoken = spokenRow(this.startTimes, elapsed);
     const target = scrollTarget(spoken, this.rows.length, this.visible);

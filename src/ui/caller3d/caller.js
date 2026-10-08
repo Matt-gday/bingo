@@ -32,7 +32,7 @@ export class Caller3D {
     this.scene.environmentIntensity = 0.7;
 
     this.camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
-    this.camera.position.set(0, 0.0, 5.3);
+    this.camera.position.set(0, -0.14, 5.8);
 
     this.buildLights();
     this.buildCharacter();

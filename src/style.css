@@ -1561,3 +1561,24 @@ button {
   height: 100%;
   object-fit: contain;
 }
+
+/* ---------- Speech bubbles pop down and open again ---------- */
+.speech {
+  transform-origin: 0% 50%;
+}
+.speech.pop-out {
+  animation: bubble-out 140ms ease-in forwards;
+}
+.speech.pop-in {
+  animation: bubble-in 280ms cubic-bezier(0.3, 1.5, 0.5, 1) backwards;
+}
+@keyframes bubble-out {
+  to { transform: scale(0); opacity: 0; }
+}
+@keyframes bubble-in {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .speech.pop-out, .speech.pop-in { animation: none; }
+}
