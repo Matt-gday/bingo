@@ -33,7 +33,10 @@ export class AudioEngine {
   // Call this from a tap the first time: phones only allow sound to start from something the player did.
   ensure() {
     if (this.ctx) {
-      if (this.ctx.state === 'suspended') this.ctx.resume?.();
+      if (this.ctx.state === 'suspended') {
+        this.ctx.resume?.();
+        this.keepAlive?.play?.()?.catch?.(() => {});
+      }
       return this.ctx;
     }
     const AudioContextClass = typeof window !== 'undefined' && (window.AudioContext || window.webkitAudioContext);

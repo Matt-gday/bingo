@@ -43,6 +43,9 @@ const music = new Music(engine, settings);
 const haptics = new Haptics(settings);
 const introPicker = createIntroPicker(callerLines.game.intro, settings);
 const audioBase = `${import.meta.env.BASE_URL}audio/`;
+// Get the audio ready as the page loads. Until the player's first tap the phone keeps it silent, but music
+// that is already loaded and waiting starts the moment that first tap wakes the audio up.
+engine.ensure();
 voice.loadClips(`${audioBase}caller/`);
 sfx.loadList(`${audioBase}sfx/`);
 music.loadList(`${audioBase}music/`);

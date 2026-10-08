@@ -25,7 +25,8 @@ export class Music {
           this.base = baseUrl;
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .then(() => this.sync()); // a screen may have asked for its music before this list arrived
   }
 
   // Say which track belongs here. It starts once music is on and the phone has allowed sound.

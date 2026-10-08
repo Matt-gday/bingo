@@ -158,3 +158,51 @@ test('the welcome picker copes with an empty list and with a saved list from old
   const picker = createIntroPicker(['a', 'b', 'c'], saved);
   assert.equal(picker.next(), 'c', 'only the valid saved index is used');
 });
+
+test('music that was asked for before its list arrived starts once the list is loaded', async () => {
+  const log = [];
+  const music = new Music(fakeEngine(log), settings({ musicOn: true }));
+  music.play('home'); // the screen asks first, while the list of tracks is still downloading
+  await settle();
+  assert.equal(log.length, 0, 'nothing to play yet');
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: true, json: async () => ({ tracks: { home: { file: 'home.mp3', volume: 0.35 } } }) });
+  try {
+    await music.loadList('./music/');
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+  await settle();
+  assert.ok(log.some((entry) => entry.loop === './music/home.mp3'), 'it starts without the player touching the music switch');
+});
+
+test('music is on by default and stays off only if the player turned it off', async () => {
+  const { createSettings } = await import('../src/settings.js');
+  const make = (saved) => {
+    globalThis.localStorage = { getItem: () => saved, setItem() {} };
+    return createSettings({ shout: { defaultLoudnessThreshold: 0.6 } });
+  };
+  try {
+    assert.equal(make(null).get('musicOn'), true);
+    assert.equal(make(JSON.stringify({ musicOn: false, version: 2 })).get('musicOn'), false);
+  } finally {
+    delete globalThis.localStorage;
+  }
+});
+
+test('only real choices are saved, and a stray old "music off" is cleared once', async () => {
+  const { createSettings } = await import('../src/settings.js');
+  const stored = { value: JSON.stringify({ musicOn: false, voiceOn: true, speedId: 'quick' }) }; // an older save
+  globalThis.localStorage = { getItem: () => stored.value, setItem: (_k, v) => { stored.value = v; } };
+  try {
+    const s = createSettings({ shout: { defaultLoudnessThreshold: 0.6 } });
+    assert.equal(s.get('musicOn'), true, 'the stray off is cleared');
+    assert.equal(s.get('speedId'), 'quick', 'real choices are kept');
+    s.set('musicOn', false); // the player turns music off
+    assert.deepEqual(Object.keys(JSON.parse(stored.value)).sort(), ['musicOn', 'speedId', 'version', 'voiceOn']);
+    const again = createSettings({ shout: { defaultLoudnessThreshold: 0.6 } });
+    assert.equal(again.get('musicOn'), false, 'a deliberate off is remembered next time');
+  } finally {
+    delete globalThis.localStorage;
+  }
+});
