@@ -70,28 +70,7 @@ export class SpeechBubble {
 
   update(bubble, now) {
     if (!bubble) return;
-    if (bubble !== this.current) {
-      // A new line: the old bubble pops down to nothing, then the new one pops open as he starts to speak.
-      const hadText = !!this.current?.text;
-      if (!hadText || prefersReducedMotion()) {
-        this.begin(bubble, now);
-        popIn(this.el);
-      } else if (!this.swapping) {
-        this.swapping = true;
-        this.el.classList.add('pop-out');
-        setTimeout(() => {
-          this.swapping = false;
-          this.el.classList.remove('pop-out');
-          this.swapped = true;
-        }, POP_OUT_MS);
-      }
-      if (this.swapped && !this.swapping) {
-        this.swapped = false;
-        this.begin(bubble, now);
-        popIn(this.el);
-      }
-      if (this.swapping) return;
-    }
+    if (bubble !== this.current) this.begin(bubble, now);
     const elapsed = now - this.startedAt;
     const spoken = spokenRow(this.startTimes, elapsed);
     const target = scrollTarget(spoken, this.rows.length, this.visible);

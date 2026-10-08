@@ -3,7 +3,7 @@ import { columnLetters } from '../engine/cards.js';
 import { SpeechBubble } from './speech.js';
 import { attachCaller, emote } from './callerStage.js';
 import { shuffle } from '../engine/rng.js';
-import { popIn, POP_OUT_MS } from './speech.js';
+import { popIn } from './speech.js';
 
 // Each screen function returns { el, update(game, now) }. update runs every frame
 // and only changes the page when something really changed.
@@ -36,18 +36,21 @@ function startCallerTalk(el, callerEl, { voice, config, callerLines }) {
   let tapped = 0;
 
   // Voice only if the phone has already allowed sound (after the first tap), never before.
+  // The bubble is only there while he is talking: it pops open as he starts a line, and pops down to nothing
+  // as soon as the line has been said, so the whole caller can be seen.
+  const bubbleEl = lineEl.parentElement;
+  bubbleEl.classList.add('gone');
+  let closeTimer = null;
   const say = (text, move) => {
-    const bubbleEl = lineEl.parentElement;
     const ms = voice.estimateMs(text);
-    bubbleEl.classList.add('pop-out'); // the old bubble pops down to nothing...
-    setTimeout(() => {
-      bubbleEl.classList.remove('pop-out');
-      lineEl.textContent = text; // ...and the new one pops open just as he starts to speak
-      popIn(bubbleEl);
-      emote({ ...move, talkMs: ms });
-      if (voice.on && voice.engine.ctx?.state === 'running') voice.speak(text);
-    }, lineEl.textContent ? POP_OUT_MS : 0);
-    return ms + POP_OUT_MS;
+    clearTimeout(closeTimer);
+    lineEl.textContent = text;
+    bubbleEl.classList.remove('gone', 'pop-out');
+    popIn(bubbleEl);
+    emote({ ...move, talkMs: ms });
+    if (voice.on && voice.engine.ctx?.state === 'running') voice.speak(text);
+    closeTimer = setTimeout(() => bubbleEl.classList.add('pop-out'), ms + 400);
+    return ms;
   };
   const chatter = () => {
     if (!el.isConnected && timer !== 'first') return; // the start screen has gone
