@@ -486,7 +486,14 @@ button {
   height: 68px;
   margin-bottom: 6px;
   border-radius: 26px;
-  font-size: 20px;
+  font-size: 27px;
+  gap: 10px;
+  padding-right: 16px; /* moves the mic and words a little left, so they look centred and not just measured centred */
+}
+.call-bingo svg {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
 }
 .sit-banner {
   flex: 1;
