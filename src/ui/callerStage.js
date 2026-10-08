@@ -8,10 +8,11 @@ import { callerImages } from './helpers.js';
 const EXPRESSION_FOR = { talking: 'talking', smile: 'happy', cheer: 'cheer', wince: 'wince', noPeeking: 'shut', worried: 'worried' };
 // Where he can look: [turn, tilt]. Because he is drawn turned a little to the side, a turn of about +0.25
 // faces the player. The number ball is to his left on the game screen and the cards are below him.
-const LOOK_BALL = [-0.42, 0.0];
-const LOOK_CARDS = [0.22, 0.32];
-const LOOK_YOU = [0.18, 0.02];
-const LOOK_AROUND = [[0.5, -0.18], [-0.2, -0.12], [0.4, 0.15], [0.05, -0.2], [-0.3, 0.12]];
+const LOOK_BALL = [-0.3, 0.0];
+const LOOK_CARDS = [0.0, 0.3];
+const LOOK_YOU = [0.0, 0.02];
+// glances to both sides about equally, so he never seems more interested in what is off the screen
+const LOOK_AROUND = [[0.32, -0.12], [-0.32, -0.12], [0.25, 0.14], [-0.25, 0.14], [0.0, -0.2], [0.4, 0.0], [-0.4, 0.0]];
 
 // Settings from Data/config.json (caller section), with sensible fallbacks.
 let settings = { idleMinSeconds: 2.2, idleMaxSeconds: 5.5, homeIdleMinSeconds: 0.7, homeIdleMaxSeconds: 1.8, homeEyeLid: 0.2, happyHopPower: 1.9, cheerJumpPower: 3.6, seasons: [] };
@@ -76,6 +77,7 @@ function idle(now) {
   else if (roll < 0.6 && follow?.game) caller.look(...LOOK_BALL);
   else caller.look(...LOOK_AROUND[Math.floor(Math.random() * LOOK_AROUND.length)]);
   if (lively) {
+    if (Math.random() < 0.08) caller.spin();
     if (Math.random() < 0.5) caller.jump(1.2 + Math.random() * 1.6);
     if (Math.random() < 0.35) caller.wobble(2.5);
     if (now > nextEmote) {
@@ -126,7 +128,8 @@ function frame(now) {
     const voice = follow?.voice;
     const clip = voice?.handle;
     const speaking = !!voice?.speaking || (now < quietUntil && !voice?.on);
-    caller.externalMouth = clip ? Math.min(1, follow.engine.level() * 1.3) : null;
+    // only the louder part of each sound opens the mouth, so it shuts between words
+    caller.externalMouth = clip ? Math.min(1, Math.max(0, (follow.engine.level() - 0.12) * 1.9)) : null;
     caller.talk(!!speaking && !clip);
     caller.update(dt);
   } catch {
@@ -170,11 +173,12 @@ export function attachCaller(el, { game = null, voice = null, engine = null, moo
 // Make him do something right now (used when the player taps him on the start screen).
 //   face: an expression name; jump / wobble: how big a hop or giggle-shake; talkMs: move his mouth that long
 //   even with the voice off.
-export function emote({ face = 'happy', jump = 0, wobble = 0, talkMs = 0 } = {}) {
+export function emote({ face = 'happy', jump = 0, wobble = 0, talkMs = 0, spin = false } = {}) {
   if (!caller) return;
   caller.setExpression(face);
   if (jump) caller.jump(jump);
   if (wobble) caller.wobble(wobble);
+  if (spin) caller.spin();
   if (talkMs) quietUntil = performance.now() + talkMs;
   nextEmote = performance.now() + 2500;
 }

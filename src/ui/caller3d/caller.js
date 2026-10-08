@@ -53,6 +53,10 @@ export class Caller3D {
     this.squash = 0; // positive = squashed flat, negative = stretched tall
     this.squashVel = 0;
     this.talking = false;
+    this.spinT = 1; // 1 = not spinning
+    this.spinAngle = 0;
+    this.spinDir = 1;
+    this.spinSeconds = 0.9;
     this.lid = 0; // how far his eyelids rest over his eyes (0 wide open ... 1 shut)
     this.heart = 0; // how much his eyes are love hearts
     this.heartTarget = 0;
@@ -195,6 +199,14 @@ export class Caller3D {
     if (!on) this.talkTarget = 0;
   }
 
+  spin(seconds = 0.9) {
+    if (this.spinT < 1) return;
+    this.spinT = 0;
+    this.spinSeconds = seconds;
+    this.spinDir = Math.random() < 0.5 ? -1 : 1;
+    this.jump(2.2);
+  }
+
   setLid(amount) {
     this.lid = amount;
   }
@@ -263,7 +275,7 @@ export class Caller3D {
       }
     }
     const mouthGoal = this.externalMouth ?? this.talkTarget;
-    this.talkLevel = damp(this.talkLevel, mouthGoal, 22, dt);
+    this.talkLevel = damp(this.talkLevel, mouthGoal, 34, dt); // quick, so the mouth closes between words
 
     this.heart = damp(this.heart, this.heartTarget, 6, dt);
 
@@ -273,11 +285,20 @@ export class Caller3D {
       ...this.face,
       eyeOpen: (1 - this.lid) * (1 - blinkAmount * 0.95),
       eyeHeart: this.heart * (1 - blinkAmount * 0.9) * (1 + Math.sin(t * 5) * 0.06),
-      mouthOpen: Math.min(1, this.face.mouthOpenBase + this.talkLevel),
+      // while speaking, the mouth rests nearly closed between sounds so each word is shaped clearly
+      mouthOpen: Math.min(1, this.face.mouthOpenBase * (this.talking || this.externalMouth !== null ? 0.12 : 1) + this.talkLevel),
       pupilX: this.lookYaw * 1.2,
       pupilY: this.lookPitch * -1.2,
     };
     this.paintFace(faceNow);
+
+    // a full turn all the way round, with a little hop
+    if (this.spinT < 1) {
+      this.spinT = Math.min(1, this.spinT + dt / this.spinSeconds);
+      const e = this.spinT * this.spinT * (3 - 2 * this.spinT);
+      this.spinAngle = e * Math.PI * 2 * this.spinDir;
+      if (this.spinT >= 1) this.spinAngle = 0;
+    }
 
     // head: follows where it is asked to look, with a little life of its own
     this.lookYaw = damp(this.lookYaw, this.targetYaw, 7, dt);
@@ -285,7 +306,7 @@ export class Caller3D {
     this.rollVel += (-this.roll * 70 - this.rollVel * 7) * dt; // a spring, for a wobble after a shake
     this.roll += this.rollVel * dt;
     const talkNod = this.talking ? Math.sin(t * 7.5) * 0.02 * this.talkLevel : 0;
-    this.head.rotation.y = -0.3 + this.lookYaw + Math.sin(t * 0.7) * 0.025;
+    this.head.rotation.y = -0.06 + this.lookYaw + this.spinAngle + Math.sin(t * 0.7) * 0.025;
     this.head.rotation.x = this.lookPitch + Math.sin(t * 1.1) * 0.015 + talkNod;
     this.head.rotation.z = this.roll + Math.sin(t * 0.9) * 0.012;
 

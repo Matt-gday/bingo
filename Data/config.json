@@ -149,7 +149,7 @@
     "homeIdleMinSeconds": 0.7,
     "homeIdleMaxSeconds": 1.8,
     "homeEyeLid": 0.2,
-    "homeLineGapSeconds": 3,
+    "homeLineGapSeconds": 8,
     "happyHopPower": 1.9,
     "cheerJumpPower": 3.6,
     "seasons": [

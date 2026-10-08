@@ -56,7 +56,7 @@ function startCallerTalk(el, callerEl, { voice, config, callerLines }) {
     if (!tickles.length) return;
     clearTimeout(timer);
     tapped += 1;
-    const ms = say(nextFrom('tickle', tickles), { face: 'happy', jump: 2 + Math.min(tapped, 4) * 0.3, wobble: 6 });
+    const ms = say(nextFrom('tickle', tickles), { face: 'happy', jump: 2 + Math.min(tapped, 4) * 0.3, wobble: 6, spin: tapped % 3 === 0 });
     timer = setTimeout(chatter, ms + gapMs + 1500);
   });
 }
