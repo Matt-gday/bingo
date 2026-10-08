@@ -232,6 +232,7 @@
   font-weight: 600;
   color: var(--purple-deep);
   transition: color 0.3s linear;
+  padding-bottom: var(--sq-gap, 4px); /* keeps the number centred in the shorter dome */
 }
 .sq.locked,
 .sq.free {
@@ -254,7 +255,7 @@
 .sq::after {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: 0 0 var(--sq-gap, 4px) 0; /* a little shorter than the square, leaving room for the shadow and a clearer gap between rows */
   z-index: -1;
   border-radius: 12px;
   pointer-events: none;
