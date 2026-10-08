@@ -274,8 +274,8 @@ button {
   gap: 12px;
 }
 .caller-small {
-  width: 52px;
-  height: 52px;
+  width: 60px;
+  height: 60px;
   flex-shrink: 0;
   object-fit: contain;
 }
@@ -956,29 +956,9 @@ button {
 
 .caller-btn {
   position: relative;
-  width: 52px;
-  height: 52px;
+  width: 60px;
+  height: 60px;
   flex-shrink: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-}
-.caller-btn[aria-pressed='false'] img {
-  opacity: 0.6;
-}
-.mute-badge {
-  position: absolute;
-  right: -2px;
-  bottom: -2px;
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #fff;
-  color: var(--purple-deep);
-  box-shadow: 0 2px 0 rgba(26, 20, 70, 0.25);
 }
 .pause-btn {
   width: 44px;
@@ -1234,8 +1214,8 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  padding-top: 20px;
+  gap: 14px;
+  padding-top: 8px;
 }
 .pause .pill-label {
   align-self: center;
@@ -1243,12 +1223,12 @@ button {
   font-weight: 800;
 }
 .pause h1 {
-  margin: 24px 0 0;
-  font: 700 64px/1 var(--font-display);
+  margin: 8px 0 0;
+  font: 700 52px/1 var(--font-display);
 }
 .pause img {
-  width: 150px;
-  height: 150px;
+  width: 112px;
+  height: 112px;
   object-fit: contain;
 }
 .pause-bubble {
@@ -1460,4 +1440,60 @@ button {
   .sit-banner {
     height: 58px;
   }
+}
+
+/* ---------- The sound settings on the pause screen ---------- */
+
+.sound-card {
+  width: 100%;
+  padding: 8px 16px 6px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.sound-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0 2px;
+  font: 600 14px/1 var(--font-display);
+  color: var(--soft);
+}
+.sound-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 46px;
+  font: 600 18px/1 var(--font-display);
+}
+.sound-row + .sound-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+/* an on/off switch: a track with a round knob that slides across */
+.switch {
+  position: relative;
+  width: 58px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 17px;
+  background: rgba(20, 8, 70, 0.45);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: background 0.2s linear;
+}
+.switch i {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ffffff, #e3d9ff);
+  box-shadow: 0 2px 3px rgba(20, 8, 70, 0.45), inset 0 1px 1px #fff;
+  transition: transform 0.18s ease-out;
+}
+.switch.on {
+  background: linear-gradient(180deg, #14b5a8, #2ee6d6);
+}
+.switch.on i {
+  transform: translateX(24px);
 }

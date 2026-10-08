@@ -65,7 +65,8 @@
     "fadeMs": 250
   },
   "pause": {
-    "pausesPerGame": 1,
+    "pausesPerGame": null,
+    "pausesNote": "How many times the player can pause in one game. null means no limit; a number (for example 1) brings the limit back.",
     "resumeCountdownSeconds": 3
   },
   "shout": {

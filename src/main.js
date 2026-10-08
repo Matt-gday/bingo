@@ -171,6 +171,7 @@ function sync() {
     pause: () => pauseScreen(game, {
       onQuit: showStart,
       onResume: () => game.resume(),
+      voice, settings, sfx, music, haptics,
     }),
   };
   show(wanted, builders[wanted]);

@@ -33,7 +33,12 @@
         "[playful, upbeat, welcoming, clear]",
         "[cheerful, proud, welcoming, clear]"
       ],
-      "countdown": "[excited, energetic, building up, cheering, clear]"
+      "countdown": "[excited, energetic, building up, cheering, clear]",
+      "no winner": [
+        "[warm, kindly, a little rueful, smiling, clear]",
+        "[cheerful, consoling, amused, clear]",
+        "[playful, shrugging, good-natured, clear]"
+      ]
     },
     "lines": {
       "Eyes down, everyone!": "[excited, cheerful]",

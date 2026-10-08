@@ -187,7 +187,7 @@ export class Game {
       this.phase = 'drawn';
       this.screen = 'result';
       this.result = { outcome: 'drawn' };
-      this.say('That was the last ball. No winner tonight!', 'smile');
+      this.say(sayLine(this.callerLines, 'noWinner', {}), 'smile');
       this.emit('end', { outcome: 'drawn' });
       return;
     }
@@ -272,7 +272,7 @@ export class Game {
   // ---- Pausing ----
 
   get canPause() {
-    return !this.pauseState && this.pausesLeft > 0
+    return !this.pauseState && (this.pausesLeft === null || this.pausesLeft > 0)
       && (this.phase === 'calling' || this.phase === 'locking') && this.screen === 'cards';
   }
 
@@ -280,10 +280,10 @@ export class Game {
     return Math.max(1, Math.ceil(this.resumeMs / 1000));
   }
 
-  // The player's one pause for the game.
+  // The player's own pause (unlimited unless Data/config.json sets a limit).
   pauseByPlayer() {
     if (!this.canPause) return;
-    this.pausesLeft -= 1;
+    if (this.pausesLeft !== null) this.pausesLeft -= 1; // null = unlimited
     this.pauseState = 'paused';
     this.pauseReason = 'player';
     this.emit('pause');

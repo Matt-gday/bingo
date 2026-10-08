@@ -29,6 +29,7 @@ export function collectLines({ callerLines, patterns, regulars }) {
   for (const line of callerLines.game.introCountdown ?? []) add('countdown', line);
   for (const line of callerLines.game.start) add('start of the game', line);
   for (const line of callerLines.game.tooSlow) add('too slow', line);
+  for (const line of callerLines.game.noWinner ?? []) add('no winner', line);
   for (const line of callerLines.game.pause) add('pause', line);
 
   for (const pattern of spoken) {

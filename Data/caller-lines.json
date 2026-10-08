@@ -137,6 +137,11 @@
     ],
     "introCountdown": [
       "Three! Two! One! Here we go!"
+    ],
+    "noWinner": [
+      "That was the last ball. No winner tonight!",
+      "Every ball is out, and nobody got there. Better luck next time!",
+      "All seventy-five balls, and no winner. That's bingo for you!"
     ]
   },
   "shoutTest": {

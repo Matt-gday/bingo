@@ -128,6 +128,7 @@ if (args.includes('--tester')) {
     ['numbers read in the card check', 'Numbers in the card check', 'Said slowly, one at a time, when the caller checks a bingo claim.'],
     ['false calls', 'False calls', 'When a claim fails. The tag changes from line to line so they do not all sound the same.'],
     ['wins', 'Wins', 'When the player wins a stage.'],
+    ['no winner', 'No winner tonight', 'When all 75 balls are called and nobody has won.'],
     ['stage opens', 'A new stage starts', 'Announcing what the next target is.'],
     ['regulars win', 'The regulars win', 'The caller commentating on a regular who has won. Each regular gets their own attitude.'],
     ['regulars told off', 'The regulars told off', 'When a regular makes a false call.'],

@@ -70,7 +70,7 @@ export function startScreen({ config, chosenSpeed, voice, settings, sfx, music, 
   testVoice.addEventListener('click', () => {
     voice.setOn(true);
     showVoice();
-    voice.speak('Eyes down, everyone! Can you hear me?');
+    voice.speak('Eyes down, everyone!');
   });
   // Sound effects, music and buzz: each is a simple on/off switch kept on this device.
   const switches = [
@@ -184,7 +184,7 @@ export function playScreen(game, { voice, mic, settings }) {
       <div class="play-top">
         ${ballMarkup()}
         <div class="caller-row">
-          <button class="caller-btn" data-mute aria-label="Caller's voice" aria-pressed="true"><img class="caller-small" data-caller alt=""><span class="mute-badge" data-mute-badge hidden>${icons.speakerOff(14)}</span></button>
+          <div class="caller-btn"><img class="caller-small" data-caller alt=""></div>
           <div class="speech"></div>
         </div>
         <button class="pause-btn" data-pause aria-label="Pause game">${icons.pause()}</button>
@@ -236,12 +236,6 @@ export function playScreen(game, { voice, mic, settings }) {
     if (!settings.get('holdToCallMode')) mic.start();
     game.openShout();
   });
-  const muteButton = el.querySelector('[data-mute]');
-  const muteBadge = el.querySelector('[data-mute-badge]');
-  muteButton.hidden = false;
-  muteButton.addEventListener('click', () => {
-    if (voice.toggle()) voice.speak(game.bubble.text);
-  });
   const pauseButton = el.querySelector('[data-pause]');
   pauseButton.addEventListener('click', () => game.pauseByPlayer());
 
@@ -255,7 +249,7 @@ export function playScreen(game, { voice, mic, settings }) {
 
   // Before the first number the caller is big at the top. When the first number drops he shrinks back
   // to his usual place, and the ball and the caller glide there instead of jumping.
-  const callerButton = el.querySelector('[data-mute]');
+  const callerButton = el.querySelector('.caller-btn');
   const speechEl = el.querySelector('.speech');
   let inIntro = game.phase === 'intro';
   el.classList.toggle('intro', inIntro);
@@ -285,12 +279,8 @@ export function playScreen(game, { voice, mic, settings }) {
     callButton.disabled = game.phase === 'intro'; // nothing to call before the first number
     updateBall(ballWrap, game);
     bubble.sync(now);
-    const voiceOn = voice.on;
-    muteButton.setAttribute('aria-pressed', String(voiceOn));
-    muteButton.hidden = !voice.supported;
-    muteBadge.hidden = voiceOn;
     pauseButton.disabled = !game.canPause;
-    setClass(pauseButton, 'used', game.pausesLeft === 0);
+    setClass(pauseButton, 'used', game.pausesLeft === 0); // only when a pause limit is set
 
     syncRecent();
     const notice = game.notice;

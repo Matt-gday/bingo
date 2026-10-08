@@ -336,8 +336,10 @@ test('a bad claim is caught during the check, then the game goes on', () => {
 
 // ---- Pausing ----
 
-test('the player has one pause; the ring stops and carries on after a 3, 2, 1', () => {
-  const game = newGame('steady');
+test('with a pause limit of one, the ring stops and carries on after a 3, 2, 1, and a second pause is refused', () => {
+  const limited = { ...config, pause: { ...config.pause, pausesPerGame: 1 } };
+  const game = new Game({ config: limited, patterns, callerLines, speedId: 'steady', stageIds: ['line'] });
+  game.start();
   runFor(game, 2000);
   const before = game.callElapsed;
   game.pauseByPlayer();
@@ -354,7 +356,33 @@ test('the player has one pause; the ring stops and carries on after a 3, 2, 1', 
   runFor(game, 500);
   assert.ok(game.callElapsed > before);
   game.pauseByPlayer();
-  assert.equal(game.pauseState, null, 'only one pause per game');
+  assert.equal(game.pauseState, null, 'a limit of one means one pause per game');
+});
+
+test('by default the player can pause as many times as they like', () => {
+  assert.equal(config.pause.pausesPerGame, null, 'the setting means no limit');
+  const game = newGame('steady');
+  for (let i = 0; i < 4; i++) {
+    runFor(game, 500);
+    game.pauseByPlayer();
+    assert.equal(game.pauseState, 'paused', `pause number ${i + 1} works`);
+    game.resume();
+    runFor(game, config.pause.resumeCountdownSeconds * 1000 + 100);
+    assert.equal(game.pauseState, null);
+  }
+  assert.equal(game.pausesLeft, null);
+});
+
+test('when all 75 numbers are called with no winner, the caller says one of the no-winner lines', () => {
+  const game = newGame('quick');
+  const heard = [];
+  game.on((type, data) => type === 'say' && heard.push(data.text));
+  game.called = game.deck.slice(0, 74); // one ball left
+  game.nextCall();
+  game.callElapsed = game.callMs;
+  runFor(game, game.callMs + config.marking.lockMomentMs + 200);
+  assert.equal(game.phase, 'drawn');
+  assert.ok(callerLines.game.noWinner.includes(heard.at(-1)), heard.at(-1));
 });
 
 test('pausing is not available during a shout or a check', () => {
@@ -369,7 +397,7 @@ test('an automatic pause (switching apps) does not use up the pause', () => {
   game.autoPause();
   assert.equal(game.pauseState, 'paused');
   assert.equal(game.screen, 'cards', 'the shout screen is closed');
-  assert.equal(game.pausesLeft, 1);
+  assert.equal(game.pausesLeft, null, 'an automatic pause never uses up a limit');
   game.resume();
   runFor(game, config.pause.resumeCountdownSeconds * 1000 + 100);
   assert.equal(game.pauseState, null);
