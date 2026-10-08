@@ -53,6 +53,7 @@ export class Caller3D {
     this.squash = 0; // positive = squashed flat, negative = stretched tall
     this.squashVel = 0;
     this.talking = false;
+    this.lid = 0; // how far his eyelids rest over his eyes (0 wide open ... 1 shut)
     this.heart = 0; // how much his eyes are love hearts
     this.heartTarget = 0;
     this.talkLevel = 0;
@@ -194,6 +195,15 @@ export class Caller3D {
     if (!on) this.talkTarget = 0;
   }
 
+  setLid(amount) {
+    this.lid = amount;
+  }
+
+  // a little sideways wobble, like a giggle
+  wobble(power = 3) {
+    this.rollVel += (Math.random() < 0.5 ? -1 : 1) * power;
+  }
+
   // Love-heart eyes for Valentine's Day.
   heartEyes(on) {
     this.heartTarget = on ? 1 : 0;
@@ -261,7 +271,7 @@ export class Caller3D {
     for (const key of Object.keys(this.target)) this.face[key] = damp(this.face[key], this.target[key], 12, dt);
     const faceNow = {
       ...this.face,
-      eyeOpen: 1 - blinkAmount * 0.95,
+      eyeOpen: (1 - this.lid) * (1 - blinkAmount * 0.95),
       eyeHeart: this.heart * (1 - blinkAmount * 0.9) * (1 + Math.sin(t * 5) * 0.06),
       mouthOpen: Math.min(1, this.face.mouthOpenBase + this.talkLevel),
       pupilX: this.lookYaw * 1.2,

@@ -146,6 +146,10 @@
     "note": "How the animated caller behaves. He looks about every idleMinSeconds to idleMaxSeconds. Seasons turn on special looks around a date: month and day, daysEitherSide before and after. Add ?season=valentine to the address to preview one.",
     "idleMinSeconds": 2.2,
     "idleMaxSeconds": 5.5,
+    "homeIdleMinSeconds": 0.7,
+    "homeIdleMaxSeconds": 1.8,
+    "homeEyeLid": 0.2,
+    "homeLineGapSeconds": 3,
     "happyHopPower": 1.9,
     "cheerJumpPower": 3.6,
     "seasons": [

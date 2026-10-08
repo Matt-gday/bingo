@@ -845,10 +845,34 @@ button {
   padding-top: 24px;
   text-align: center;
 }
+.home-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: -6px;
+}
 .start .start-caller {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
+  width: 176px;
+  height: 176px;
+  flex-shrink: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.home-speech {
+  min-height: 112px;
+  padding: 14px 16px;
+  border-radius: 22px;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
+  font: 700 19px/23px var(--font-display);
+  text-align: left;
+}
+.home-speech::before {
+  left: -5px;
+  top: calc(50% - 7px);
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
 }
 .start h1,
 .result h1 {

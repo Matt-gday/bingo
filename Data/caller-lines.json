@@ -138,6 +138,37 @@
     "introCountdown": [
       "Three! Two! One! Here we go!"
     ],
+    "home": [
+      "Well hello there, bingo champion! I've been waiting all day for you!",
+      "Ooh, someone's looking lucky today. Is it you? It is you!",
+      "Welcome back! I polished my bow tie just for you.",
+      "The balls are bouncing and the cards are ready. Are you?",
+      "Three cups of tea and I'm ready to call all night!",
+      "Pick a speed, press Play, and let's have some fun!",
+      "Don't tell the other regulars, but you're my favourite.",
+      "Legs eleven! Ha! That one never gets old.",
+      "I'm so excited I could jump! Watch this!",
+      "Shout nice and loud when you win. I love a good shout!",
+      "Sticky fingers make for sticky bingo, so wash those hands!",
+      "Another day, another bingo. Best job in the world!",
+      "Come on in, the seats are warm and the biscuits are free!",
+      "I'm all ears! Well, I'm all ball, really.",
+      "Round and round the balls go, and where they stop, nobody knows!",
+      "Tap me! Go on! I dare you!",
+      "Nobody calls a number quite like me. Want to hear?"
+    ],
+    "homeTickle": [
+      "Hee hee hee! That tickles!",
+      "Hey! That tickles! Hee hee!",
+      "Ha ha! Stop it, I'm ticklish!",
+      "Ooh, hee hee, right on my bow tie!",
+      "Ooh, that tickles! Do it again!",
+      "Ha ha ha! Careful, I'm all bouncy!",
+      "Eek! Hee hee! Tickle, tickle!",
+      "Hey, that's my best side! Hee hee!",
+      "Oh stop, stop, hee hee, I can't stop giggling!",
+      "Hehe! You've got the magic touch!"
+    ],
     "noWinner": [
       "That was the last ball. No winner tonight!",
       "Every ball is out, and nobody got there. Better luck next time!",

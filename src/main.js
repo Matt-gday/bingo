@@ -101,6 +101,7 @@ function showStart() {
   voice.cancel();
   show('start', () => startScreen({
     config,
+    callerLines,
     chosenSpeed: settings.get('speedId'),
     voice,
     settings,

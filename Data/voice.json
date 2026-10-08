@@ -33,6 +33,17 @@
         "[playful, upbeat, welcoming, clear]",
         "[cheerful, proud, welcoming, clear]"
       ],
+      "home screen": [
+        "[playful, excited, giggling, clear]",
+        "[cheerful, cheeky, friendly, clear]",
+        "[delighted, warm, bright, clear]",
+        "[amused, teasing, upbeat, clear]"
+      ],
+      "home tickles": [
+        "[giggling, ticklish, delighted, laughing]",
+        "[laughing, squealing, playful, breathless]",
+        "[giggling, cheeky, amused, clear]"
+      ],
       "countdown": "[excited, energetic, building up, cheering, clear]",
       "no winner": [
         "[warm, kindly, a little rueful, smiling, clear]",

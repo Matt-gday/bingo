@@ -14,9 +14,12 @@ const LOOK_YOU = [0.18, 0.02];
 const LOOK_AROUND = [[0.5, -0.18], [-0.2, -0.12], [0.4, 0.15], [0.05, -0.2], [-0.3, 0.12]];
 
 // Settings from Data/config.json (caller section), with sensible fallbacks.
-let settings = { idleMinSeconds: 2.2, idleMaxSeconds: 5.5, happyHopPower: 1.9, cheerJumpPower: 3.6, seasons: [] };
+let settings = { idleMinSeconds: 2.2, idleMaxSeconds: 5.5, homeIdleMinSeconds: 0.7, homeIdleMaxSeconds: 1.8, homeEyeLid: 0.2, happyHopPower: 1.9, cheerJumpPower: 3.6, seasons: [] };
 let heartEyes = false;
 let nextIdle = 0;
+let lively = false; // the start screen: he is much more animated
+let nextEmote = 0;
+const LIVELY_FACES = ['happy', 'excited', 'cheer', 'talking'];
 
 // Called once at start-up with the game's config. Works out whether a special day is on.
 export function configureCaller(config, today = new Date()) {
@@ -58,7 +61,9 @@ function build() {
 }
 
 function idleGap() {
-  return (settings.idleMinSeconds + Math.random() * (settings.idleMaxSeconds - settings.idleMinSeconds)) * 1000;
+  const min = lively ? settings.homeIdleMinSeconds : settings.idleMinSeconds;
+  const max = lively ? settings.homeIdleMaxSeconds : settings.idleMaxSeconds;
+  return (min + Math.random() * (max - min)) * 1000;
 }
 
 // Now and then, with nothing else going on, he looks somewhere else or gives a little hop.
@@ -70,7 +75,14 @@ function idle(now) {
   else if (roll < 0.45) caller.look(...(follow?.game ? LOOK_CARDS : LOOK_YOU));
   else if (roll < 0.6 && follow?.game) caller.look(...LOOK_BALL);
   else caller.look(...LOOK_AROUND[Math.floor(Math.random() * LOOK_AROUND.length)]);
-  if (Math.random() < 0.18 && caller.expressionName !== 'shut' && caller.expressionName !== 'wince') caller.jump(1.3);
+  if (lively) {
+    if (Math.random() < 0.5) caller.jump(1.2 + Math.random() * 1.6);
+    if (Math.random() < 0.35) caller.wobble(2.5);
+    if (now > nextEmote) {
+      nextEmote = now + 1800 + Math.random() * 1800;
+      caller.setExpression(LIVELY_FACES[Math.floor(Math.random() * LIVELY_FACES.length)]);
+    }
+  } else if (Math.random() < 0.18 && caller.expressionName !== 'shut' && caller.expressionName !== 'wince') caller.jump(1.3);
 }
 
 function react(mood, kind) {
@@ -113,7 +125,7 @@ function frame(now) {
     // the mouth: follows the real loudness of a recording, or flaps along if it is the phone's voice
     const voice = follow?.voice;
     const clip = voice?.handle;
-    const speaking = !!voice?.speaking || (follow?.game && now < quietUntil && !voice?.on);
+    const speaking = !!voice?.speaking || (now < quietUntil && !voice?.on);
     caller.externalMouth = clip ? Math.min(1, follow.engine.level() * 1.3) : null;
     caller.talk(!!speaking && !clip);
     caller.update(dt);
@@ -126,7 +138,7 @@ function frame(now) {
 //   game, voice, engine: let the game's mood and his voice drive him;
 //   mood: a fixed mood instead (for the start, pause and result screens);
 //   jump: bounce once when he arrives.
-export function attachCaller(el, { game = null, voice = null, engine = null, mood = 'smile', jump = false } = {}) {
+export function attachCaller(el, { game = null, voice = null, engine = null, mood = 'smile', jump = false, lively: livelyMode = false } = {}) {
   build();
   if (!caller) {
     el.innerHTML = `<img src="${callerImages[game?.bubble?.mood ?? mood] ?? callerImages.smile}" alt="">`;
@@ -134,6 +146,9 @@ export function attachCaller(el, { game = null, voice = null, engine = null, moo
   }
   el.appendChild(canvas);
   slot = el;
+  lively = livelyMode;
+  nextEmote = 0;
+  caller.setLid(lively ? settings.homeEyeLid : 0); // on the start screen his eyes rest a little closed
   follow = { game, voice, engine: engine ?? voice?.engine };
   lastBubble = null;
   lastText = '';
@@ -150,4 +165,16 @@ export function attachCaller(el, { game = null, voice = null, engine = null, moo
     started = true;
     requestAnimationFrame(frame);
   }
+}
+
+// Make him do something right now (used when the player taps him on the start screen).
+//   face: an expression name; jump / wobble: how big a hop or giggle-shake; talkMs: move his mouth that long
+//   even with the voice off.
+export function emote({ face = 'happy', jump = 0, wobble = 0, talkMs = 0 } = {}) {
+  if (!caller) return;
+  caller.setExpression(face);
+  if (jump) caller.jump(jump);
+  if (wobble) caller.wobble(wobble);
+  if (talkMs) quietUntil = performance.now() + talkMs;
+  nextEmote = performance.now() + 2500;
 }

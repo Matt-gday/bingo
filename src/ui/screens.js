@@ -1,7 +1,8 @@
 import { esc, html, setText, setClass, setRing, updateBall, ballMarkup, icons, callerImages, patternPreview, confetti } from './helpers.js';
 import { columnLetters } from '../engine/cards.js';
 import { SpeechBubble } from './speech.js';
-import { attachCaller } from './callerStage.js';
+import { attachCaller, emote } from './callerStage.js';
+import { shuffle } from '../engine/rng.js';
 
 // Each screen function returns { el, update(game, now) }. update runs every frame
 // and only changes the page when something really changed.
@@ -18,7 +19,49 @@ function callerBubble(game, el, { voice, maxLines }) {
 
 // ---------- Start ----------
 
-export function startScreen({ config, chosenSpeed, voice, settings, sfx, music, haptics, onPlay, onChoose, onTest }) {
+// The caller on the start screen chats away on his own with funny welcomes, and giggles if he is tapped.
+function startCallerTalk(el, callerEl, { voice, config, callerLines }) {
+  const lineEl = el.querySelector('[data-home-line]');
+  const chat = callerLines.game.home ?? [];
+  const tickles = callerLines.game.homeTickle ?? [];
+  const gapMs = (config.caller?.homeLineGapSeconds ?? 3) * 1000;
+  const FACES = ['happy', 'excited', 'cheer'];
+  const bags = new Map();
+  const nextFrom = (name, list) => {
+    if (!bags.get(name)?.length) bags.set(name, shuffle([...list]));
+    return bags.get(name).shift();
+  };
+  let timer = null;
+  let tapped = 0;
+
+  // Voice only if the phone has already allowed sound (after the first tap), never before.
+  const say = (text, move) => {
+    lineEl.textContent = text;
+    emote({ ...move, talkMs: voice.estimateMs(text) });
+    if (voice.on && voice.engine.ctx?.state === 'running') voice.speak(text);
+    return voice.estimateMs(text);
+  };
+  const chatter = () => {
+    if (!el.isConnected && timer !== 'first') return; // the start screen has gone
+    if (!chat.length) return;
+    const text = nextFrom('chat', chat);
+    const face = FACES[Math.floor(Math.random() * FACES.length)];
+    const ms = say(text, { face, jump: 2.2, wobble: 2 });
+    timer = setTimeout(chatter, ms + gapMs);
+  };
+  timer = 'first';
+  setTimeout(() => { timer = null; chatter(); }, 600);
+
+  callerEl.addEventListener('click', () => {
+    if (!tickles.length) return;
+    clearTimeout(timer);
+    tapped += 1;
+    const ms = say(nextFrom('tickle', tickles), { face: 'happy', jump: 2 + Math.min(tapped, 4) * 0.3, wobble: 6 });
+    timer = setTimeout(chatter, ms + gapMs + 1500);
+  });
+}
+
+export function startScreen({ config, callerLines, chosenSpeed, voice, settings, sfx, music, haptics, onPlay, onChoose, onTest }) {
   const speeds = config.speeds
     .map((s) => `<button class="speed${s.id === chosenSpeed ? ' chosen' : ''}" data-speed="${s.id}">
         <span>${esc(s.name)}</span><small>${s.secondsPerCall} seconds a call · ${s.creditMultiplier}x credits</small>
@@ -26,7 +69,10 @@ export function startScreen({ config, chosenSpeed, voice, settings, sfx, music, 
     .join('');
   const el = html(`<main class="screen">
     <div class="start">
-      <div class="start-caller" data-start-caller></div>
+      <div class="home-row">
+        <div class="start-caller" data-start-caller role="button" aria-label="Tickle the caller"></div>
+        <div class="speech home-speech"><span data-home-line></span></div>
+      </div>
       <h1>${esc(config.gameName)}</h1>
       <p class="tagline">Eyes down! Mark your own cards and call bingo when you think you have a line.</p>
       <div class="speeds">${speeds}</div>
@@ -49,7 +95,9 @@ export function startScreen({ config, chosenSpeed, voice, settings, sfx, music, 
   });
   el.querySelector('[data-play]').addEventListener('click', onPlay);
   el.querySelector('[data-test]').addEventListener('click', onTest);
-  attachCaller(el.querySelector('[data-start-caller]'), { voice, mood: 'smile' });
+  const callerEl = el.querySelector('[data-start-caller]');
+  attachCaller(callerEl, { voice, mood: 'happy', lively: true });
+  startCallerTalk(el, callerEl, { voice, config, callerLines });
   const voiceButton = el.querySelector('[data-voice]');
   const showVoice = () => {
     voiceButton.hidden = !voice.supported;
