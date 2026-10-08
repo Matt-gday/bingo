@@ -80,8 +80,13 @@ export function dealCards(config) {
   const count = config.cards.playerCards;
   const first = randomCard(config);
   const cards = [first];
+  // Every game the cards share a different number of numbers (for example 7 to 12), so the choice of
+  // which card to back comes up more or less often.
+  const fewest = config.cards.sharedNumbersBetweenPlayerCards;
+  const most = fewest + (config.cards.extraSharedNumbersMax ?? 0);
+  const shared = fewest + Math.floor(Math.random() * (most - fewest + 1));
   for (let i = 1; i < count; i++) {
-    cards.push(cardSharing(first, config.cards.sharedNumbersBetweenPlayerCards, config));
+    cards.push(cardSharing(first, shared, config));
   }
   return cards.map((grid) => ({ grid }));
 }

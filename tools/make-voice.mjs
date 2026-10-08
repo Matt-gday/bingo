@@ -120,6 +120,8 @@ const characters = (list) => list.reduce((sum, text) => sum + text.length, 0);
 if (args.includes('--tester')) {
   // Writes voice-tester.html: every line, grouped by theme, with a play button. Spends nothing.
   const themes = [
+    ['welcome', 'The welcome before the first number', 'One is picked at random each game. Every line is used before any repeats.'],
+    ['countdown', 'The 3, 2, 1', 'Said excitedly as the count-in runs in the number circle.'],
     ['numbers with nicknames', 'Number calls with nicknames', 'The sentence calls: the number, then the nickname. Used on Relaxed and Steady.'],
     ['plain numbers', 'Plain numbers', 'Just the number. Used on Quick.'],
     ['numbers read in the card check', 'Numbers in the card check', 'Said slowly, one at a time, when the caller checks a bingo claim.'],

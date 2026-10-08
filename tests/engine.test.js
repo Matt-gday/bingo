@@ -37,12 +37,17 @@ test('cards follow the column ranges and have a free centre', () => {
   }
 });
 
-test('the two cards share exactly the configured number of numbers', () => {
-  for (let i = 0; i < 200; i++) {
+test('the two cards share between the lowest and highest configured number of numbers, and it varies', () => {
+  const fewest = config.cards.sharedNumbersBetweenPlayerCards;
+  const most = fewest + config.cards.extraSharedNumbersMax;
+  const seen = new Set();
+  for (let i = 0; i < 400; i++) {
     const [a, b] = dealCards(config);
-    const shared = cardNumbers(a).filter((n) => cardNumbers(b).includes(n));
-    assert.equal(shared.length, config.cards.sharedNumbersBetweenPlayerCards);
+    const shared = cardNumbers(a).filter((n) => cardNumbers(b).includes(n)).length;
+    assert.ok(shared >= fewest && shared <= most, `shared ${shared}`);
+    seen.add(shared);
   }
+  assert.equal(seen.size, most - fewest + 1, 'every amount from the lowest to the highest comes up');
 });
 
 test('pattern candidates', () => {
@@ -429,4 +434,63 @@ test('a claim with no complete line leaves the checking screen with a complete, 
   assert.ok(Array.isArray(c.evaluation.order));
   assert.ok(Array.isArray(c.evaluation.items));
   assert.ok(Array.isArray(c.revealed));
+});
+
+// ---- The welcome before the first number ----
+
+function introGame() {
+  const game = new Game({ config, patterns, callerLines, speedId: 'steady', stageIds: ['line'], introLine: 'Welcome to Bingo night, everyone!' });
+  game.start();
+  return game;
+}
+
+test('with a welcome line the caller welcomes first and no number is called yet', () => {
+  const game = introGame();
+  assert.equal(game.phase, 'intro');
+  assert.equal(game.called.length, 0);
+  assert.equal(game.bubble.text, 'Welcome to Bingo night, everyone!');
+  assert.equal(game.introCount, null, 'still welcoming, no count yet');
+  assert.equal(game.canMark, false);
+  assert.equal(game.canClaim, false);
+  assert.equal(game.canPause, false);
+  game.tapSquare(0, 1, 1);
+  assert.equal(game.pending, null, 'cards cannot be marked before the first number');
+  game.skipCall();
+  assert.equal(game.called.length, 0, 'tapping the ball does nothing yet');
+});
+
+test('after the welcome a 3, 2, 1 counts in, the ring empties, and then the first number drops', () => {
+  const game = introGame();
+  const counts = [];
+  const heard = [];
+  game.on((type, data) => {
+    if (type === 'introCount') counts.push(data.n);
+    if (type === 'say') heard.push(data);
+  });
+  const { welcomeSeconds, countdownSeconds } = config.intro;
+  runFor(game, welcomeSeconds * 1000 - 100);
+  assert.equal(game.introCount, null);
+  assert.equal(game.introRing, 0, 'the ring is full during the welcome');
+  runFor(game, 200);
+  assert.equal(game.introCount, countdownSeconds, 'the count starts at 3');
+  assert.ok(heard.some((h) => h.kind === 'intro' && h.spoken.includes('Three')), 'the caller counts');
+  runFor(game, (countdownSeconds * 1000) / 2);
+  assert.ok(game.introRing > 0.3 && game.introRing < 0.8, 'the ring is part way empty');
+  runFor(game, (countdownSeconds * 1000) / 2 + 200);
+  assert.deepEqual(counts, [3, 2, 1]);
+  assert.equal(game.phase, 'calling');
+  assert.equal(game.called.length, 1, 'the first number has dropped');
+  assert.equal(game.intro, null);
+});
+
+test('the intro waits while paused and never starts without a welcome line', () => {
+  const game = introGame();
+  runFor(game, 1000);
+  game.autoPause();
+  const before = game.intro.elapsedMs;
+  runFor(game, 20000);
+  assert.equal(game.intro.elapsedMs, before, 'no time passes while paused');
+  const plain = newGame();
+  assert.equal(plain.phase, 'calling', 'no welcome line means the first number is called at once');
+  assert.equal(plain.called.length, 1);
 });

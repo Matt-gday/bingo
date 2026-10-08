@@ -251,7 +251,36 @@ export function playScreen(game, { voice, mic, settings }) {
   const syncRecent = recentPills(game, recentEl, ballWrap.querySelector('.ball'));
   let lastLocked = 0;
 
+  // Before the first number the caller is big at the top. When the first number drops he shrinks back
+  // to his usual place, and the ball and the caller glide there instead of jumping.
+  const callerButton = el.querySelector('[data-mute]');
+  const speechEl = el.querySelector('.speech');
+  let inIntro = game.phase === 'intro';
+  el.classList.toggle('intro', inIntro);
+
+  function leaveIntro() {
+    inIntro = false;
+    const glide = [ballWrap, callerButton];
+    const first = glide.map((node) => node.getBoundingClientRect());
+    el.classList.remove('intro');
+    if (prefersReducedMotion()) return;
+    glide.forEach((node, i) => {
+      const from = first[i];
+      const to = node.getBoundingClientRect();
+      node.animate(
+        [
+          { transformOrigin: 'top left', transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width}, ${from.height / to.height})` },
+          { transformOrigin: 'top left', transform: 'none' },
+        ],
+        { duration: 500, easing: 'cubic-bezier(0.3, 0.9, 0.3, 1)' },
+      );
+    });
+    speechEl.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 350, easing: 'ease-out' });
+  }
+
   function update() {
+    if (inIntro && game.phase !== 'intro') leaveIntro();
+    callButton.disabled = game.phase === 'intro'; // nothing to call before the first number
     updateBall(ballWrap, game);
     bubble.sync();
     const voiceOn = voice.on;

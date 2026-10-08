@@ -27,7 +27,9 @@
     },
     "freeCentre": true,
     "playerCards": 2,
-    "sharedNumbersBetweenPlayerCards": 7
+    "sharedNumbersBetweenPlayerCards": 7,
+    "extraSharedNumbersMax": 5,
+    "sharedNumbersNote": "Each game the two cards share a random number of numbers from sharedNumbersBetweenPlayerCards up to that plus extraSharedNumbersMax (so 7 to 12)."
   },
   "speeds": [
     {
@@ -94,6 +96,11 @@
   "falseCall": {
     "sitOutCalls": 2,
     "creditPenaltyShare": 0.25
+  },
+  "intro": {
+    "note": "Before the first number: the caller welcomes the player (a random line) while they look over their cards, then a 3, 2, 1 counts in the number circle.",
+    "welcomeSeconds": 4,
+    "countdownSeconds": 3
   },
   "stageWon": {
     "nextStageCountdownSeconds": 3

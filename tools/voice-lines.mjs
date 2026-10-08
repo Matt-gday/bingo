@@ -25,6 +25,8 @@ export function collectLines({ callerLines, patterns, regulars }) {
     ...(regulars.ringIns?.names ?? []).map((r) => r.name),
   ];
 
+  for (const line of callerLines.game.intro ?? []) add('welcome', line);
+  for (const line of callerLines.game.introCountdown ?? []) add('countdown', line);
   for (const line of callerLines.game.start) add('start of the game', line);
   for (const line of callerLines.game.tooSlow) add('too slow', line);
   for (const line of callerLines.game.pause) add('pause', line);

@@ -69,6 +69,26 @@ export function setRing(circle, progress, length = RING_LENGTH) {
 // Keeps a ball showing the current number, with its ring.
 export function updateBall(wrap, game) {
   const ball = wrap.querySelector('.ball');
+  if (game.phase === 'intro') {
+    // Before the first number: the circle counts in 3, 2, 1 with its ring emptying, so the player sees how it works.
+    const count = game.introCount;
+    const key = `intro:${count}`;
+    if (ball.__key !== key) {
+      ball.__key = key;
+      setText(ball.querySelector('.letter'), '');
+      setText(ball.querySelector('.num'), count ?? '?');
+      if (count !== null) {
+        ball.classList.remove('pop');
+        void ball.offsetWidth;
+        ball.classList.add('pop');
+      }
+    }
+    setClass(ball, 'locked', false);
+    setClass(ball, 'counting', true);
+    setRing(wrap.querySelector('.ring-left'), game.introRing);
+    return;
+  }
+  setClass(ball, 'counting', false);
   const number = game.currentNumber;
   const key = `${number}`;
   if (ball.__key !== key) {

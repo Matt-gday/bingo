@@ -1315,6 +1315,42 @@ button {
 }
 
 
+
+/* ---------- The welcome before the first number ---------- */
+
+/* The caller is bigger and the number circle moves to the right to count in 3, 2, 1. */
+.screen.intro .play-top .ball-wrap {
+  order: 3;
+}
+.screen.intro .caller-btn {
+  width: 92px;
+  height: 92px;
+}
+.screen.intro .caller-small {
+  width: 92px;
+  height: 92px;
+}
+.screen.intro .play-top .caller-row {
+  align-items: flex-start;
+}
+.screen.intro .play-top .speech {
+  align-self: stretch;
+  padding: 10px 12px;
+  font-size: 17px;
+  line-height: 21px;
+}
+.screen.intro .pause-btn {
+  display: none;
+}
+.ball.counting .num {
+  font-size: 48px;
+}
+.btn:disabled {
+  opacity: 0.5;
+  transform: none;
+  cursor: default;
+}
+
 /* ---------- How things appear ---------- */
 
 /* Whole screens: a calm fade. The bright screens also slide up a little; the dark tense ones only fade. */

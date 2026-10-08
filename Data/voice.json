@@ -26,7 +26,14 @@
         "[proud, warm, applauding, clear]",
         "[amazed, thrilled, clear]",
         "[cheering, excited, clear]"
-      ]
+      ],
+      "welcome": [
+        "[warmly, welcoming, cheerful, clear]",
+        "[excited, friendly, bright, clear]",
+        "[playful, upbeat, welcoming, clear]",
+        "[cheerful, proud, welcoming, clear]"
+      ],
+      "countdown": "[excited, energetic, building up, cheering, clear]"
     },
     "lines": {
       "Eyes down, everyone!": "[excited, cheerful]",

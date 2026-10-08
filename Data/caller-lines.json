@@ -108,6 +108,35 @@
     ],
     "pause": [
       "No peeking! Your cards are covered."
+    ],
+    "intro": [
+      "Welcome to Bingo night, everyone! Get ready for the first number.",
+      "Eyes down, everyone! Have a good look at your cards.",
+      "Good evening, bingo friends! Cards at the ready.",
+      "Welcome, welcome! Settle in, the first number's coming up.",
+      "Hello, hello! Let's see who's lucky tonight.",
+      "Gather round, bingo fans! Take a good look at your cards.",
+      "Welcome to the club! Two cards, one lucky night.",
+      "Right then, bingo time! Eyes on your cards.",
+      "Have a good look at your numbers. I'll start in a moment.",
+      "Spot any numbers that are on both cards? Keep an eye out!",
+      "Two cards, a few shared numbers. Choose wisely tonight!",
+      "Take a moment to scan your cards. Some numbers might be twins!",
+      "Remember, each number can only be used once, so choose wisely!",
+      "A number only counts once, even if it's on both cards. Choose wisely!",
+      "Is it going to be your night? Let's find out!",
+      "Feeling lucky? Here comes the first number!",
+      "The balls are bouncing and I'm ready. Are you?",
+      "Fingers crossed, everyone! Here we go.",
+      "Ready, steady, bingo!",
+      "Shout loud, play fair, and have fun!",
+      "Only call bingo when you really mean it. I'll be checking!",
+      "May all your numbers come up early tonight.",
+      "Same club, same lucky balls. Welcome back!",
+      "Nobody here has ever lost at bingo. They just win later!"
+    ],
+    "introCountdown": [
+      "Three! Two! One! Here we go!"
     ]
   },
   "shoutTest": {
@@ -164,5 +193,6 @@
     "{name}'s been asking where you were.",
     "Good to see you back!",
     "The table has new prizes tonight."
-  ]
+  ],
+  "_introNote": "'intro' lines are the welcome the caller says before the first number. The game shuffles them and plays them all before any repeats. The player is always 'you' in speech, never their typed name."
 }

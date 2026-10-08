@@ -18,8 +18,9 @@ import { callText, capital, fillLine, numberInWords, sayLine } from './caller.js
 const MAX_FRAME_MS = 250; // a long gap (the phone slept, the tab was hidden) must not skip calls
 
 export class Game {
-  constructor({ config, patterns, callerLines, speedId, stageIds = ['line'] }) {
+  constructor({ config, patterns, callerLines, speedId, stageIds = ['line'], introLine = null }) {
     this.config = config;
+    this.introLine = introLine; // the welcome the caller says before the first number (none = start straight away)
     this.callerLines = callerLines;
     this.speed = config.speeds.find((s) => s.id === speedId) ?? config.speeds[0];
     this.stages = stageIds.map((id) => patterns.patterns.find((p) => p.id === id));
@@ -46,6 +47,7 @@ export class Game {
     this.result = null;
     this.bubble = { text: '', mood: 'talking' };
     this.notice = null; // a short message over the cards, such as "Too slow!"
+    this.intro = null; // { stage: 'welcome' | 'countdown', elapsedMs, count } before the first number
     this.pendingRestart = null; // after a failed claim, the next number waits for the caller to finish
     this.pauseState = null; // null, 'paused' or 'resuming' (the 3, 2, 1)
     this.pauseReason = null; // 'player' or 'auto'
@@ -76,6 +78,7 @@ export class Game {
   }
 
   get callProgress() {
+    if (this.phase === 'intro') return this.introRing;
     if (this.phase === 'locking') return 1;
     return Math.min(1, this.callElapsed / this.callMs);
   }
@@ -121,8 +124,58 @@ export class Game {
 
   start() {
     this.setup();
+    if (this.introLine && this.config.intro) {
+      // The caller welcomes the player while they look over their cards, then counts 3, 2, 1.
+      this.phase = 'intro';
+      this.intro = { stage: 'welcome', elapsedMs: 0, count: null };
+      this.say(this.introLine, 'smile', 'intro');
+      this.emit('intro');
+      return;
+    }
     this.say(sayLine(this.callerLines, 'start', {}), 'smile');
     this.nextCall();
+  }
+
+  get introMs() {
+    const { welcomeSeconds, countdownSeconds } = this.config.intro;
+    return { welcome: welcomeSeconds * 1000, countdown: countdownSeconds * 1000 };
+  }
+
+  // The number on show while counting in (3, 2, 1), or null while the caller is still welcoming.
+  get introCount() {
+    return this.intro?.stage === 'countdown' ? this.intro.count : null;
+  }
+
+  // How far through the count-in the ring is, from 0 (full ring) to 1 (empty).
+  get introRing() {
+    if (this.intro?.stage !== 'countdown') return 0;
+    const { welcome, countdown } = this.introMs;
+    return Math.min(1, (this.intro.elapsedMs - welcome) / countdown);
+  }
+
+  advanceIntro(dt) {
+    const intro = this.intro;
+    const { welcome, countdown } = this.introMs;
+    intro.elapsedMs += dt;
+    if (intro.stage === 'welcome' && intro.elapsedMs >= welcome) {
+      intro.stage = 'countdown';
+      intro.count = Math.ceil(countdown / 1000);
+      this.say(pickOne(this.callerLines.game.introCountdown), 'cheer', 'intro');
+      this.emit('introCount', { n: intro.count });
+    }
+    if (intro.stage === 'countdown') {
+      const left = welcome + countdown - intro.elapsedMs;
+      if (left <= 0) {
+        this.intro = null;
+        this.nextCall(); // the first number drops
+        return;
+      }
+      const n = Math.ceil(left / 1000);
+      if (n !== intro.count) {
+        intro.count = n;
+        this.emit('introCount', { n });
+      }
+    }
   }
 
   // `announce: false` is used after a false call, when the caller is about to say something else.
@@ -173,6 +226,10 @@ export class Game {
         this.lastCount = this.resumeCount;
         this.emit('countdown', { n: this.lastCount });
       }
+      return;
+    }
+    if (this.phase === 'intro') {
+      this.advanceIntro(dt);
       return;
     }
     if (this.notice) {

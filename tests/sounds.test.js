@@ -135,3 +135,26 @@ test('suspending the audio stops all sound and the quiet loop that makes the loc
   engine.resume();
   assert.deepEqual(log.slice(2), ['ctx-resume', 'loop-play']);
 });
+
+test('the welcome line shuffles through every line before any repeats, and remembers its place', async () => {
+  const { createIntroPicker } = await import('../src/introLines.js');
+  const lines = Array.from({ length: 10 }, (_, i) => `line ${i}`);
+  const store = {};
+  const saved = { get: (k) => store[k], set: (k, v) => { store[k] = v; } };
+  const picker = createIntroPicker(lines, saved);
+  const firstRound = Array.from({ length: 10 }, () => picker.next());
+  assert.equal(new Set(firstRound).size, 10, 'all ten before any repeat');
+  // a new picker (a new game, even after reloading) carries on from where the saved list got to
+  const secondRound = Array.from({ length: 10 }, () => createIntroPicker(lines, saved).next());
+  assert.equal(new Set(secondRound).size, 10, 'a new round also uses all ten');
+  assert.notEqual(secondRound[0], firstRound[9], 'and does not start with the line that just played');
+});
+
+test('the welcome picker copes with an empty list and with a saved list from older lines', async () => {
+  const { createIntroPicker } = await import('../src/introLines.js');
+  const store = { introBag: [99, 2, 'x', -1] };
+  const saved = { get: (k) => store[k], set: (k, v) => { store[k] = v; } };
+  assert.equal(createIntroPicker([], saved).next(), null);
+  const picker = createIntroPicker(['a', 'b', 'c'], saved);
+  assert.equal(picker.next(), 'c', 'only the valid saved index is used');
+});

@@ -14,6 +14,7 @@ import { Sfx } from './audio/sfx.js';
 import { Music } from './audio/music.js';
 import { Haptics } from './audio/haptics.js';
 import { attachGameSounds } from './audio/gameSounds.js';
+import { createIntroPicker } from './introLines.js';
 import {
   startScreen, playScreen, checkingScreen, resultScreen,
 } from './ui/screens.js';
@@ -40,6 +41,7 @@ const voice = new Voice(config, settings, engine);
 const sfx = new Sfx(engine, settings);
 const music = new Music(engine, settings);
 const haptics = new Haptics(settings);
+const introPicker = createIntroPicker(callerLines.game.intro, settings);
 const audioBase = `${import.meta.env.BASE_URL}audio/`;
 voice.loadClips(`${audioBase}caller/`);
 sfx.loadList(`${audioBase}sfx/`);
@@ -126,6 +128,7 @@ function startGame() {
   let starting = true;
   game = new Game({
     config, patterns, callerLines, speedId: settings.get('speedId'), stageIds: STAGES,
+    introLine: introPicker.next(), // a different welcome each game, using every line before any repeats
   });
   attachGameSounds(game, { sfx, haptics, music });
   game.on((type, data) => {
