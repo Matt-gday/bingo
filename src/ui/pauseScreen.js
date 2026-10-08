@@ -1,4 +1,5 @@
-import { html, setText, callerImages, icons } from './helpers.js';
+import { html, setText, icons } from './helpers.js';
+import { attachCaller } from './callerStage.js';
 
 // The pause cover. It shows nothing about the game, so pausing never gives extra thinking time.
 // It is also where the sound settings live while a game is on.
@@ -23,7 +24,7 @@ export function pauseScreen(game, { onQuit, onResume, voice, settings, sfx, musi
     <div class="pause">
       <div class="pill-label" data-badge></div>
       <h1 data-title>Paused</h1>
-      <img src="${callerImages.noPeeking}" alt="">
+      <div class="pause-caller" data-caller></div>
       <div class="pause-bubble"><span>${line}</span></div>
       <div class="sound-card" data-sound>
         <div class="sound-title">${icons.speaker(18)} Sound</div>
@@ -46,6 +47,7 @@ export function pauseScreen(game, { onQuit, onResume, voice, settings, sfx, musi
     </div>
   </main>`);
 
+  attachCaller(el.querySelector('[data-caller]'), { mood: 'noPeeking' });
   const badge = el.querySelector('[data-badge]');
   const title = el.querySelector('[data-title]');
   const note = el.querySelector('[data-note]');

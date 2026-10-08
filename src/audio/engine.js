@@ -96,9 +96,28 @@ export class AudioEngine {
     return this.loading.get(url);
   }
 
+  // A silent listener for how loud the caller is right now, so his mouth can follow his voice.
+  meterNode() {
+    if (!this.analyser) {
+      this.analyser = this.ctx.createAnalyser();
+      this.analyser.fftSize = 512;
+      this.meterBuffer = new Float32Array(this.analyser.fftSize);
+    }
+    return this.analyser;
+  }
+
+  // 0 (quiet) to 1 (loud): how loud the metered sound is at this moment.
+  level() {
+    if (!this.analyser) return 0;
+    this.analyser.getFloatTimeDomainData(this.meterBuffer);
+    let sum = 0;
+    for (const value of this.meterBuffer) sum += value * value;
+    return Math.min(1, Math.sqrt(sum / this.meterBuffer.length) * 5);
+  }
+
   // Plays a loaded sound. Returns a handle: stop(fadeSeconds) fades it out and stops it.
   // `rate` plays it faster (higher) or slower (lower); 1 is normal.
-  play(buffer, { gain = 1, rate = 1, onended } = {}) {
+  play(buffer, { gain = 1, rate = 1, onended, meter = false } = {}) {
     const ctx = this.ctx;
     const source = ctx.createBufferSource();
     const volume = ctx.createGain();
@@ -106,6 +125,7 @@ export class AudioEngine {
     source.buffer = buffer;
     source.playbackRate.value = rate;
     source.connect(volume).connect(ctx.destination);
+    if (meter) volume.connect(this.meterNode());
     let finished = false;
     source.onended = () => {
       if (finished) return;

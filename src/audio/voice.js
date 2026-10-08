@@ -24,6 +24,11 @@ export class Voice {
     return !!this.synth && typeof SpeechSynthesisUtterance !== 'undefined';
   }
 
+  // True while the caller is making a sound, from a recording or the phone's voice.
+  get speaking() {
+    return !!this.handle || !!this.current;
+  }
+
   get on() {
     return this.supported && this.settings.get('voiceOn');
   }
@@ -77,6 +82,7 @@ export class Voice {
       .then((buffer) => {
         if (turn !== this.turn) return; // a newer line has already taken over
         this.handle = this.engine.play(buffer, {
+          meter: true,
           onended: () => {
             if (turn !== this.turn) return;
             this.handle = null;

@@ -1,4 +1,4 @@
-import { Caller3D } from './caller.js';
+import { Caller3D } from '../src/ui/caller3d/caller.js';
 
 const caller = new Caller3D(document.getElementById('stage'), { size: 440 });
 const status = document.getElementById('status');

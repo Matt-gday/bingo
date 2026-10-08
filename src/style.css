@@ -758,7 +758,8 @@ button {
   align-items: flex-start; /* he stays put whatever his expression; only the bubble grows to fit the text */
   gap: 10px;
 }
-.caller-big img {
+.caller-big img,
+.caller-big .caller-img {
   width: 104px;
   height: 104px;
   flex-shrink: 0;
@@ -1093,7 +1094,8 @@ button {
   align-items: center;
   gap: 8px;
 }
-.test-caller img {
+.test-caller img,
+.test-caller .test-caller-pic {
   width: 64px;
   height: 64px;
   flex-shrink: 0;
@@ -1227,7 +1229,8 @@ button {
   margin: 8px 0 0;
   font: 700 52px/1 var(--font-display);
 }
-.pause img {
+.pause img,
+.pause .pause-caller {
   width: 112px;
   height: 112px;
   object-fit: contain;
@@ -1497,4 +1500,31 @@ button {
 }
 .switch.on i {
   transform: translateX(24px);
+}
+
+/* ---------- The animated caller ---------- */
+.caller-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.caller-small,
+.start .start-caller,
+.result .caller-hero,
+.pause .pause-caller,
+.test-caller .test-caller-pic,
+.caller-big .caller-img {
+  display: block;
+  flex-shrink: 0;
+}
+.caller-small img,
+.start-caller img,
+.caller-hero img,
+.pause-caller img,
+.test-caller-pic img,
+.caller-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }

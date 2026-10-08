@@ -1,4 +1,5 @@
-import { html, setText, setClass, setRing, icons, callerImages } from './helpers.js';
+import { html, setText, setClass, setRing, icons } from './helpers.js';
+import { attachCaller } from './callerStage.js';
 import { pickOne } from '../engine/rng.js';
 
 // The shout screen and the "Test your shout" screen.
@@ -138,7 +139,7 @@ export function testScreen({ config, callerLines, mic, settings, onDone }) {
         <h1>Test your shout</h1>
       </div>
       <div class="test-caller">
-        <img src="${callerImages.talking}" alt="">
+        <div class="test-caller-pic" data-caller></div>
         <div class="speech"><span data-bubble></span></div>
       </div>
       <div class="test-mic-ring"><button class="test-mic" data-mic aria-label="Shout now">${icons.mic(64, 2)}</button></div>
@@ -154,6 +155,7 @@ export function testScreen({ config, callerLines, mic, settings, onDone }) {
       </div>
     </div>
   </main>`);
+  attachCaller(el.querySelector('[data-caller]'), { mood: 'talking' });
 
   const bubble = el.querySelector('[data-bubble]');
   const fill = el.querySelector('[data-fill]');

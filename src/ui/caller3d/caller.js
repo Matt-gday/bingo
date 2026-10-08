@@ -20,6 +20,8 @@ export class Caller3D {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.renderer.setSize(size, size, false);
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 0.92;
@@ -30,7 +32,7 @@ export class Caller3D {
     this.scene.environmentIntensity = 0.7;
 
     this.camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
-    this.camera.position.set(0, 0.05, 6.1);
+    this.camera.position.set(0, 0.0, 5.3);
 
     this.buildLights();
     this.buildCharacter();

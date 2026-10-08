@@ -1,20 +1,16 @@
 import { esc, html, setText, setClass, setRing, updateBall, ballMarkup, icons, callerImages, patternPreview, confetti } from './helpers.js';
 import { columnLetters } from '../engine/cards.js';
 import { SpeechBubble } from './speech.js';
+import { attachCaller } from './callerStage.js';
 
 // Each screen function returns { el, update(game, now) }. update runs every frame
 // and only changes the page when something really changed.
 
 function callerBubble(game, el, { voice, maxLines }) {
   const speech = new SpeechBubble(el.querySelector('.speech'), { voice, maxLines });
-  const img = el.querySelector('[data-caller]');
+  attachCaller(el.querySelector('[data-caller]'), { game, voice });
   return {
     sync(now) {
-      const src = callerImages[game.bubble.mood] ?? callerImages.talking;
-      if (img.__src !== src) {
-        img.__src = src;
-        img.src = src;
-      }
       speech.update(game.bubble, now);
     },
   };
@@ -30,7 +26,7 @@ export function startScreen({ config, chosenSpeed, voice, settings, sfx, music, 
     .join('');
   const el = html(`<main class="screen">
     <div class="start">
-      <img class="start-caller" src="${callerImages.smile}" alt="">
+      <div class="start-caller" data-start-caller></div>
       <h1>${esc(config.gameName)}</h1>
       <p class="tagline">Eyes down! Mark your own cards and call bingo when you think you have a line.</p>
       <div class="speeds">${speeds}</div>
@@ -53,6 +49,7 @@ export function startScreen({ config, chosenSpeed, voice, settings, sfx, music, 
   });
   el.querySelector('[data-play]').addEventListener('click', onPlay);
   el.querySelector('[data-test]').addEventListener('click', onTest);
+  attachCaller(el.querySelector('[data-start-caller]'), { voice, mood: 'smile' });
   const voiceButton = el.querySelector('[data-voice]');
   const showVoice = () => {
     voiceButton.hidden = !voice.supported;
@@ -176,7 +173,7 @@ export function playScreen(game, { voice, mic, settings }) {
       <div class="play-top">
         ${ballMarkup()}
         <div class="caller-row">
-          <div class="caller-btn"><img class="caller-small" data-caller alt=""></div>
+          <div class="caller-btn"><div class="caller-small" data-caller></div></div>
           <div class="speech"></div>
         </div>
         <button class="pause-btn" data-pause aria-label="Pause game">${icons.pause()}</button>
@@ -357,7 +354,7 @@ export function checkingScreen(game, { voice }) {
       <div class="check-body">
         <div class="discs"></div>
         <div class="caller-big">
-          <img data-caller alt="">
+          <div class="caller-img" data-caller></div>
           <div class="speech"></div>
         </div>
         <div class="live-ball-card waiting" data-live>
@@ -417,7 +414,7 @@ export function resultScreen(game, { onAgain, onChange }) {
   const won = game.result.outcome === 'win';
   const el = html(`<main class="screen">
     <div class="result">
-      <img class="caller-hero" src="${won ? callerImages.cheer : callerImages.smile}" alt="">
+      <div class="caller-hero" data-result-caller></div>
       <h1>${won ? 'BINGO!' : 'No winner tonight'}</h1>
       <p class="tagline">${won
         ? `You won with ${esc(game.pattern.spoken)}.`
@@ -436,5 +433,6 @@ export function resultScreen(game, { onAgain, onChange }) {
   el.querySelector('[data-again]').addEventListener('click', onAgain);
   el.querySelector('[data-change]').addEventListener('click', onChange);
   if (won) confetti(el);
+  attachCaller(el.querySelector('[data-result-caller]'), { mood: won ? 'cheer' : 'smile', jump: won });
   return { el, update() {} };
 }

@@ -69,6 +69,16 @@
 
 /* ---------- Buttons ---------- */
 
+/* the shine stays inside the button's rounded corners (their own shadows are not clipped) */
+.btn,
+.speed,
+.btn-dim,
+.pause-btn,
+.back-btn {
+  overflow: hidden;
+}
+
+
 .btn-aqua {
   background: linear-gradient(180deg, #a6fbf3 0%, #2ee6d6 46%, #14b5a8 100%);
   box-shadow: 0 6px 0 var(--aqua-edge), 0 16px 22px rgba(14, 146, 135, 0.4), inset 0 3px 1px rgba(255, 255, 255, 0.85), inset 0 -6px 10px rgba(0, 80, 70, 0.25);
