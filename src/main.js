@@ -1,6 +1,7 @@
 import '@fontsource-variable/fredoka';
 import '@fontsource-variable/nunito';
 import './style.css';
+import './glossy.css';
 
 import config from '../Data/config.json';
 import patterns from '../Data/patterns.json';
