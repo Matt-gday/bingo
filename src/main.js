@@ -64,9 +64,21 @@ function unlockAudio() {
     // The moment the phone lets the audio run, start the music that is waiting.
     ctx.addEventListener?.('statechange', () => music.sync());
   }
+  try {
+    // A tiny silent sound played inside the tap: some phones only wake the audio up for this.
+    const blip = ctx.createBufferSource();
+    blip.buffer = ctx.createBuffer(1, 1, 22050);
+    blip.connect(ctx.destination);
+    blip.start(0);
+  } catch {
+    // Fine: resume() below is the main way.
+  }
   Promise.resolve(ctx.resume?.()).then(() => music.sync()).catch(() => {});
+  // Check again shortly after, in case the phone was slow to wake the audio.
+  for (const ms of [250, 800, 2000]) setTimeout(() => music.sync(), ms);
 }
-for (const type of ['click', 'touchend']) document.addEventListener(type, unlockAudio, { capture: true, passive: true });
+const unlockEvents = ['click', 'touchend', 'pointerup', 'keydown'];
+for (const type of unlockEvents) document.addEventListener(type, unlockAudio, { capture: true, passive: true });
 
 // A soft tap sound and a tiny buzz for ordinary buttons (the squares, the ball and the call buttons have their own).
 document.addEventListener('click', (event) => {
