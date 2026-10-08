@@ -247,7 +247,7 @@ export class Caller3D {
     this.talkLevel = damp(this.talkLevel, mouthGoal, 22, dt);
 
     // the face moves towards the wanted expression
-    for (const key of Object.keys(this.target)) this.face[key] = damp(this.face[key], this.target[key], 9, dt);
+    for (const key of Object.keys(this.target)) this.face[key] = damp(this.face[key], this.target[key], 12, dt);
     const faceNow = {
       ...this.face,
       eyeOpen: 1 - blinkAmount * 0.95,

@@ -68,7 +68,9 @@ export function drawFace(ctx, W, H, p) {
     const arcAmount = Math.max(p.eyeHappy, p.eyeSquint * 0.9);
 
     // round eye (fades out as the eye turns into a happy arc)
-    const roundAlpha = Math.max(0, 1 - arcAmount * 1.25);
+    // The round eye and the arc/chevron take turns: each is gone before the other is fully there, so a ghost
+    // of the old eyes never lingers while one expression turns into another.
+    const roundAlpha = Math.min(1, Math.max(0, 1 - (arcAmount - 0.05) / 0.3));
     if (roundAlpha > 0.02 && h > 2) {
       ctx.save();
       ctx.globalAlpha = roundAlpha;
@@ -96,9 +98,10 @@ export function drawFace(ctx, W, H, p) {
     }
 
     // happy arc, or squeezed-shut chevron ("> <") when wincing
-    if (arcAmount > 0.02) {
+    const arcAlpha = Math.min(1, Math.max(0, (arcAmount - 0.25) / 0.3));
+    if (arcAlpha > 0.01) {
       ctx.save();
-      ctx.globalAlpha = Math.min(1, arcAmount * 1.25);
+      ctx.globalAlpha = arcAlpha;
       ctx.strokeStyle = INK;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
