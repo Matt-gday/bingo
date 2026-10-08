@@ -160,12 +160,15 @@ export class Game {
     if (intro.stage === 'welcome' && intro.elapsedMs >= welcome) {
       intro.stage = 'countdown';
       intro.count = Math.ceil(countdown / 1000);
-      this.say(pickOne(this.callerLines.game.introCountdown), 'cheer', 'intro');
+      this.say(pickOne(this.callerLines.game.introCountdown), 'cheer', 'introCountdown');
       this.emit('introCount', { n: intro.count });
     }
     if (intro.stage === 'countdown') {
       const left = welcome + countdown - intro.elapsedMs;
       if (left <= 0) {
+        // The first number waits until the caller has finished "Here we go!" (or a short limit passes).
+        intro.waitedMs = (intro.waitedMs ?? 0) + dt;
+        if (!intro.voiceDone && intro.waitedMs < (this.config.intro.maxWaitForVoiceMs ?? 0)) return;
         this.intro = null;
         this.nextCall(); // the first number drops
         return;
@@ -209,7 +212,7 @@ export class Game {
   // Everything the caller says goes in his bubble, and the voice reads it out if it is on.
   // `spoken` is what the voice says when it differs from the bubble (the bubble shows digits).
   say(text, mood = 'talking', kind = 'line', spoken = text) {
-    this.bubble = { text, mood };
+    this.bubble = { text, mood, spoken };
     this.emit('say', { text, mood, kind, spoken });
   }
 
@@ -457,6 +460,7 @@ export class Game {
 
   // The caller has finished the false-call line. Start the next number after a short beat.
   lineFinished({ silent = false } = {}) {
+    if (this.intro?.stage === 'countdown') this.intro.voiceDone = true; // the caller has finished counting in
     if (!this.pendingRestart) return;
     const beat = silent ? this.config.check.silentFailMs : this.config.check.afterLineMs;
     this.pendingRestart.msLeft = Math.min(this.pendingRestart.msLeft, beat);

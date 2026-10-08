@@ -137,7 +137,9 @@ function startGame() {
   game.on((type, data) => {
     if (type === 'say') {
       if (starting) return; // start() emits both a greeting and the first number
-      voice.speak(data.spoken ?? data.text, { protect: data.kind === 'falseCall' }); // the false-call line is left to finish
+      // The false-call line and the "Here we go!" count-in are left to finish.
+      voice.speak(data.spoken ?? data.text, { protect: data.kind === 'falseCall' || data.kind === 'introCountdown' });
+      if (data.kind === 'introCountdown' && !voice.on) game.lineFinished({ silent: true }); // no voice, nothing to wait for
     } else if (type === 'falseCall') {
       // With the voice off there is no line to wait for, so give the player a moment to read it.
       if (!voice.on) game.lineFinished({ silent: true });

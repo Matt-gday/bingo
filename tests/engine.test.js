@@ -473,14 +473,26 @@ test('after the welcome a 3, 2, 1 counts in, the ring empties, and then the firs
   assert.equal(game.introRing, 0, 'the ring is full during the welcome');
   runFor(game, 200);
   assert.equal(game.introCount, countdownSeconds, 'the count starts at 3');
-  assert.ok(heard.some((h) => h.kind === 'intro' && h.spoken.includes('Three')), 'the caller counts');
+  assert.ok(heard.some((h) => h.kind === 'introCountdown' && h.spoken.includes('Three')), 'the caller counts');
   runFor(game, (countdownSeconds * 1000) / 2);
   assert.ok(game.introRing > 0.3 && game.introRing < 0.8, 'the ring is part way empty');
   runFor(game, (countdownSeconds * 1000) / 2 + 200);
   assert.deepEqual(counts, [3, 2, 1]);
+  assert.equal(game.phase, 'intro', 'the first number waits while the caller finishes saying "Here we go!"');
+  game.lineFinished(); // the voice has finished
+  runFor(game, 100);
   assert.equal(game.phase, 'calling');
   assert.equal(game.called.length, 1, 'the first number has dropped');
   assert.equal(game.intro, null);
+});
+
+test('the first number does not wait for ever if the voice never reports back', () => {
+  const game = introGame();
+  const { welcomeSeconds, countdownSeconds, maxWaitForVoiceMs } = config.intro;
+  runFor(game, (welcomeSeconds + countdownSeconds) * 1000 + maxWaitForVoiceMs - 200);
+  assert.equal(game.called.length, 0);
+  runFor(game, 500);
+  assert.equal(game.called.length, 1);
 });
 
 test('the intro waits while paused and never starts without a welcome line', () => {

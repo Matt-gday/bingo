@@ -100,7 +100,8 @@
   "intro": {
     "note": "Before the first number: the caller welcomes the player (a random line) while they look over their cards, then a 3, 2, 1 counts in the number circle.",
     "welcomeSeconds": 4,
-    "countdownSeconds": 3
+    "countdownSeconds": 3,
+    "maxWaitForVoiceMs": 2500
   },
   "stageWon": {
     "nextStageCountdownSeconds": 3
