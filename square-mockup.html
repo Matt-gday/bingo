@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Square shadow mock-up</title>
+<style>
+  body { margin: 0; padding: 16px; background: #5a2fdc; font-family: system-ui, sans-serif; color: #fff; }
+  h2 { font-size: 15px; margin: 18px 0 6px; }
+  p { font-size: 12px; margin: 0 0 8px; opacity: .85; }
+  .card { background: #fff; border-radius: 20px; padding: 10px; width: 300px; box-shadow: 0 6px 0 rgba(43,27,107,.5); }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+  .sq { height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font: 600 22px/1 system-ui; color: #2b1b6b;
+        background: radial-gradient(ellipse at 36% 24%, #fff 0%, #f7f3ff 38%, #e6dcff 78%, #d9ccff 100%);
+        box-shadow: 0 0 0 1px #d9d9e3, 0 3px 0 var(--edge), 0 7px 9px rgba(70,40,150,.3), inset 0 3px 3px #fff, inset 0 -5px 7px rgba(110,80,200,.24); }
+  .a .sq { height: 46px; margin-bottom: 4px; --edge: #c9bcf2; }      /* now: shorter */
+  .b .sq { --edge: #c9bcf2; }                                       /* original size, original edge */
+  .c .sq { --edge: #8f7bd6; }                                       /* original size, darker edge + light grey line */
+  .d .sq { --edge: #7c66c8; }                                       /* original size, darkest edge + light grey line */
+</style></head><body>
+<h2>A: now (shorter squares)</h2><div class="card a"><div class="grid"><div class="sq">7</div><div class="sq">14</div><div class="sq">32</div><div class="sq">48</div><div class="sq">61</div><div class="sq">2</div><div class="sq">19</div><div class="sq">40</div><div class="sq">52</div><div class="sq">70</div></div></div>
+<h2>B: original size, same edge as before</h2><div class="card b"><div class="grid"><div class="sq">7</div><div class="sq">14</div><div class="sq">32</div><div class="sq">48</div><div class="sq">61</div><div class="sq">2</div><div class="sq">19</div><div class="sq">40</div><div class="sq">52</div><div class="sq">70</div></div></div>
+<h2>C: original size, darker edge + light grey line</h2><div class="card c"><div class="grid"><div class="sq">7</div><div class="sq">14</div><div class="sq">32</div><div class="sq">48</div><div class="sq">61</div><div class="sq">2</div><div class="sq">19</div><div class="sq">40</div><div class="sq">52</div><div class="sq">70</div></div></div>
+<h2>D: original size, darkest edge + light grey line</h2><div class="card d"><div class="grid"><div class="sq">7</div><div class="sq">14</div><div class="sq">32</div><div class="sq">48</div><div class="sq">61</div><div class="sq">2</div><div class="sq">19</div><div class="sq">40</div><div class="sq">52</div><div class="sq">70</div></div></div>
+</body></html>

@@ -654,6 +654,7 @@ button {
   flex-direction: column;
   justify-content: center;
   gap: 24px;
+  padding-bottom: 44px; /* lifts the centred group a little */
 }
 .check-foot {
   min-height: 70px;

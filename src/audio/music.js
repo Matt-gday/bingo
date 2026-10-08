@@ -41,7 +41,8 @@ export class Music {
       this.stopCurrent();
       return;
     }
-    if (!this.engine.ctx || !entry) return;
+    // Wait until the phone really has the audio running, so the track never starts into a sleeping system.
+    if (!this.engine.ctx || this.engine.ctx.state === 'suspended' || this.engine.ctx.state === 'interrupted' || !entry) return;
     if (this.current?.id === this.wanted) return;
     const id = this.wanted;
     this.stopCurrent();

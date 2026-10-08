@@ -40,7 +40,6 @@ export function startScreen({ config, chosenSpeed, voice, settings, sfx, music, 
         <button class="btn btn-ghost" data-sfx></button>
         <button class="btn btn-ghost" data-music></button>
         <button class="btn btn-ghost" data-buzz></button>
-        <button class="btn btn-ghost" data-test-voice>Test caller</button>
       </div>
       <div class="spacer"></div>
       <div class="buttons"><button class="btn btn-aqua" data-play>Play</button></div>
@@ -65,13 +64,6 @@ export function startScreen({ config, chosenSpeed, voice, settings, sfx, music, 
     if (voice.on) voice.speak('Eyes down, everyone!');
   });
   showVoice();
-  const testVoice = el.querySelector('[data-test-voice]');
-  testVoice.hidden = !voice.supported;
-  testVoice.addEventListener('click', () => {
-    voice.setOn(true);
-    showVoice();
-    voice.speak('Eyes down, everyone!');
-  });
   // Sound effects, music and buzz: each is a simple on/off switch kept on this device.
   const switches = [
     ['[data-sfx]', 'sfxOn', 'Sounds', () => sfx.play('mark-pop')],

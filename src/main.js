@@ -54,11 +54,15 @@ music.loadList(`${audioBase}music/`);
 // Phones only allow sound to start from a tap, so the first tap anywhere switches the audio on.
 let audioUnlocked = false;
 function unlockAudio() {
-  if (!engine.ensure()) return; // also wakes the audio up again if the phone put it to sleep
-  if (audioUnlocked) return;
-  audioUnlocked = true;
-  sfx.preload();
-  music.sync();
+  const ctx = engine.ensure(); // also wakes the audio up again if the phone put it to sleep
+  if (!ctx) return;
+  if (!audioUnlocked) {
+    audioUnlocked = true;
+    sfx.preload();
+    // The moment the phone lets the audio run, start the music that is waiting.
+    ctx.addEventListener?.('statechange', () => music.sync());
+  }
+  Promise.resolve(ctx.resume?.()).then(() => music.sync()).catch(() => {});
 }
 for (const type of ['click', 'touchend']) document.addEventListener(type, unlockAudio, { capture: true, passive: true });
 
