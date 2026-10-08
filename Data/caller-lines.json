@@ -202,6 +202,7 @@
   "_introNote": "'intro' lines are the welcome the caller says before the first number. The game shuffles them and plays them all before any repeats. The player is always 'you' in speech, never their typed name.",
   "callOverrides": {
     "note": "Calls that should be said as one phrase, exactly as written, instead of 'number, nickname'. Used when nicknames are on (Relaxed and Steady). Add more by number.",
-    "39": "Thirty-nine steps!"
+    "39": "Thirty-nine steps!",
+    "57": "Fifty-seven Heinz varieties!"
   }
 }

@@ -37,7 +37,7 @@ Thirty-five, Jump and jive!
 Thirty-six, Three dozen!
 Thirty-seven, More than eleven!
 Thirty-eight, Christmas cake!
-Thirty-nine, Steps!
+Thirty-nine steps!
 Forty, Life begins!
 Forty-one, Time for fun!
 Forty-two, Winnie the Pooh!
@@ -55,7 +55,7 @@ Fifty-three, Stuck in the tree!
 Fifty-four, Clean the floor!
 Fifty-five, Snakes alive!
 Five and six, fifty-six!
-Fifty-seven, Heinz varieties!
+Fifty-seven Heinz varieties!
 Fifty-eight, Make them wait!
 Fifty-nine, Brighton line!
 Sixty, Five dozen!
@@ -229,122 +229,68 @@ Seventy-three...
 Seventy-four...
 Seventy-five...
 
-== fixed lines (5) ==
+== welcome (24) ==
+Welcome to Bingo night, everyone! Get ready for the first number.
+Eyes down, everyone! Have a good look at your cards.
+Good evening, bingo friends! Cards at the ready.
+Welcome, welcome! Settle in, the first number's coming up.
+Hello, hello! Let's see who's lucky tonight.
+Gather round, bingo fans! Take a good look at your cards.
+Welcome to the club! Two cards, one lucky night.
+Right then, bingo time! Eyes on your cards.
+Have a good look at your numbers. I'll start in a moment.
+Spot any numbers that are on both cards? Keep an eye out!
+Two cards, a few shared numbers. Choose wisely tonight!
+Take a moment to scan your cards. Some numbers might be twins!
+Remember, each number can only be used once, so choose wisely!
+A number only counts once, even if it's on both cards. Choose wisely!
+Is it going to be your night? Let's find out!
+Feeling lucky? Here comes the first number!
+The balls are bouncing and I'm ready. Are you?
+Fingers crossed, everyone! Here we go.
+Ready, steady, bingo!
+Shout loud, play fair, and have fun!
+Only call bingo when you really mean it. I'll be checking!
+May all your numbers come up early tonight.
+Same club, same lucky balls. Welcome back!
+Nobody here has ever lost at bingo. They just win later!
+
+== countdown (1) ==
+Three! Two! One! Here we go!
+
+== start of the game (2) ==
 Eyes down, everyone!
 Here we go. Good luck!
-Marks locked!
+
+== too slow (1) ==
 Too slow! The next number is out.
+
+== no winner (3) ==
+That was the last ball. No winner tonight!
+Every ball is out, and nobody got there. Better luck next time!
+All seventy-five balls, and no winner. That's bingo for you!
+
+== pause (1) ==
 No peeking! Your cards are covered.
 
-== lines about the pattern (13) ==
+== stage opens (6) ==
 Now we're playing for a line.
 Next up: a line!
-Every number checks out. We have a winner!
-That's a line. Well played!
-I can't see a line there, I'm afraid.
 Now we're playing for two lines.
 Next up: two lines!
-That's two lines. Well played!
-I can't see two lines there, I'm afraid.
 Now we're playing for a full house.
 Next up: a full house!
+
+== wins (4) ==
+Every number checks out. We have a winner!
+That's a line. Well played!
+That's two lines. Well played!
 That's a full house. Well played!
+
+== false calls (153) ==
+I can't see a line there, I'm afraid.
+I can't see two lines there, I'm afraid.
 I can't see a full house there, I'm afraid.
-
-== lines about the regulars (91) ==
-Sit down, Dot, that's not a line.
-Dot has it! Well done, Dot.
-That's a line for Dot.
-Sit down, Mabel, that's not a line.
-Mabel has it! Well done, Mabel.
-That's a line for Mabel.
-Sit down, Rex, that's not a line.
-Rex has it! Well done, Rex.
-That's a line for Rex.
-Sit down, Pearl, that's not a line.
-Pearl has it! Well done, Pearl.
-That's a line for Pearl.
-Sit down, Gus, that's not a line.
-Gus has it! Well done, Gus.
-That's a line for Gus.
-Sit down, Jerry, that's not a line.
-Jerry has it! Well done, Jerry.
-That's a line for Jerry.
-Sit down, Noreen, that's not a line.
-Noreen has it! Well done, Noreen.
-That's a line for Noreen.
-Sit down, Kev, that's not a line.
-Kev has it! Well done, Kev.
-That's a line for Kev.
-Sit down, Lorraine, that's not a line.
-Lorraine has it! Well done, Lorraine.
-That's a line for Lorraine.
-Sit down, Trev, that's not a line.
-Trev has it! Well done, Trev.
-That's a line for Trev.
-Sit down, Deb, that's not a line.
-Deb has it! Well done, Deb.
-That's a line for Deb.
-Sit down, Bruce, that's not a line.
-Bruce has it! Well done, Bruce.
-That's a line for Bruce.
-Sit down, Joyce, that's not a line.
-Joyce has it! Well done, Joyce.
-That's a line for Joyce.
-Sit down, Dot, that's not two lines.
-That's two lines for Dot.
-Sit down, Mabel, that's not two lines.
-That's two lines for Mabel.
-Sit down, Rex, that's not two lines.
-That's two lines for Rex.
-Sit down, Pearl, that's not two lines.
-That's two lines for Pearl.
-Sit down, Gus, that's not two lines.
-That's two lines for Gus.
-Sit down, Jerry, that's not two lines.
-That's two lines for Jerry.
-Sit down, Noreen, that's not two lines.
-That's two lines for Noreen.
-Sit down, Kev, that's not two lines.
-That's two lines for Kev.
-Sit down, Lorraine, that's not two lines.
-That's two lines for Lorraine.
-Sit down, Trev, that's not two lines.
-That's two lines for Trev.
-Sit down, Deb, that's not two lines.
-That's two lines for Deb.
-Sit down, Bruce, that's not two lines.
-That's two lines for Bruce.
-Sit down, Joyce, that's not two lines.
-That's two lines for Joyce.
-Sit down, Dot, that's not a full house.
-That's a full house for Dot.
-Sit down, Mabel, that's not a full house.
-That's a full house for Mabel.
-Sit down, Rex, that's not a full house.
-That's a full house for Rex.
-Sit down, Pearl, that's not a full house.
-That's a full house for Pearl.
-Sit down, Gus, that's not a full house.
-That's a full house for Gus.
-Sit down, Jerry, that's not a full house.
-That's a full house for Jerry.
-Sit down, Noreen, that's not a full house.
-That's a full house for Noreen.
-Sit down, Kev, that's not a full house.
-That's a full house for Kev.
-Sit down, Lorraine, that's not a full house.
-That's a full house for Lorraine.
-Sit down, Trev, that's not a full house.
-That's a full house for Trev.
-Sit down, Deb, that's not a full house.
-That's a full house for Deb.
-Sit down, Bruce, that's not a full house.
-That's a full house for Bruce.
-Sit down, Joyce, that's not a full house.
-That's a full house for Joyce.
-
-== false calls that name a number (150) ==
 Ooh, unlucky. I haven't called one yet.
 Not quite. one is already on your other card.
 Ooh, unlucky. I haven't called two yet.
@@ -495,3 +441,98 @@ Ooh, unlucky. I haven't called seventy-four yet.
 Not quite. seventy-four is already on your other card.
 Ooh, unlucky. I haven't called seventy-five yet.
 Not quite. seventy-five is already on your other card.
+
+== regulars told off (39) ==
+Sit down, Dot, that's not a line.
+Sit down, Mabel, that's not a line.
+Sit down, Rex, that's not a line.
+Sit down, Pearl, that's not a line.
+Sit down, Gus, that's not a line.
+Sit down, Jerry, that's not a line.
+Sit down, Noreen, that's not a line.
+Sit down, Kev, that's not a line.
+Sit down, Lorraine, that's not a line.
+Sit down, Trev, that's not a line.
+Sit down, Deb, that's not a line.
+Sit down, Bruce, that's not a line.
+Sit down, Joyce, that's not a line.
+Sit down, Dot, that's not two lines.
+Sit down, Mabel, that's not two lines.
+Sit down, Rex, that's not two lines.
+Sit down, Pearl, that's not two lines.
+Sit down, Gus, that's not two lines.
+Sit down, Jerry, that's not two lines.
+Sit down, Noreen, that's not two lines.
+Sit down, Kev, that's not two lines.
+Sit down, Lorraine, that's not two lines.
+Sit down, Trev, that's not two lines.
+Sit down, Deb, that's not two lines.
+Sit down, Bruce, that's not two lines.
+Sit down, Joyce, that's not two lines.
+Sit down, Dot, that's not a full house.
+Sit down, Mabel, that's not a full house.
+Sit down, Rex, that's not a full house.
+Sit down, Pearl, that's not a full house.
+Sit down, Gus, that's not a full house.
+Sit down, Jerry, that's not a full house.
+Sit down, Noreen, that's not a full house.
+Sit down, Kev, that's not a full house.
+Sit down, Lorraine, that's not a full house.
+Sit down, Trev, that's not a full house.
+Sit down, Deb, that's not a full house.
+Sit down, Bruce, that's not a full house.
+Sit down, Joyce, that's not a full house.
+
+== regulars win (52) ==
+Dot has it! Well done, Dot.
+That's a line for Dot.
+Mabel has it! Well done, Mabel.
+That's a line for Mabel.
+Rex has it! Well done, Rex.
+That's a line for Rex.
+Pearl has it! Well done, Pearl.
+That's a line for Pearl.
+Gus has it! Well done, Gus.
+That's a line for Gus.
+Jerry has it! Well done, Jerry.
+That's a line for Jerry.
+Noreen has it! Well done, Noreen.
+That's a line for Noreen.
+Kev has it! Well done, Kev.
+That's a line for Kev.
+Lorraine has it! Well done, Lorraine.
+That's a line for Lorraine.
+Trev has it! Well done, Trev.
+That's a line for Trev.
+Deb has it! Well done, Deb.
+That's a line for Deb.
+Bruce has it! Well done, Bruce.
+That's a line for Bruce.
+Joyce has it! Well done, Joyce.
+That's a line for Joyce.
+That's two lines for Dot.
+That's two lines for Mabel.
+That's two lines for Rex.
+That's two lines for Pearl.
+That's two lines for Gus.
+That's two lines for Jerry.
+That's two lines for Noreen.
+That's two lines for Kev.
+That's two lines for Lorraine.
+That's two lines for Trev.
+That's two lines for Deb.
+That's two lines for Bruce.
+That's two lines for Joyce.
+That's a full house for Dot.
+That's a full house for Mabel.
+That's a full house for Rex.
+That's a full house for Pearl.
+That's a full house for Gus.
+That's a full house for Jerry.
+That's a full house for Noreen.
+That's a full house for Kev.
+That's a full house for Lorraine.
+That's a full house for Trev.
+That's a full house for Deb.
+That's a full house for Bruce.
+That's a full house for Joyce.
