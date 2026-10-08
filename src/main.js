@@ -88,11 +88,24 @@ let game = null;
 let current = null; // { name, el, update, destroy }
 let playAfterTest = false;
 
+// Phones report the page height late and differently each time it opens (browser bars, home-screen app), which
+// left a dark strip at the bottom. Measure it again a few times and whenever it changes.
+function measureHeight() {
+  const h = Math.max(window.innerHeight, window.visualViewport?.height ?? 0);
+  document.documentElement.style.setProperty('--app-h', `${h}px`);
+}
+measureHeight();
+for (const ms of [100, 400, 1000, 2500]) setTimeout(measureHeight, ms);
+for (const type of ['resize', 'orientationchange', 'pageshow']) window.addEventListener(type, measureHeight);
+window.visualViewport?.addEventListener('resize', measureHeight);
+
 function show(name, build) {
   current?.destroy?.();
   current = { name, ...build() };
   root.replaceChildren(current.el);
   window.scrollTo(0, 0);
+  // Anything the screen does not cover takes the colour of the bottom of its gradient, so no dark strip shows.
+  document.documentElement.style.background = current.el.classList.contains('tense') ? '#7a2a96' : '#c257d9';
   music.play(MUSIC_FOR[name] ?? 'home');
 }
 

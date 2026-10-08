@@ -31,11 +31,13 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+html {
+  background: #c257d9;
+}
 html,
 body {
   margin: 0;
   min-height: 100%;
-  background: #2c1a8a;
   overscroll-behavior: none;
 }
 
@@ -62,7 +64,7 @@ button {
   overflow: hidden;
   width: 100%;
   max-width: 430px;
-  min-height: 100dvh;
+  min-height: var(--app-h, 100dvh);
   margin: 0 auto;
   padding: var(--pad-top) 16px var(--pad-bottom);
   display: flex;
