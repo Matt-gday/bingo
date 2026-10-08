@@ -372,20 +372,24 @@ export function checkingScreen(game, { voice }) {
         <div class="pill-label">The caller has your card</div>
         <h1>Checking</h1>
       </div>
-      <div class="discs"></div>
-      <div class="caller-big">
-        <img data-caller alt="">
-        <div class="speech"></div>
-      </div>
-      <div class="live-ball-card" data-live hidden>
-        ${ballMarkup()}
-        <div>
-          <div class="title">The next number is already out</div>
-          <div class="sub"><span class="dots" data-dots>${'<i></i>'.repeat(dotCount)}</span><span data-sit></span></div>
+      <div class="check-body">
+        <div class="discs"></div>
+        <div class="caller-big">
+          <img data-caller alt="">
+          <div class="speech"></div>
+        </div>
+        <div class="live-ball-card waiting" data-live>
+          ${ballMarkup()}
+          <div>
+            <div class="title">The next number is already out</div>
+            <div class="sub"><span class="dots" data-dots>${'<i></i>'.repeat(dotCount)}</span><span data-sit></span></div>
+          </div>
         </div>
       </div>
-      <p class="foot-note" data-note>The game is paused while your card is checked.</p>
-      <button class="btn btn-aqua back-cards" data-back hidden>Back to my cards</button>
+      <div class="check-foot">
+        <p class="foot-note" data-note>The game is paused while your card is checked.</p>
+        <button class="btn btn-aqua back-cards" data-back hidden>Back to my cards</button>
+      </div>
     </div>
   </main>`);
   const discs = el.querySelector('.discs');
@@ -407,7 +411,11 @@ export function checkingScreen(game, { voice }) {
       const failed = c.stage === 'failed';
       // Once the caller has finished, the next number starts and appears underneath.
       const restarted = game.restartedAfterFalseCall;
-      live.hidden = !restarted;
+      // The card's space is kept from the start (it is only invisible), so nothing moves when it arrives.
+      if (restarted && live.classList.contains('waiting')) {
+        live.classList.remove('waiting');
+        live.classList.add('arrived');
+      }
       back.hidden = !restarted;
       note.hidden = failed;
       if (restarted) {

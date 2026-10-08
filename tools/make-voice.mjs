@@ -91,8 +91,9 @@ function sentText(text) {
   if (option('--tag') === undefined && nicknames && n) {
     const pool = nicknames.pool?.length ? nicknames.pool : [''];
     const tag = nicknames.byNumber?.[String(n)] ?? pool[n % pool.length];
-    const prefix = `${capital(numberInWords(n))}, `;
-    return text.startsWith(prefix)
+    const word = capital(numberInWords(n));
+    const prefix = [`${word}, `, `${word} `].find((p) => text.startsWith(p)); // "Eight, Garden gate!" or "Thirty-nine steps!"
+    return prefix
       ? `${tags.default} ${prefix}${tag} ${text.slice(prefix.length)}`
       : `${tag} ${text}`; // the nickname already says the number (Legs eleven), so the tag goes in front
   }

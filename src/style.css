@@ -646,8 +646,28 @@ button {
   flex: 1;
   padding-top: 32px;
 }
+/* The caller, the numbers and the next-number card sit in the middle of the space between the heading and the
+   bottom button. The space for each is kept from the start, so nothing shifts when something arrives. */
+.check-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
+.check-foot {
+  min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.check-foot .foot-note {
+  margin: 0;
+}
+.live-ball-card.waiting {
+  visibility: hidden;
+}
 .back-cards {
-  margin-top: auto;
   height: 64px;
   font-size: 24px;
 }
@@ -1406,7 +1426,7 @@ button {
 }
 
 /* Small things: a little spring. They start the moment they stop being hidden. */
-.live-ball-card,
+.live-ball-card.arrived,
 .back-cards,
 .sit-banner,
 .confirm-box {

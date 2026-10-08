@@ -68,6 +68,8 @@ test('numbers are spoken', () => {
   assert.equal(callText(47, callerLines, true), 'Four and seven, forty-seven!');
   assert.equal(callText(11, callerLines, false), 'Eleven!');
   assert.equal(callText(8, callerLines, true), 'Eight, Garden gate!');
+  assert.equal(callText(39, callerLines, true), 'Thirty-nine steps!', 'said as one phrase, no comma');
+  assert.equal(callText(39, callerLines, false), 'Thirty-nine!', 'Quick speed is just the number');
   assert.equal(callText(50, callerLines, true), 'Fifty, Half a century!');
   // every nickname either says its own number or has the number read first
   for (const [n, nickname] of Object.entries(callerLines.nicknames)) {

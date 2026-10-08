@@ -20,6 +20,8 @@ export function numberInWords(n) {
 // has the number read first, so the player always hears which number it is.
 // With nicknames off (Quick speed) he just says the number.
 export function callText(number, callerLines, useNicknames) {
+  const override = callerLines.callOverrides?.[String(number)];
+  if (useNicknames && typeof override === 'string') return override; // a call that is said as one phrase, like "Thirty-nine steps!"
   const nickname = callerLines.nicknames[String(number)];
   const full = numberInWords(number);
   if (useNicknames && nickname) {

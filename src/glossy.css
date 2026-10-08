@@ -54,11 +54,15 @@
   content: '';
   position: absolute;
   z-index: -1;
-  left: 7%;
-  right: 7%;
-  top: 4%;
-  height: 42%;
-  border-radius: 999px 999px 70% 70% / 999px 999px 45% 45%;
+  /* The shine follows the button's own shape: it runs nearly the whole length, takes the same rounded
+     corners at the top, and fades out in a gentle curve across the middle. */
+  left: 3px;
+  right: 3px;
+  top: 3px;
+  height: 46%;
+  border-radius: inherit;
+  border-bottom-left-radius: 50% 100%;
+  border-bottom-right-radius: 50% 100%;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.06));
   pointer-events: none;
 }

@@ -40,7 +40,6 @@
     "Thirty-six, Three dozen!": "5ada0a32e30f.mp3",
     "Thirty-seven, More than eleven!": "7ed2a7b2cda0.mp3",
     "Thirty-eight, Christmas cake!": "81731501c68e.mp3",
-    "Thirty-nine, Steps!": "cf1f3be44943.mp3",
     "Forty, Life begins!": "f8505437b7c5.mp3",
     "Forty-one, Time for fun!": "ddc974c96be5.mp3",
     "Forty-two, Winnie the Pooh!": "a370327e2182.mp3",
@@ -507,7 +506,8 @@
     "May all your numbers come up early tonight.": "f0e1f8dbfe7c.mp3",
     "Same club, same lucky balls. Welcome back!": "61672f9ad68b.mp3",
     "Nobody here has ever lost at bingo. They just win later!": "893870d44cf3.mp3",
-    "Three! Two! One! Here we go!": "6993f69ab725.mp3"
+    "Three! Two! One! Here we go!": "6993f69ab725.mp3",
+    "Thirty-nine steps!": "6a2991d17f18.mp3"
   },
   "hashes": {
     "Eight, Garden gate!": "968b439adaa9",
@@ -550,7 +550,6 @@
     "Thirty-six, Three dozen!": "5ada0a32e30f",
     "Thirty-seven, More than eleven!": "7ed2a7b2cda0",
     "Thirty-eight, Christmas cake!": "81731501c68e",
-    "Thirty-nine, Steps!": "cf1f3be44943",
     "Forty, Life begins!": "f8505437b7c5",
     "Forty-one, Time for fun!": "ddc974c96be5",
     "Forty-two, Winnie the Pooh!": "a370327e2182",
@@ -1017,7 +1016,8 @@
     "May all your numbers come up early tonight.": "f0e1f8dbfe7c",
     "Same club, same lucky balls. Welcome back!": "61672f9ad68b",
     "Nobody here has ever lost at bingo. They just win later!": "893870d44cf3",
-    "Three! Two! One! Here we go!": "6993f69ab725"
+    "Three! Two! One! Here we go!": "6993f69ab725",
+    "Thirty-nine steps!": "6a2991d17f18"
   },
   "voice": "2Hz9DHqNsF6pwJt0YOtM"
 }
