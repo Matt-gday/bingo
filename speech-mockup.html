@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Speech bubble mock-up</title>
+<style>
+  @font-face { font-family: 'Fredoka'; src: url('node_modules/@fontsource-variable/fredoka/files/fredoka-latin-wght-normal.woff2') format('woff2'); font-weight: 300 700; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.4 system-ui, 'Segoe UI', sans-serif; color: #2b1b6b; background: #f1ecff; }
+  header { padding: 18px 22px; color: #fff; background: linear-gradient(170deg, #5236d6, #7b45e6 55%, #c257d9); }
+  header h1 { margin: 0 0 4px; font: 700 26px 'Fredoka', sans-serif; }
+  header p { margin: 0; opacity: .92; max-width: 760px; }
+  .controls { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; padding: 12px 22px; background: #fff; border-bottom: 2px solid #d6ccfa; }
+  .controls label { display: flex; gap: 8px; align-items: center; font-weight: 600; }
+  select, input[type=range] { font: inherit; }
+  select { padding: 6px 10px; border: 2px solid #d6ccfa; border-radius: 10px; background: #fff; max-width: 330px; }
+  button.go { border: 0; border-radius: 999px; padding: 9px 20px; font: 700 16px 'Fredoka', sans-serif; background: #2ee6d6; color: #1a1446; cursor: pointer; box-shadow: 0 3px 0 #0e9287; }
+  main { display: flex; flex-wrap: wrap; gap: 22px; padding: 22px; justify-content: center; }
+  .phone { width: 358px; padding: 16px; border-radius: 26px; background: linear-gradient(170deg, #5236d6, #7b45e6 45%, #c257d9); color: #fff; box-shadow: 0 6px 0 rgba(43, 27, 107, .25); }
+  .phone.tense { background: linear-gradient(170deg, #2c1a8a, #45208f 50%, #7a2a96); }
+  .phone h2 { margin: 0 0 12px; font: 600 15px 'Fredoka', sans-serif; opacity: .9; }
+  .row { display: flex; align-items: flex-start; gap: 10px; }
+  .ball { flex: 0 0 92px; height: 92px; border-radius: 50%; border: 6px solid rgba(255,255,255,.35); display: flex; align-items: center; justify-content: center; font: 700 36px 'Fredoka', sans-serif; background: radial-gradient(circle at 32% 26%, #fff 0%, #8ff7ee 20%, #2ee6d6 58%, #12a99c 100%); color: #1a1446; }
+  .caller { flex: 0 0 auto; object-fit: contain; }
+  .bubble { position: relative; flex: 0 0 auto; min-width: 0; padding: 8px 12px; border-radius: 18px; background: #fff; color: #2b1b6b; box-shadow: 0 4px 0 rgba(43,27,107,.25); font-family: 'Fredoka', sans-serif; font-weight: 600; }
+  .bubble::before { content: ''; position: absolute; left: -4px; top: 19px; width: 12px; height: 12px; border-radius: 2px; background: #fff; transform: rotate(45deg); }
+  .window { position: relative; overflow: hidden; }
+  .lines { position: absolute; left: 0; right: 0; top: 0; will-change: transform; }
+  .line { position: absolute; left: 0; right: 0; white-space: nowrap; will-change: opacity, filter; }
+  .measure { position: absolute; visibility: hidden; pointer-events: none; font-family: 'Fredoka', sans-serif; font-weight: 600; }
+  .note { margin: 10px 0 0; font-size: 12px; opacity: .85; }
+  .help { max-width: 760px; margin: 0 auto; padding: 0 22px 40px; color: #5b4a9e; }
+  .help li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Speech bubble mock-up</h1>
+  <p>The bubble is a fixed size, so nothing around it ever moves. Longer lines scroll up inside it. Lines leaving at the top fade and blur away, and the next line peeks in, faint and blurred, at the bottom. The scrolling follows how long the caller takes to say the line.</p>
+</header>
+
+<div class="controls">
+  <label>Line to say
+    <select id="sample"></select>
+  </label>
+  <label>Effect
+    <select id="effect">
+      <option value="both">Fade and blur</option>
+      <option value="fade">Fade only</option>
+      <option value="blur">Blur only</option>
+    </select>
+  </label>
+  <label>Speed <input id="speed" type="range" min="8" max="22" value="14"> <span id="speedText"></span></label>
+  <label><input id="loop" type="checkbox" checked> keep repeating</label>
+  <button class="go" id="play">▶ Play</button>
+</div>
+
+<main id="phones"></main>
+
+<ul class="help">
+  <li><b>Game header:</b> the bubble beside the number ball is the narrowest place, about 138 pixels wide. Two versions are shown, the type as it is now and a smaller one. Three lines fit; the peek of a fourth shows only when the line is longer.</li>
+  <li><b>Welcome:</b> the bigger caller before the first number. Four lines, smaller type, beside the "?" ball.</li>
+  <li><b>Check screen:</b> the large caller and bubble. Three lines at a larger size.</li>
+  <li>Short lines like "Legs eleven!" sit still in the middle of the bubble, with no scrolling.</li>
+  <li>"Speed" is how many characters the caller says each second. Recorded lines run at about 14.</li>
+</ul>
+
+<script>
+const SAMPLES = [
+  ['Short call: Legs eleven!', 'Legs eleven!'],
+  ['A nickname call', 'Seventy-three, Queen bee!'],
+  ['Digits call', 'Four and seven, forty-seven!'],
+  ['A false call (medium)', "Ooh, unlucky. I haven't called 45 yet."],
+  ['A false call (long)', 'Not quite. Forty-five is already on your other card, so it does not count twice.'],
+  ['A welcome (long)', 'Welcome to Bingo night, everyone! Get ready for the first number.'],
+  ['A welcome (very long)', 'Two cards, a few shared numbers. Spot any that are on both cards? Choose wisely tonight, because each number can only be used once.'],
+  ['Count-in', 'Three! Two! One! Here we go!'],
+];
+
+// Each demo: where the bubble sits, how wide it is, how big the type is and how many lines fit.
+const DEMOS = [
+  // The widths are what the real game gives each bubble on a 390-wide phone.
+  { title: 'In the game header (type as it is now)', tense: false, caller: 52, ball: true, width: 138, font: 19, line: 22, lines: 3, pad: [8, 12] },
+  { title: 'In the game header (smaller type)', tense: false, caller: 52, ball: true, width: 138, font: 16, line: 19, lines: 3, pad: [8, 12] },
+  { title: 'The welcome before the first number', tense: false, caller: 92, ballRight: true, width: 134, font: 17, line: 21, lines: 4, pad: [8, 12] },
+  { title: 'On the check screen', tense: true, caller: 104, width: 236, font: 24, line: 28, lines: 3, pad: [14, 16] },
+];
+const PEEK = 0.62; // how much of the next line shows at the bottom, in lines
+
+class Bubble {
+  constructor(root, demo) {
+    this.demo = demo;
+    const { pad, width, font, line, lines } = demo;
+    this.lh = line;
+    this.winH = lines * line + PEEK * line;
+    root.style.width = width + 'px';
+    root.style.padding = `${pad[0]}px ${pad[1]}px`;
+    root.style.fontSize = font + 'px';
+    root.style.lineHeight = line + 'px';
+    root.innerHTML = '<div class="window"><div class="lines"></div></div>';
+    this.win = root.querySelector('.window');
+    this.box = root.querySelector('.lines');
+    this.win.style.height = this.winH + 'px';
+    this.textWidth = width - pad[1] * 2;
+    this.offset = 0;
+    this.target = 0;
+    this.lineEls = [];
+  }
+
+  set(text, effect, charsPerSecond) {
+    this.effect = effect;
+    // Work out where the lines break at this width, then give every line its own element.
+    const probe = document.createElement('div');
+    probe.className = 'measure';
+    probe.style.width = this.textWidth + 'px';
+    probe.style.fontSize = this.demo.font + 'px';
+    probe.style.lineHeight = this.lh + 'px';
+    probe.innerHTML = text.split(' ').map((w) => `<span>${w}</span>`).join(' ');
+    document.body.appendChild(probe);
+    const rows = [];
+    let lastTop = null;
+    for (const span of probe.querySelectorAll('span')) {
+      if (span.offsetTop !== lastTop) { rows.push([]); lastTop = span.offsetTop; }
+      rows[rows.length - 1].push(span.textContent);
+    }
+    probe.remove();
+    this.rows = rows.map((r) => r.join(' '));
+    this.box.innerHTML = '';
+    this.lineEls = this.rows.map((r) => {
+      const el = document.createElement('div');
+      el.className = 'line';
+      el.style.height = this.lh + 'px';
+      el.textContent = r;
+      this.box.appendChild(el);
+      return el;
+    });
+    this.fits = this.rows.length <= this.demo.lines;
+    this.durationMs = Math.max(900, (text.length / charsPerSecond) * 1000);
+    // The line number each row starts being spoken at, in proportion to its length.
+    const total = this.rows.reduce((n, r) => n + r.length, 0);
+    let soFar = 0;
+    this.startsAt = this.rows.map((r) => { const t = (soFar / total) * this.durationMs; soFar += r.length; return t; });
+    // Short lines sit still in the middle of the bubble.
+    this.baseOffset = this.fits ? -((this.demo.lines * this.lh - this.rows.length * this.lh) / 2) : 0;
+    this.offset = this.target = 0;
+    this.startedAt = performance.now();
+  }
+
+  tick(now) {
+    const elapsed = now - this.startedAt;
+    let spoken = 0;
+    for (let i = 0; i < this.startsAt.length; i++) if (elapsed >= this.startsAt[i]) spoken = i;
+    const lastScroll = Math.max(0, this.rows.length - this.demo.lines);
+    // Keep the line being spoken one row above the bottom row, so the next line can peek in below it.
+    this.target = this.fits ? 0 : Math.min(lastScroll, Math.max(0, spoken - (this.demo.lines - 2)));
+    this.offset += (this.target - this.offset) * 0.12; // a gentle glide
+    const lh = this.lh;
+    const H = this.winH;
+    this.lineEls.forEach((el, i) => {
+      const y = (i - this.offset) * lh - this.baseOffset;
+      el.style.transform = `translateY(${y}px)`;
+      let visible = 1;
+      if (!this.fits) {
+        const top = Math.min(1, Math.max(0, (y + lh) / (lh * 0.95)));
+        const bottom = Math.min(1, Math.max(0, (H - y) / lh));
+        visible = Math.min(top, Math.pow(bottom, 1.6));
+      }
+      el.style.opacity = this.effect === 'blur' ? (visible > 0.05 ? 1 : 0) : visible.toFixed(3);
+      el.style.filter = this.effect === 'fade' ? 'none' : `blur(${((1 - visible) * 4.5).toFixed(2)}px)`;
+    });
+  }
+}
+
+const phones = document.getElementById('phones');
+const bubbles = DEMOS.map((demo) => {
+  const phone = document.createElement('div');
+  phone.className = 'phone' + (demo.tense ? ' tense' : '');
+  const caller = `<img class="caller" src="Images/characters/caller-talking.png" width="${demo.caller}" height="${demo.caller}" alt="">`;
+  const ball = '<div class="ball">?</div>';
+  phone.innerHTML = `<h2>${demo.title}</h2><div class="row">${demo.ball ? ball : ''}${caller}<div class="bubble"></div>${demo.ballRight ? ball : ''}</div><p class="note">Bubble: ${demo.lines} lines${demo.ball ? ', beside the ball' : ''}</p>`;
+  phones.appendChild(phone);
+  return new Bubble(phone.querySelector('.bubble'), demo);
+});
+
+const sample = document.getElementById('sample');
+SAMPLES.forEach(([name], i) => sample.add(new Option(name, i)));
+sample.value = 5;
+const speed = document.getElementById('speed');
+const speedText = document.getElementById('speedText');
+
+function play() {
+  speedText.textContent = speed.value + ' letters a second';
+  const text = SAMPLES[sample.value][1];
+  bubbles.forEach((b) => b.set(text, document.getElementById('effect').value, Number(speed.value)));
+  restartAt = performance.now();
+}
+let restartAt = 0;
+function frame(now) {
+  bubbles.forEach((b) => b.tick(now));
+  const longest = Math.max(...bubbles.map((b) => b.durationMs));
+  if (document.getElementById('loop').checked && restartAt && now - restartAt > longest + 1800) play();
+  requestAnimationFrame(frame);
+}
+['sample', 'effect', 'speed'].forEach((id) => document.getElementById(id).addEventListener('input', play));
+document.getElementById('play').addEventListener('click', play);
+document.fonts.ready.then(() => { play(); requestAnimationFrame(frame); });
+</script>
+</body>
+</html>
