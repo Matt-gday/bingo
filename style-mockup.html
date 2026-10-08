@@ -102,7 +102,7 @@
   .g .meter { box-shadow: inset 0 2px 4px rgba(20,8,70,.3); }
 
   /* ================= POP-IT: unmarked squares are raised bubbles, marked ones are pressed in ================= */
-  .pop .sq { transition: transform .14s ease, box-shadow .14s ease; cursor: pointer; }
+  .pop .sq { transition: transform .1s ease-out, box-shadow .1s ease-out, background .1s linear; cursor: pointer; }
   /* a raised, rounded bubble */
   .pop .sq:not(.locked):not(.free):not(.pending) {
     background: radial-gradient(ellipse at 36% 24%, #ffffff 0%, #f7f3ff 38%, #e6dcff 78%, #d9ccff 100%);
@@ -122,14 +122,43 @@
   }
   .pop .sq.pending::before { top: auto; bottom: 7%; background: radial-gradient(ellipse at 50% 60%, rgba(255,255,255,.7), rgba(255,255,255,0) 72%); }
   /* the moment of popping */
-  .pop .sq.popping { animation: popin .34s cubic-bezier(.3,1.5,.5,1); }
+  .pop .sq.popping { animation: none; }
   @keyframes popin { 0% { transform: scale(1); } 35% { transform: translateY(4px) scale(.86); } 70% { transform: translateY(1px) scale(.99); } 100% { transform: translateY(2px) scale(.965); } }
+
+  /* ================= POP-IT WITH RINGS: each bubble sits in a defined rim, like the real toy ================= */
+  .ring .card { background: linear-gradient(180deg, #f6f1ff 0%, #ebe3ff 100%); }
+  .ring .sq, .ring .sq.locked, .ring .sq.free, .ring .sq.pending {
+    position: relative; isolation: isolate; height: 40px; border: 0; border-radius: 13px; cursor: pointer; overflow: visible;
+    /* the rim: a raised ring around the bubble, lit from the top left */
+    background: linear-gradient(135deg, #ffffff 0%, #efe8ff 55%, #d8cbf7 100%);
+    box-shadow: 0 1.5px 0 rgba(255,255,255,.95), 0 3px 4px rgba(70,40,150,.4), inset 0 1px 1px rgba(255,255,255,.95), inset 0 -1px 2px rgba(110,80,200,.3);
+    color: #2b1b6b; transform: none; font-weight: 600;
+  }
+  .ring .sq.locked, .ring .sq.free { color: #fff; }
+  .ring .sq.pending { color: #06322f; font-weight: 700; }
+  .ring .sq.free { font-size: 12px; letter-spacing: .06em; }
+  .ring .sq::before, .ring .sq::after { content: ''; position: absolute; inset: 4.5px; left: 4.5px; top: 4.5px; width: auto; height: auto; border-radius: 10px; z-index: -1; transition: opacity .1s linear, transform .1s ease-out; }
+  /* the raised bubble: a dome, light on its top left, shaded on its lower right, standing up out of the ring */
+  .ring .sq::before {
+    background: radial-gradient(ellipse at 34% 24%, #ffffff 0%, #faf7ff 28%, #e9e0ff 68%, #d4c6f9 100%);
+    box-shadow: inset -2px -3px 5px rgba(110,80,200,.4), inset 1px 1px 2px rgba(255,255,255,.95), 0 2px 3px rgba(60,30,140,.4);
+    opacity: 1;
+  }
+  /* the pressed-in bubble: the same shape turned inside out, shadow in the top left of the dish and light on its lower right */
+  .ring .sq::after {
+    background: linear-gradient(155deg, #3a17a6 0%, #5a2fdc 45%, #8460f8 100%);
+    box-shadow: inset 3px 4px 6px rgba(15,0,90,.65), inset -1px -2px 3px rgba(205,190,255,.6);
+    opacity: 0; transform: scale(.95);
+  }
+  .ring .sq.pending::after { background: linear-gradient(155deg, #0b8a7f 0%, #1fcfc0 45%, #86f5ec 100%); box-shadow: inset 3px 4px 6px rgba(0,60,55,.6), inset -1px -2px 3px rgba(225,255,252,.75); }
+  .ring .sq.locked::before, .ring .sq.free::before, .ring .sq.pending::before { opacity: 0; transform: scale(.95); }
+  .ring .sq.locked::after, .ring .sq.free::after, .ring .sq.pending::after { opacity: 1; transform: none; }
 </style>
 </head>
 <body>
 <header>
   <h1>Glossy style mock-up</h1>
-  <p>The same screen three ways: <b>Now</b>, <b>Glossy</b>, and <b>Glossy with pop-it squares</b>, where a marked square looks pressed in like a popped bubble. <b>Tap the squares in the third screen to pop them.</b> In the glossy versions every surface gets a bright edge along the top, a soft shade along the bottom, a curved shine, and a softer shadow, to match the glossy caller. Nothing about the layout changes.</p>
+  <p>The same screen four ways: <b>Now</b>, <b>Glossy</b>, and two pop-it versions where a marked square looks pressed in like a popped bubble: <b>A</b> is a simple dent, <b>B</b> puts each bubble in a defined ring like the real toy. <b>Tap the squares on the last two screens to pop them.</b> There is no bounce.</p> In the glossy versions every surface gets a bright edge along the top, a soft shade along the bottom, a curved shine, and a softer shadow, to match the glossy caller. Nothing about the layout changes.</p>
 </header>
 
 <div class="wrap" id="phones"></div>
@@ -161,9 +190,9 @@ function card(grid, locked, pending) {
 }
 function phone(kind) {
   const glossy = kind !== 'now';
-  const title = { now: 'Now', gloss: 'Glossy', pop: 'Glossy with pop-it squares' }[kind];
+  const title = { now: 'Now', gloss: 'Glossy', pop: 'Pop-it A: simple dent', ring: 'Pop-it B: bubbles in rings' }[kind];
   return `<div class="col"><h2>${title}</h2>
-  <div class="phone ${glossy ? 'g' : ''} ${kind === 'pop' ? 'pop' : ''}">
+  <div class="phone ${glossy ? 'g' : ''} ${kind === 'pop' ? 'pop' : ''} ${kind === 'ring' ? 'ring' : ''}">
     <div class="top">
       <div class="ball-wrap">${ring()}<div class="ball"><div class="l">B</div><div class="n">11</div></div></div>
       <img class="caller" src="Images/characters/caller-talking.png" alt="">
@@ -180,16 +209,15 @@ function phone(kind) {
     <div class="bottom"><button class="btn aqua"><span>🎤 Call bingo!</span></button></div>
   </div></div>`;
 }
-document.getElementById('phones').innerHTML = phone('now') + phone('gloss') + phone('pop');
-// In the pop-it phone, tap a square to pop it (tap again to unpop).
-document.querySelector('.phone.pop').addEventListener('click', (event) => {
-  const sq = event.target.closest('.sq');
-  if (!sq || sq.classList.contains('free')) return;
-  sq.classList.toggle('locked');
-  sq.classList.remove('popping');
-  void sq.offsetWidth;
-  sq.classList.add('popping');
-});
+document.getElementById('phones').innerHTML = phone('now') + phone('gloss') + phone('pop') + phone('ring');
+// In both pop-it screens, tap a square to pop it (tap again to pop it back out). No bounce: a pop-it does not bounce.
+for (const screen of document.querySelectorAll('.phone.pop, .phone.ring')) {
+  screen.addEventListener('click', (event) => {
+    const sq = event.target.closest('.sq');
+    if (!sq || sq.classList.contains('free')) return;
+    sq.classList.toggle('locked');
+  });
+}
 
 // ---------- close-ups ----------
 const close = `
@@ -204,7 +232,7 @@ const close = `
   <div class="meter" style="width:100%"><i></i></div>
   <div class="sq" style="width:48px">24</div><div class="sq locked" style="width:48px">37</div><div class="sq pending" style="width:48px">11</div><div class="sq free" style="width:48px">FREE</div>`;
 document.getElementById('close-flat').innerHTML = close;
-document.getElementById('close-gloss').innerHTML = close + `<div class="pop" style="display:flex;gap:12px;width:100%;justify-content:center;margin-top:6px"><span style="align-self:center;font-weight:800">pop-it:</span><div class="sq" style="width:48px">24</div><div class="sq locked" style="width:48px">37</div><div class="sq pending" style="width:48px">11</div><div class="sq free" style="width:48px">FREE</div></div>`;
+document.getElementById('close-gloss').innerHTML = close + `<div class="ring" style="display:flex;gap:12px;width:100%;justify-content:center;margin-top:6px"><span style="align-self:center;font-weight:800">B:</span><div class="sq" style="width:48px">24</div><div class="sq locked" style="width:48px">37</div><div class="sq pending" style="width:48px">11</div><div class="sq free" style="width:48px">FREE</div></div>` + `<div class="pop" style="display:flex;gap:12px;width:100%;justify-content:center;margin-top:6px"><span style="align-self:center;font-weight:800">pop-it:</span><div class="sq" style="width:48px">24</div><div class="sq locked" style="width:48px">37</div><div class="sq pending" style="width:48px">11</div><div class="sq free" style="width:48px">FREE</div></div>`;
 </script>
 </body>
 </html>
