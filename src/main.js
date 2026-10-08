@@ -13,6 +13,7 @@ import { Voice } from './audio/voice.js';
 import { AudioEngine } from './audio/engine.js';
 import { Sfx } from './audio/sfx.js';
 import { Music } from './audio/music.js';
+import { configureCaller } from './ui/callerStage.js';
 import { Haptics } from './audio/haptics.js';
 import { attachGameSounds } from './audio/gameSounds.js';
 import { createIntroPicker } from './introLines.js';
@@ -42,6 +43,7 @@ const voice = new Voice(config, settings, engine);
 const sfx = new Sfx(engine, settings);
 const music = new Music(engine, settings);
 const haptics = new Haptics(settings);
+configureCaller(config);
 const introPicker = createIntroPicker(callerLines.game.intro, settings);
 const audioBase = `${import.meta.env.BASE_URL}audio/`;
 // Get the audio ready as the page loads. Until the player's first tap the phone keeps it silent, but music

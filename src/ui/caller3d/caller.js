@@ -53,6 +53,8 @@ export class Caller3D {
     this.squash = 0; // positive = squashed flat, negative = stretched tall
     this.squashVel = 0;
     this.talking = false;
+    this.heart = 0; // how much his eyes are love hearts
+    this.heartTarget = 0;
     this.talkLevel = 0;
     this.talkTarget = 0;
     this.nextSyllable = 0;
@@ -192,6 +194,11 @@ export class Caller3D {
     if (!on) this.talkTarget = 0;
   }
 
+  // Love-heart eyes for Valentine's Day.
+  heartEyes(on) {
+    this.heartTarget = on ? 1 : 0;
+  }
+
   blink() {
     this.blinkLeft = 0.17;
   }
@@ -232,7 +239,7 @@ export class Caller3D {
     this.nextBlink -= dt;
     if (this.nextBlink <= 0) {
       this.blink();
-      this.nextBlink = 2.2 + Math.random() * 3;
+      this.nextBlink = Math.random() < 0.2 ? 0.28 : 2.2 + Math.random() * 3; // now and then a quick double blink
     }
     if (this.blinkLeft > 0) this.blinkLeft -= dt;
     const blinkAmount = this.blinkLeft > 0 ? Math.sin((this.blinkLeft / 0.17) * Math.PI) : 0;
@@ -248,11 +255,14 @@ export class Caller3D {
     const mouthGoal = this.externalMouth ?? this.talkTarget;
     this.talkLevel = damp(this.talkLevel, mouthGoal, 22, dt);
 
+    this.heart = damp(this.heart, this.heartTarget, 6, dt);
+
     // the face moves towards the wanted expression
     for (const key of Object.keys(this.target)) this.face[key] = damp(this.face[key], this.target[key], 12, dt);
     const faceNow = {
       ...this.face,
       eyeOpen: 1 - blinkAmount * 0.95,
+      eyeHeart: this.heart * (1 - blinkAmount * 0.9) * (1 + Math.sin(t * 5) * 0.06),
       mouthOpen: Math.min(1, this.face.mouthOpenBase + this.talkLevel),
       pupilX: this.lookYaw * 1.2,
       pupilY: this.lookPitch * -1.2,

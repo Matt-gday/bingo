@@ -6,9 +6,32 @@ import { callerImages } from './helpers.js';
 // shakes for bad news, looks at the ball when a number is called, and his mouth follows his real voice.
 
 const EXPRESSION_FOR = { talking: 'talking', smile: 'happy', cheer: 'cheer', wince: 'wince', noPeeking: 'shut', worried: 'worried' };
-const LOOK_BALL = [0.34, -0.26]; // up and to the side, where the ball is
-const LOOK_CARDS = [0, 0.22]; // down at his cards
-const LOOK_YOU = [0, 0];
+// Where he can look: [turn, tilt]. Because he is drawn turned a little to the side, a turn of about +0.25
+// faces the player. The number ball is to his left on the game screen and the cards are below him.
+const LOOK_BALL = [-0.42, 0.0];
+const LOOK_CARDS = [0.22, 0.32];
+const LOOK_YOU = [0.18, 0.02];
+const LOOK_AROUND = [[0.5, -0.18], [-0.2, -0.12], [0.4, 0.15], [0.05, -0.2], [-0.3, 0.12]];
+
+// Settings from Data/config.json (caller section), with sensible fallbacks.
+let settings = { idleMinSeconds: 2.2, idleMaxSeconds: 5.5, happyHopPower: 1.9, cheerJumpPower: 3.6, seasons: [] };
+let heartEyes = false;
+let nextIdle = 0;
+
+// Called once at start-up with the game's config. Works out whether a special day is on.
+export function configureCaller(config, today = new Date()) {
+  settings = { ...settings, ...(config.caller ?? {}) };
+  const wanted = new URLSearchParams(typeof location !== 'undefined' ? location.search : '').get('season');
+  heartEyes = false;
+  for (const season of settings.seasons ?? []) {
+    const day = new Date(today.getFullYear(), season.month - 1, season.day);
+    const apart = Math.abs((today - day) / 86400000);
+    if (wanted ? wanted === season.id : apart <= (season.daysEitherSide ?? 0)) {
+      if (season.heartEyes) heartEyes = true;
+    }
+  }
+  if (caller) caller.heartEyes(heartEyes);
+}
 
 let caller = null;
 let failed = false;
@@ -27,20 +50,39 @@ function build() {
   if (caller || failed || !canvas) return caller;
   try {
     caller = new Caller3D(canvas, { size: 320 });
+    caller.heartEyes(heartEyes);
   } catch {
     failed = true; // no 3D on this phone: the screens show the flat pictures instead
   }
   return caller;
 }
 
+function idleGap() {
+  return (settings.idleMinSeconds + Math.random() * (settings.idleMaxSeconds - settings.idleMinSeconds)) * 1000;
+}
+
+// Now and then, with nothing else going on, he looks somewhere else or gives a little hop.
+function idle(now) {
+  if (now < nextIdle || now < lookUntil) return;
+  nextIdle = now + idleGap();
+  const roll = Math.random();
+  if (roll < 0.25) caller.look(...LOOK_YOU);
+  else if (roll < 0.45) caller.look(...(follow?.game ? LOOK_CARDS : LOOK_YOU));
+  else if (roll < 0.6 && follow?.game) caller.look(...LOOK_BALL);
+  else caller.look(...LOOK_AROUND[Math.floor(Math.random() * LOOK_AROUND.length)]);
+  if (Math.random() < 0.18 && caller.expressionName !== 'shut' && caller.expressionName !== 'wince') caller.jump(1.3);
+}
+
 function react(mood, kind) {
   const expression = EXPRESSION_FOR[mood] ?? 'talking';
   caller.setExpression(expression);
-  if (mood === 'cheer') caller.jump(3.6);
+  if (mood === 'cheer') caller.jump(settings.cheerJumpPower);
+  if (mood === 'smile' && kind !== 'call') caller.jump(settings.happyHopPower); // a happy little hop
   if (mood === 'wince') caller.shake();
   if (kind === 'call') {
     caller.look(...LOOK_BALL);
     lookUntil = performance.now() + 1500;
+    nextIdle = performance.now() + 1500 + idleGap();
   }
 }
 
@@ -67,6 +109,7 @@ function frame(now) {
         caller.look(...(follow.game.phase === 'calling' ? LOOK_CARDS : LOOK_YOU));
       }
     }
+    if (caller.expressionName !== 'shut') idle(now);
     // the mouth: follows the real loudness of a recording, or flaps along if it is the phone's voice
     const voice = follow?.voice;
     const clip = voice?.handle;
@@ -98,7 +141,7 @@ export function attachCaller(el, { game = null, voice = null, engine = null, moo
   caller.look(...LOOK_YOU);
   if (!game) {
     caller.setExpression(EXPRESSION_FOR[mood] ?? 'happy');
-    if (jump) caller.jump(3.6);
+    if (jump) caller.jump(settings.cheerJumpPower);
   } else {
     caller.setExpression(EXPRESSION_FOR[game.bubble.mood] ?? 'talking');
     if (game.phase === 'calling' || game.phase === 'locking') caller.look(...LOOK_CARDS);

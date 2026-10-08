@@ -60,6 +60,7 @@ export function drawFace(ctx, W, H, p) {
 
   // ---- eyes ----
   const open = Math.max(0.04, p.eyeOpen ?? 1);
+  const heart = p.eyeHeart ?? 0; // 0 normal eyes ... 1 love hearts (for Valentine's Day)
   for (const side of [-1, 1]) {
     const cx = X(side * 0.46) + (p.pupilX ?? 0) * unit * 0.05;
     const cy = Y(0.1) + (p.pupilY ?? 0) * unit * -0.05;
@@ -70,7 +71,7 @@ export function drawFace(ctx, W, H, p) {
     // round eye (fades out as the eye turns into a happy arc)
     // The round eye and the arc/chevron take turns: each is gone before the other is fully there, so a ghost
     // of the old eyes never lingers while one expression turns into another.
-    const roundAlpha = Math.min(1, Math.max(0, 1 - (arcAmount - 0.05) / 0.3));
+    const roundAlpha = Math.min(1, Math.max(0, 1 - (arcAmount - 0.05) / 0.3)) * (1 - Math.min(1, heart * 1.6));
     if (roundAlpha > 0.02 && h > 2) {
       ctx.save();
       ctx.globalAlpha = roundAlpha;
@@ -98,7 +99,9 @@ export function drawFace(ctx, W, H, p) {
     }
 
     // happy arc, or squeezed-shut chevron ("> <") when wincing
-    const arcAlpha = Math.min(1, Math.max(0, (arcAmount - 0.25) / 0.3));
+    const arcAlpha = Math.min(1, Math.max(0, (arcAmount - 0.25) / 0.3)) * (1 - Math.min(1, heart * 1.6));
+
+    if (heart > 0.02) drawHeart(ctx, cx, cy, w * 0.62 * heart, heart);
     if (arcAlpha > 0.01) {
       ctx.save();
       ctx.globalAlpha = arcAlpha;
@@ -199,4 +202,28 @@ export function drawFace(ctx, W, H, p) {
     ctx.stroke();
     ctx.restore();
   }
+}
+
+// A shiny love heart, used for the eyes on Valentine's Day.
+function drawHeart(ctx, cx, cy, size, alpha) {
+  if (size < 2) return;
+  ctx.save();
+  ctx.globalAlpha = Math.min(1, alpha * 1.4);
+  ctx.translate(cx, cy + size * 0.1);
+  ctx.beginPath();
+  ctx.moveTo(0, size * 0.9);
+  ctx.bezierCurveTo(-size * 1.35, size * 0.1, -size * 0.85, -size * 0.95, 0, -size * 0.32);
+  ctx.bezierCurveTo(size * 0.85, -size * 0.95, size * 1.35, size * 0.1, 0, size * 0.9);
+  ctx.closePath();
+  const g = ctx.createLinearGradient(0, -size, 0, size);
+  g.addColorStop(0, '#ff7aa8');
+  g.addColorStop(0.55, '#f0245f');
+  g.addColorStop(1, '#b3103f');
+  ctx.fillStyle = g;
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+  ctx.beginPath();
+  ctx.ellipse(-size * 0.42, -size * 0.28, size * 0.2, size * 0.12, -0.7, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 }

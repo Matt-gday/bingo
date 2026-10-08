@@ -274,8 +274,8 @@ button {
   gap: 12px;
 }
 .caller-small {
-  width: 60px;
-  height: 60px;
+  width: 88px;
+  height: 88px;
   flex-shrink: 0;
   object-fit: contain;
 }
@@ -958,8 +958,8 @@ button {
 
 .caller-btn {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: 88px;
+  height: 88px;
   flex-shrink: 0;
 }
 .pause-btn {
@@ -1327,12 +1327,12 @@ button {
   order: 3;
 }
 .screen.intro .caller-btn {
-  width: 92px;
-  height: 92px;
+  width: 112px;
+  height: 112px;
 }
 .screen.intro .caller-small {
-  width: 92px;
-  height: 92px;
+  width: 112px;
+  height: 112px;
 }
 .screen.intro .play-top .caller-row {
   align-items: flex-start;
