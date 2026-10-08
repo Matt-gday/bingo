@@ -135,6 +135,7 @@
     color: #2b1b6b; transform: none; font-weight: 600;
   }
   .ring .sq.locked, .ring .sq.free { color: #fff; }
+  .ring .sq { transition: color .35s linear; }
   .ring .sq.pending { color: #06322f; font-weight: 700; }
   .ring .sq.free { font-size: 12px; letter-spacing: .06em; }
   .ring .sq::before, .ring .sq::after { content: ''; position: absolute; inset: 4.5px; left: 4.5px; top: 4.5px; width: auto; height: auto; border-radius: 10px; z-index: -1; transition: opacity .1s linear, transform .1s ease-out; }
@@ -145,22 +146,29 @@
     opacity: 1;
   }
   /* the pressed-in bubble: the same shape turned inside out, shadow in the top left of the dish and light on its lower right */
+  @property --d1 { syntax: '<color>'; inherits: false; initial-value: #3a17a6; }
+  @property --d2 { syntax: '<color>'; inherits: false; initial-value: #5a2fdc; }
+  @property --d3 { syntax: '<color>'; inherits: false; initial-value: #8460f8; }
   .ring .sq::after {
-    background: linear-gradient(155deg, #3a17a6 0%, #5a2fdc 45%, #8460f8 100%);
+    --d1: #3a17a6; --d2: #5a2fdc; --d3: #8460f8; /* purple: a locked mark */
+    background: linear-gradient(155deg, var(--d1) 0%, var(--d2) 45%, var(--d3) 100%);
     box-shadow: inset 3px 4px 6px rgba(15,0,90,.65), inset -1px -2px 3px rgba(205,190,255,.6);
     opacity: 0; transform: scale(.95);
+    transition: opacity .12s ease-out, transform .12s ease-out, --d1 .35s linear, --d2 .35s linear, --d3 .35s linear;
   }
-  .ring .sq.pending::after { background: linear-gradient(155deg, #0b8a7f 0%, #1fcfc0 45%, #86f5ec 100%); box-shadow: inset 3px 4px 6px rgba(0,60,55,.6), inset -1px -2px 3px rgba(225,255,252,.75); }
+  .ring .sq.pending::after { --d1: #0b8a7f; --d2: #1fcfc0; --d3: #86f5ec; } /* aqua: this call's mark, which can still move */
   .ring .sq.locked::before, .ring .sq.free::before, .ring .sq.pending::before { opacity: 0; transform: scale(.95); }
   .ring .sq.locked::after, .ring .sq.free::after, .ring .sq.pending::after { opacity: 1; transform: none; }
+  .ring .sq.locked { font-weight: 600; }
 </style>
 </head>
 <body>
 <header>
   <h1>Glossy style mock-up</h1>
-  <p>The same screen four ways: <b>Now</b>, <b>Glossy</b>, and two pop-it versions where a marked square looks pressed in like a popped bubble: <b>A</b> is a simple dent, <b>B</b> puts each bubble in a defined ring like the real toy. <b>Tap the squares on the last two screens to pop them.</b> There is no bounce.</p> In the glossy versions every surface gets a bright edge along the top, a soft shade along the bottom, a curved shine, and a softer shadow, to match the glossy caller. Nothing about the layout changes.</p>
+  <p>The same screen four ways: <b>Now</b>, <b>Glossy</b>, and two pop-it versions where a marked square looks pressed in like a popped bubble: <b>A</b> is a simple dent, <b>B</b> puts each bubble in a defined ring like the real toy. In the last two, only the <b>aqua</b> mark moves: it presses in, can be moved or taken back, and turns purple when the next number locks it. There is no bounce.</p> In the glossy versions every surface gets a bright edge along the top, a soft shade along the bottom, a curved shine, and a softer shadow, to match the glossy caller. Nothing about the layout changes.</p>
 </header>
 
+<div style="text-align:center;padding:16px 24px 0"><button id="next" style="border:0;border-radius:999px;padding:12px 24px;font:700 17px 'Fredoka',sans-serif;background:#2ee6d6;color:#1a1446;box-shadow:0 4px 0 #0e9287;cursor:pointer">Next number: lock the aqua marks</button><div style="margin-top:8px;color:#5b4a9e;font-weight:700">On the last two screens: tap a square to press it in (aqua). Tap another and the mark moves. Tap the aqua one to take it back. Then press the button above to lock it purple.</div></div>
 <div class="wrap" id="phones"></div>
 
 <div class="strip">
@@ -210,14 +218,26 @@ function phone(kind) {
   </div></div>`;
 }
 document.getElementById('phones').innerHTML = phone('now') + phone('gloss') + phone('pop') + phone('ring');
-// In both pop-it screens, tap a square to pop it (tap again to pop it back out). No bounce: a pop-it does not bounce.
-for (const screen of document.querySelectorAll('.phone.pop, .phone.ring')) {
+// How the real game works: the player presses in ONE aqua mark per call. It can be moved or taken back until the
+// next number, when it locks (turns purple, no movement). Locked marks cannot be changed.
+const popScreens = [...document.querySelectorAll('.phone.pop, .phone.ring')];
+for (const screen of popScreens) {
   screen.addEventListener('click', (event) => {
     const sq = event.target.closest('.sq');
-    if (!sq || sq.classList.contains('free')) return;
-    sq.classList.toggle('locked');
+    if (!sq || sq.classList.contains('free') || sq.classList.contains('locked')) return;
+    const current = screen.querySelector('.sq.pending');
+    if (current === sq) { sq.classList.remove('pending'); return; } // take it back: it pops out
+    current?.classList.remove('pending'); // moving the mark: the old one pops back out
+    sq.classList.add('pending'); // and this one presses in, aqua
   });
 }
+function nextNumber() {
+  for (const screen of popScreens) {
+    const pending = screen.querySelector('.sq.pending');
+    if (pending) { pending.classList.remove('pending'); pending.classList.add('locked'); } // aqua melts to purple, nothing moves
+  }
+}
+document.getElementById('next').addEventListener('click', nextNumber);
 
 // ---------- close-ups ----------
 const close = `
