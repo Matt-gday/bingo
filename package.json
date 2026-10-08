@@ -21,11 +21,13 @@
     "sounds:normalize": "node tools/make-sounds.mjs --normalize",
     "music": "node tools/make-music.mjs",
     "music:make": "node tools/make-music.mjs --make",
-    "music:tester": "node tools/make-music.mjs --tester"
+    "music:tester": "node tools/make-music.mjs --tester",
+    "prototype:3d": "node tools/build-prototype.mjs"
   },
   "devDependencies": {
     "lamejs": "^1.2.1",
     "mpg123-decoder": "^1.0.3",
+    "three": "^0.186.1",
     "vite": "^6.4.4"
   },
   "dependencies": {

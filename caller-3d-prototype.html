@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D caller prototype</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.4 system-ui, 'Segoe UI', sans-serif; color: #2b1b6b; background: #f1ecff; }
+  header { padding: 16px 22px; color: #fff; background: linear-gradient(170deg, #5236d6, #7b45e6 55%, #c257d9); }
+  header h1 { margin: 0 0 4px; font-size: 24px; }
+  header p { margin: 0; max-width: 780px; opacity: .92; }
+  main { display: flex; flex-wrap: wrap; gap: 22px; padding: 22px; justify-content: center; align-items: flex-start; }
+  .stage { width: 440px; max-width: 100%; border-radius: 26px; padding: 8px; background: linear-gradient(170deg, #5236d6, #7b45e6 45%, #c257d9); box-shadow: 0 6px 0 rgba(43,27,107,.25); }
+  .stage canvas { display: block; width: 100%; height: auto; aspect-ratio: 1; }
+  #status { margin: 4px 8px 8px; color: #fff; font-weight: 700; min-height: 22px; }
+  .panel { width: 420px; max-width: 100%; background: #fff; border: 2px solid #d6ccfa; border-radius: 18px; padding: 16px 18px; }
+  .panel h2 { margin: 14px 0 8px; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: #7c6cc4; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; }
+  button { border: 0; border-radius: 999px; padding: 8px 14px; font: 700 14px system-ui, sans-serif; background: #f1ecff; color: #2b1b6b; cursor: pointer; box-shadow: 0 2px 0 #d6ccfa; }
+  button:hover { background: #e6dcff; }
+  button.big { background: #2ee6d6; color: #1a1446; box-shadow: 0 3px 0 #0e9287; padding: 11px 20px; font-size: 16px; }
+  button:disabled { opacity: .5; cursor: default; }
+  label { display: flex; align-items: center; gap: 8px; font-weight: 600; margin-top: 8px; }
+  select { padding: 6px 10px; border: 2px solid #d6ccfa; border-radius: 10px; font: inherit; }
+  small { color: #7c6cc4; }
+</style>
+</head>
+<body>
+<header>
+  <h1>3D caller prototype</h1>
+  <p>He is a real 3D object, drawn live in the browser: a glossy ball with lights, reflections and a shadow. His face is drawn from numbers, so one expression melts into the next, and his mouth can follow his voice.</p>
+</header>
+<main>
+  <div class="stage">
+    <canvas id="stage" width="880" height="880"></canvas>
+    <div id="status"></div>
+  </div>
+  <div class="panel">
+    <button class="big" id="demo">▶ Show me everything</button>
+    <h2>Expression</h2>
+    <div class="row" id="expressions"></div>
+    <h2>Where he looks</h2>
+    <div class="row" id="looks"></div>
+    <label><input type="checkbox" id="follow"> follow my mouse or finger</label>
+    <h2>Actions</h2>
+    <div class="row">
+      <button id="blink">Blink</button>
+      <button id="jump">Cheer and jump</button>
+      <button id="shake">Wince and shake</button>
+    </div>
+    <label><input type="checkbox" id="talk"> talking (the mouth moves in syllables)</label>
+    <small>In the game the mouth would follow the loudness of his real voice.</small>
+    <h2>The look</h2>
+    <label>Material
+      <select id="style"><option value="glossy">Glossy 3D</option><option value="matte">Soft matte</option></select>
+    </label>
+    <label>Gloss <input type="range" id="gloss" min="0" max="1" step="0.05" value="1"></label>
+  </div>
+</main>
+<script src="caller-3d-prototype.js"></script>
+</body>
+</html>
