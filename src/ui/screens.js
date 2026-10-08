@@ -1,20 +1,21 @@
 import { esc, html, setText, setClass, setRing, updateBall, ballMarkup, icons, callerImages, patternPreview, confetti } from './helpers.js';
 import { columnLetters } from '../engine/cards.js';
+import { SpeechBubble } from './speech.js';
 
 // Each screen function returns { el, update(game, now) }. update runs every frame
 // and only changes the page when something really changed.
 
-function callerBubble(game, el) {
+function callerBubble(game, el, { voice, maxLines }) {
+  const speech = new SpeechBubble(el.querySelector('.speech'), { voice, maxLines });
+  const img = el.querySelector('[data-caller]');
   return {
-    img: el.querySelector('[data-caller]'),
-    text: el.querySelector('[data-bubble]'),
-    sync() {
+    sync(now) {
       const src = callerImages[game.bubble.mood] ?? callerImages.talking;
-      if (this.img.__src !== src) {
-        this.img.__src = src;
-        this.img.src = src;
+      if (img.__src !== src) {
+        img.__src = src;
+        img.src = src;
       }
-      setText(this.text, game.bubble.text);
+      speech.update(game.bubble, now);
     },
   };
 }
@@ -184,7 +185,7 @@ export function playScreen(game, { voice, mic, settings }) {
         ${ballMarkup()}
         <div class="caller-row">
           <button class="caller-btn" data-mute aria-label="Caller's voice" aria-pressed="true"><img class="caller-small" data-caller alt=""><span class="mute-badge" data-mute-badge hidden>${icons.speakerOff(14)}</span></button>
-          <div class="speech"><span data-bubble></span></div>
+          <div class="speech"></div>
         </div>
         <button class="pause-btn" data-pause aria-label="Pause game">${icons.pause()}</button>
       </div>
@@ -210,7 +211,8 @@ export function playScreen(game, { voice, mic, settings }) {
   ballWrap.setAttribute('role', 'button');
   ballWrap.setAttribute('aria-label', 'Next number');
   ballWrap.addEventListener('click', () => game.skipCall());
-  const bubble = callerBubble(game, el);
+  // Up to three rows in the header bubble, four in the smaller type used for the welcome.
+  const bubble = callerBubble(game, el, { voice, maxLines: () => (el.classList.contains('intro') ? 4 : 3) });
   const cardEls = [...el.querySelectorAll('.card')];
   const targetEl = el.querySelector('[data-target]');
   const recentEl = el.querySelector('[data-recent]');
@@ -278,11 +280,11 @@ export function playScreen(game, { voice, mic, settings }) {
     speechEl.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 350, easing: 'ease-out' });
   }
 
-  function update() {
+  function update(_game, now) {
     if (inIntro && game.phase !== 'intro') leaveIntro();
     callButton.disabled = game.phase === 'intro'; // nothing to call before the first number
     updateBall(ballWrap, game);
-    bubble.sync();
+    bubble.sync(now);
     const voiceOn = voice.on;
     muteButton.setAttribute('aria-pressed', String(voiceOn));
     muteButton.hidden = !voice.supported;
@@ -362,7 +364,7 @@ function paintDiscs(root, order, revealed, currentIndex) {
   }
 }
 
-export function checkingScreen(game) {
+export function checkingScreen(game, { voice }) {
   const dotCount = game.config.falseCall.sitOutCalls;
   const el = html(`<main class="screen tense">
     <div class="check-page">
@@ -373,7 +375,7 @@ export function checkingScreen(game) {
       <div class="discs"></div>
       <div class="caller-big">
         <img data-caller alt="">
-        <div class="speech"><span data-bubble></span></div>
+        <div class="speech"></div>
       </div>
       <div class="live-ball-card" data-live hidden>
         ${ballMarkup()}
@@ -388,7 +390,7 @@ export function checkingScreen(game) {
   </main>`);
   const discs = el.querySelector('.discs');
   discRow(game.checking.evaluation.items, discs);
-  const bubble = callerBubble(game, el);
+  const bubble = callerBubble(game, el, { voice, maxLines: () => 3 });
   const live = el.querySelector('[data-live]');
   const note = el.querySelector('[data-note]');
   const back = el.querySelector('[data-back]');
@@ -397,7 +399,7 @@ export function checkingScreen(game) {
   const sitText = el.querySelector('[data-sit]');
   back.addEventListener('click', () => game.backToCards());
 
-  function update() {
+  function update(_game, now) {
     const c = game.checking;
     if (c) {
       paintDiscs(discs, c.evaluation.order, c.revealed, c.stage === 'waiting' ? c.index : -1);
@@ -414,7 +416,7 @@ export function checkingScreen(game) {
         setText(sitText, game.sitOut > 0 ? `Sitting out ${game.sitOut} ${game.sitOut === 1 ? 'call' : 'calls'}` : 'Back in the game');
       }
     }
-    bubble.sync();
+    bubble.sync(now);
   }
   return { el, update };
 }

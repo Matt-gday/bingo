@@ -57,6 +57,15 @@ export class Voice {
     this.handle = null;
   }
 
+  // About how long the caller takes to say a line, in milliseconds: the length of its recording if that is
+  // already loaded, otherwise an estimate from the number of letters (recordings run about 14 letters a second).
+  estimateMs(text) {
+    const file = this.clips[text];
+    const buffer = file ? this.engine.buffers?.get(`${this.clipBase}${file}`) : null;
+    if (buffer?.duration) return buffer.duration * 1000;
+    return Math.max(900, text.length * 70);
+  }
+
   playClip(file, text) {
     if (!this.engine.ensure()) return false; // called from a tap, which is what lets the phone play sound
     const turn = (this.turn = (this.turn ?? 0) + 1);

@@ -287,7 +287,7 @@ button {
   gap: 8px;
 }
 .play-top .speech {
-  min-height: 50px;
+  min-height: 0;
   padding: 8px 12px;
   border-radius: 18px;
   box-shadow: 0 4px 0 rgba(43, 27, 107, 0.25);
@@ -1349,6 +1349,42 @@ button {
   opacity: 0.5;
   transform: none;
   cursor: default;
+}
+
+
+/* ---------- The caller's speech bubble: sized to its text, scrolling when it is long ---------- */
+
+.speech-window {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  transition: height 0.25s ease;
+}
+.speech-lines {
+  position: absolute;
+  inset: 0 0 auto 0;
+}
+.speech-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+/* The welcome uses smaller type so four rows fit in the same height as the number circle. */
+.screen.intro .play-top .speech {
+  align-self: flex-start;
+  padding: 8px 12px;
+  font-size: 16px;
+  line-height: 19px;
+}
+/* The check screen's bubble can be up to three rows tall, so its row is held at that height and nothing below moves. */
+.caller-big {
+  min-height: 118px;
+}
+.caller-big .speech {
+  font: 600 24px/28px var(--font-display);
 }
 
 /* ---------- How things appear ---------- */

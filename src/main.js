@@ -165,7 +165,7 @@ function sync() {
   const builders = {
     play: () => playScreen(game, { voice, mic, settings }),
     shout: () => shoutScreen(game, { mic, settings }),
-    checking: () => checkingScreen(game),
+    checking: () => checkingScreen(game, { voice }),
     result: () => resultScreen(game, { onAgain: startGame, onChange: showStart }),
     pause: () => pauseScreen(game, {
       onQuit: showStart,
