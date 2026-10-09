@@ -153,7 +153,24 @@
     "happyHopPower": 1.9,
     "cheerJumpPower": 3.6,
     "seasons": [
-      { "id": "valentine", "month": 2, "day": 14, "daysEitherSide": 2, "heartEyes": true }
+      {
+        "id": "valentine",
+        "month": 2,
+        "day": 14,
+        "daysEitherSide": 2,
+        "heartEyes": true
+      }
     ]
+  },
+  "table": {
+    "note": "The regulars at the table. cardsPerRegular: how many cards each one plays. nearGoForFalseCall: a regular can only shout too soon when this close to the pattern. botSitOutCalls: how long a regular sits out after a false call. A regular's own reactionSeconds (in regulars.json) is how long they take to shout once they have it.",
+    "cardsPerRegular": 2,
+    "nearGoForFalseCall": 2,
+    "botSitOutCalls": 2,
+    "reactionSecondsDefault": [
+      1.5,
+      3.5
+    ],
+    "moodSeconds": 3.5
   }
 }

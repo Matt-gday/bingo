@@ -22,6 +22,10 @@
         "stationery",
         "pink",
         "home"
+      ],
+      "reactionSeconds": [
+        1.0,
+        2.2
       ]
     },
     {
@@ -43,6 +47,10 @@
         "sparkly",
         "soft-toys",
         "food"
+      ],
+      "reactionSeconds": [
+        2.8,
+        4.5
       ]
     },
     {
@@ -60,7 +68,11 @@
           9
         ]
       },
-      "collects": []
+      "collects": [],
+      "reactionSeconds": [
+        1.5,
+        4.5
+      ]
     },
     {
       "id": "pearl",
@@ -81,6 +93,10 @@
         "purple",
         "music",
         "mini"
+      ],
+      "reactionSeconds": [
+        1.8,
+        3.2
       ]
     },
     {
@@ -102,6 +118,10 @@
         "tools",
         "garden",
         "sport"
+      ],
+      "reactionSeconds": [
+        2.2,
+        4.2
       ]
     }
   ],

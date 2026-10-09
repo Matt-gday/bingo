@@ -2,6 +2,7 @@ import { dealCards, letterFor } from './cards.js';
 import { pickOne, shuffle } from './rng.js';
 import { evaluateClaim } from './check.js';
 import { callText, capital, fillLine, numberInWords, sayLine } from './caller.js';
+import { createBot, botMarks, botToGo, playerCloseness } from './table.js';
 
 // The rules of one game of bingo. This file knows nothing about the screen.
 // The screen calls advance() many times a second and reads the state it needs.
@@ -11,15 +12,18 @@ import { callText, capital, fillLine, numberInWords, sayLine } from './caller.js
 //   locking  - the ring has run out and the marks have just locked
 //   checking - the caller is checking a claim (the ring is stopped)
 //   won      - the player's claim checked out
+//   stageWon - a stage has been won (by the player or a regular) and the night carries on
+//   over     - the night is over
 //   drawn    - all 75 numbers were called and nobody won
 // screen = what the player is looking at:
-//   cards, shout, checking, falseCall, result
+//   cards, shout, checking, falseCall, stageWon, result
 
 const MAX_FRAME_MS = 250; // a long gap (the phone slept, the tab was hidden) must not skip calls
 
 export class Game {
-  constructor({ config, patterns, callerLines, speedId, stageIds = ['line'], introLine = null }) {
+  constructor({ config, patterns, callerLines, speedId, stageIds = ['line'], introLine = null, regulars = [] }) {
     this.config = config;
+    this.regulars = regulars; // the regulars at the table tonight (none = a game with just the player)
     this.introLine = introLine; // the welcome the caller says before the first number (none = start straight away)
     this.callerLines = callerLines;
     this.speed = config.speeds.find((s) => s.id === speedId) ?? config.speeds[0];
@@ -53,6 +57,12 @@ export class Game {
     this.pauseReason = null; // 'player' or 'auto'
     this.pausesLeft = this.config.pause.pausesPerGame;
     this.resumeMs = 0;
+    // The table: the regulars' own cards and marks, and how the night has gone so far.
+    this.bots = this.regulars.map((regular) => createBot(regular, this.config));
+    this.clockMs = 0; // game time, which stops whenever the game is paused or checking a claim
+    this.stageResults = []; // one entry per finished stage: who won it and what the player earned
+    this.stageWon = null; // the "Stage won" screen while it is showing
+    this.stageIndex = 0;
   }
 
   on(listener) {
@@ -118,6 +128,129 @@ export class Game {
       return 'pending';
     }
     return this.marks.some((m) => m.card === card && m.row === row && m.col === col) ? 'locked' : 'empty';
+  }
+
+  // ---- The regulars ----
+
+  botToGo(bot) {
+    return botToGo(bot, this.pattern, this.config);
+  }
+
+  // What a regular's face shows right now.
+  botMood(bot) {
+    if (this.stageWon?.moods?.[bot.id]) return this.stageWon.moods[bot.id];
+    if (bot.mood && bot.mood.until > this.clockMs) return bot.mood.name;
+    if (bot.sitOut > 0) return 'sulky';
+    return this.botToGo(bot) <= 1 ? 'smug' : 'content';
+  }
+
+  setBotMood(bot, name, seconds = this.config.table?.moodSeconds ?? 3.5) {
+    bot.mood = { name, until: this.clockMs + seconds * 1000 };
+  }
+
+  // After a number is called, every regular marks it (or misses it), then decides whether to shout.
+  botsReact(number) {
+    for (const bot of this.bots) {
+      botMarks(bot, number);
+      this.botConsiders(bot);
+    }
+  }
+
+  // A regular who has the pattern shouts after a short reaction. One who is close might shout too soon.
+  botConsiders(bot) {
+    if (bot.claim || bot.sitOut > 0) return;
+    const toGo = this.botToGo(bot);
+    const [low, high] = bot.reactionSeconds;
+    const delay = (low + Math.random() * (high - low)) * 1000;
+    if (toGo === 0) {
+      bot.claim = { dueAt: this.clockMs + delay, kind: 'bingo' };
+    } else if (toGo <= (this.config.table?.nearGoForFalseCall ?? 2) && Math.random() < bot.falseCallChance) {
+      bot.claim = { dueAt: this.clockMs + delay, kind: 'false' };
+    }
+  }
+
+  advanceBots() {
+    if (this.phase !== 'calling' && this.phase !== 'locking') return;
+    for (const bot of this.bots) {
+      if (bot.claim && this.clockMs >= bot.claim.dueAt) {
+        const claim = bot.claim;
+        bot.claim = null;
+        if (claim.kind === 'bingo' && this.botToGo(bot) === 0) this.botWins(bot);
+        else this.botFalseCall(bot);
+        if (this.phase === 'stageWon' || this.phase === 'over') return;
+      }
+    }
+  }
+
+  botFalseCall(bot) {
+    bot.sitOut = this.config.table?.botSitOutCalls ?? this.config.falseCall.sitOutCalls;
+    this.setBotMood(bot, 'sulky', 5);
+    for (const other of this.bots) if (other !== bot) this.setBotMood(other, 'shocked', 2);
+    this.say(fillLine(pickOne(this.callerLines.game.botFalseCall), { name: bot.name, pattern: this.pattern.spoken }), 'talking', 'botFalseCall');
+    this.emit('botFalseCall', { bot });
+  }
+
+  botWins(bot) {
+    if (this.screen === 'shout') this.screen = 'cards';
+    this.lockMarks();
+    const closeness = playerCloseness({
+      cards: this.cards, marks: this.marks, called: this.called, pattern: this.pattern, config: this.config,
+    });
+    const credits = Math.round(this.pattern.payout * this.config.credits.closenessMaxShareOfPayout * closeness);
+    this.say(fillLine(pickOne(this.callerLines.game.botWins), { name: bot.name, pattern: this.pattern.spoken }), 'cheer', 'botWins');
+    this.finishStage({ type: 'bot', id: bot.id, name: bot.name, colour: bot.colour }, credits);
+  }
+
+  // A stage is over. If there are more stages the "Stage won" screen shows and the night carries on;
+  // otherwise the night is over and the result shows.
+  finishStage(winner, credits) {
+    const last = this.stageIndex === this.stages.length - 1;
+    this.stageResults.push({ index: this.stageIndex, pattern: this.pattern, winner, credits });
+    this.checking = null;
+    for (const bot of this.bots) bot.claim = null;
+    if (last) {
+      this.phase = winner.type === 'you' ? 'won' : 'over';
+      this.screen = 'result';
+      this.result = this.buildResult(winner.type === 'you' ? 'win' : 'lost');
+      this.emit('end', { outcome: this.result.outcome });
+      return;
+    }
+    const moods = {};
+    for (const bot of this.bots) moods[bot.id] = winner.id === bot.id ? 'cheer' : winner.type === 'you' ? 'sulky' : 'shocked';
+    this.phase = 'stageWon';
+    this.screen = 'stageWon';
+    const ms = (this.config.stageWon?.nextStageCountdownSeconds ?? 3) * 1000;
+    this.stageWon = {
+      winner, credits: Math.round(credits * this.speed.creditMultiplier), moods,
+      next: this.stages[this.stageIndex + 1], msLeft: ms, totalMs: ms,
+    };
+    this.emit('stageWon', { winner });
+  }
+
+  // The 3, 2, 1 has finished: the next stage opens on the same cards and marks, and calling carries on.
+  openNextStage() {
+    this.stageIndex += 1;
+    this.stageWon = null;
+    this.screen = 'cards';
+    this.phase = 'calling';
+    for (const bot of this.bots) {
+      bot.claim = null;
+      bot.mood = null;
+    }
+    this.nextCall();
+    // A regular who already holds the new pattern can shout straight away.
+    for (const bot of this.bots) this.botConsiders(bot);
+  }
+
+  buildResult(outcome) {
+    const base = this.stageResults.reduce((sum, r) => sum + r.credits, 0);
+    const multiplier = this.speed.creditMultiplier;
+    const penalty = this.falseCalls * this.config.falseCall.creditPenaltyShare;
+    const total = Math.max(0, Math.round(base * multiplier * (1 - penalty)));
+    return {
+      outcome, falseCalls: this.falseCalls, calls: this.called.length,
+      stages: this.stageResults, base, multiplier, penalty, total,
+    };
   }
 
   // ---- Starting and calling ----
@@ -186,7 +319,7 @@ export class Game {
     if (this.called.length >= this.deck.length) {
       this.phase = 'drawn';
       this.screen = 'result';
-      this.result = { outcome: 'drawn' };
+      this.result = this.buildResult('drawn');
       this.say(sayLine(this.callerLines, 'noWinner', {}), 'smile');
       this.emit('end', { outcome: 'drawn' });
       return;
@@ -207,6 +340,7 @@ export class Game {
     if (announce) this.say(callLine, 'talking', 'call');
     else this.bubble = { text: callLine, mood: 'talking' };
     this.emit('call', { number: this.currentNumber });
+    this.botsReact(this.currentNumber);
   }
 
   // Everything the caller says goes in his bubble, and the voice reads it out if it is on.
@@ -235,6 +369,12 @@ export class Game {
       this.advanceIntro(dt);
       return;
     }
+    if (this.phase === 'stageWon') {
+      this.stageWon.msLeft -= dt;
+      if (this.stageWon.msLeft <= 0) this.openNextStage();
+      return;
+    }
+    if (this.phase === 'calling' || this.phase === 'locking') this.clockMs += dt;
     if (this.notice) {
       this.notice.msLeft -= dt;
       if (this.notice.msLeft <= 0) this.notice = null;
@@ -244,6 +384,7 @@ export class Game {
       if (this.pendingRestart.msLeft <= 0) this.restartAfterFalseCall();
     }
     if (this.checking && this.checking.stage !== 'failed') this.advanceChecking(dt);
+    this.advanceBots();
     if (this.phase === 'calling') {
       this.callElapsed += dt;
       if (this.callElapsed >= this.callMs) this.endCall();
@@ -264,6 +405,7 @@ export class Game {
   endCall() {
     this.lockMarks();
     if (this.sitOut > 0) this.sitOut -= 1;
+    for (const bot of this.bots) if (bot.sitOut > 0) bot.sitOut -= 1;
     this.phase = 'locking';
     this.lockElapsed = 0;
     this.emit('lock');
@@ -291,7 +433,7 @@ export class Game {
 
   // Switching apps or a phone call: the game covers itself without using up the player's pause.
   autoPause() {
-    if (this.pauseState || this.phase === 'won' || this.phase === 'drawn' || this.screen === 'result') return;
+    if (this.pauseState || this.phase === 'won' || this.phase === 'drawn' || this.phase === 'over' || this.phase === 'stageWon' || this.screen === 'result') return;
     if (this.screen === 'shout') this.screen = 'cards';
     this.pauseState = 'paused';
     this.pauseReason = 'auto';
@@ -424,10 +566,7 @@ export class Game {
         if (this.isFinalReveal) this.emit('build'); // the slow, dramatic last number begins
       }
     } else if (c.stage === 'concluded' && c.elapsed >= this.config.check.resultBeatMs) {
-      this.screen = 'result';
-      this.result = { outcome: 'win', falseCalls: this.falseCalls, calls: this.called.length };
-      this.checking = null;
-      this.emit('end', { outcome: 'win' });
+      this.finishStage({ type: 'you' }, this.pattern.payout);
     }
   }
 
