@@ -141,13 +141,53 @@ function showStart() {
     sfx,
     music,
     haptics,
+    micStatus,
     onChoose: (id) => settings.set('speedId', id),
-    onPlay: () => {
-      if (settings.get('shoutTested')) startGame();
-      else showTest(true);
+    onPlay: playTapped,
+    onSetupMic: (thenPlay) => showTest(thenPlay),
+    onChoosePressToCall: () => {
+      settings.set('holdToCallMode', true);
+      settings.set('shoutTested', true); // a decision has been made, so Play does not ask again
+      startGame();
     },
-    onTest: () => showTest(false),
   }));
+}
+
+// Where the microphone setup stands: 'ready' (set up and chosen), 'pressToCall' (chose the button) or 'none'.
+function micStatus() {
+  if (!settings.get('shoutTested')) return 'none';
+  return settings.get('holdToCallMode') ? 'pressToCall' : 'ready';
+}
+
+// The player tapped Play. If they use the microphone, ask the phone for it now (a calm moment), not in
+// the middle of the game. If it says no, the game quietly uses press-to-call and says so.
+async function playTapped() {
+  if (micStatus() !== 'ready') {
+    startGame();
+    return;
+  }
+  const slow = setTimeout(() => showNotice('Tap Allow so you can shout BINGO.', 6000), 500);
+  const result = await mic.warmUp();
+  clearTimeout(slow);
+  hideNotice();
+  startGame();
+  if (result !== 'ok') showNotice("The microphone is off, so you'll press a button to call bingo.", 5000);
+}
+
+let noticeEl = null;
+let noticeTimer = null;
+function showNotice(text, ms) {
+  hideNotice();
+  noticeEl = document.createElement('div');
+  noticeEl.className = 'notice';
+  noticeEl.textContent = text;
+  document.body.appendChild(noticeEl);
+  noticeTimer = setTimeout(hideNotice, ms);
+}
+function hideNotice() {
+  clearTimeout(noticeTimer);
+  noticeEl?.remove();
+  noticeEl = null;
 }
 
 function showTest(thenPlay) {

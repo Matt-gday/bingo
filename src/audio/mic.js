@@ -22,6 +22,16 @@ export class Mic {
     this.analyser = null;
     this.buffer = null;
     this.session = 0;
+    this.blocked = false; // the phone refused the microphone this session, so the game uses press-to-call
+    this.granted = false; // the phone has allowed it in this session (so it need not be asked again)
+    this.hiddenAt = 0;
+    if (typeof document !== 'undefined') {
+      // After a long time away the phone may have forgotten its permission, so ask again at the next Play.
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') this.hiddenAt = Date.now();
+        else if (this.hiddenAt && Date.now() - this.hiddenAt > 60000) this.granted = false;
+      });
+    }
     this.errorName = ''; // what the phone said when it refused, shown on screen to help find the cause
   }
 
@@ -55,13 +65,43 @@ export class Mic {
         this.buffer = new Float32Array(this.analyser.fftSize);
         source.connect(this.analyser);
         this.state = 'live';
+        this.granted = true;
+        this.blocked = false;
       })
       .catch((error) => {
         if (session !== this.session) return;
         this.errorName = error?.name || 'Error';
+        this.blocked = true;
+        this.granted = false;
         this.state = error?.name === 'NotAllowedError' || error?.name === 'SecurityError' ? 'denied' : 'unavailable';
         this.release();
       });
+  }
+
+  // Asks the phone for the microphone and gives it straight back. Called when the player taps Play, so the
+  // phone's question comes at a calm moment and never in the middle of a game. Resolves to 'ok', 'denied'
+  // or 'unavailable'. If it is not 'ok', the game plays with the press-to-call button instead.
+  async warmUp() {
+    if (this.granted) return 'ok';
+    if (!navigator.mediaDevices?.getUserMedia) {
+      this.blocked = true;
+      return 'unavailable';
+    }
+    setSessionType('play-and-record');
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((track) => track.stop());
+      this.granted = true;
+      this.blocked = false;
+      this.errorName = '';
+      return 'ok';
+    } catch (error) {
+      this.blocked = true;
+      this.errorName = error?.name || 'Error';
+      return error?.name === 'NotAllowedError' || error?.name === 'SecurityError' ? 'denied' : 'unavailable';
+    } finally {
+      setSessionType('playback');
+    }
   }
 
   stop() {

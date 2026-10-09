@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Microphone flow mock-up</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --aqua:#2ee6d6; --aqua-edge:#0e9287; --ink:#1a1446; --deep:#2b1b6b; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:20px; background:#17103f; font-family:'Nunito',sans-serif; color:#fff; }
+  h1 { font:700 24px 'Fredoka',sans-serif; margin:0 0 6px; }
+  h2 { font:600 15px 'Fredoka',sans-serif; margin:0 0 4px; }
+  .lead { margin:0 0 16px; opacity:.8; font-size:13px; max-width:760px; line-height:1.4; }
+  .row { display:flex; gap:24px; overflow-x:auto; padding-bottom:20px; }
+  .col { flex:none; width:390px; }
+  .col p { font-size:12px; margin:0 0 10px; opacity:.85; line-height:1.4; min-height:50px; }
+  .phone { position:relative; width:390px; height:844px; overflow:hidden; border-radius:34px; padding:62px 16px 30px; display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center;
+           background:linear-gradient(170deg,#5236d6 0%,#7b45e6 45%,#c257d9 100%); }
+  .phone.dark { background:linear-gradient(170deg,#2c1a8a 0%,#45208f 50%,#7a2a96 100%); }
+  .caller { width:130px; height:110px; border-radius:50%; background:radial-gradient(circle at 35% 30%,#fff,#e6dcff 70%); box-shadow:0 8px 0 rgba(0,0,0,.12); display:flex; align-items:center; justify-content:center; font-size:40px; flex:none; }
+  .title { margin:0; font:700 44px/1 'Fredoka',sans-serif; }
+  .gear { position:absolute; top:58px; right:16px; width:48px; height:48px; border-radius:50%; border:0; font-size:22px; background:linear-gradient(180deg,#fff,#ece4ff); box-shadow:0 4px 0 rgba(26,20,70,.25),0 8px 12px rgba(26,20,70,.2); display:flex; align-items:center; justify-content:center; }
+  .speed { width:100%; display:flex; justify-content:space-between; align-items:center; padding:0 22px; height:54px; border-radius:20px; background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.08)); box-shadow:inset 0 1.5px 0 rgba(255,255,255,.6),0 5px 10px rgba(20,8,70,.2); font:600 20px 'Fredoka',sans-serif; }
+  .speed small { font:700 12px 'Nunito',sans-serif; opacity:.8; }
+  .speed.on { background:#fff; color:var(--deep); box-shadow:0 0 0 3px var(--aqua),0 5px 0 rgba(43,27,107,.3); }
+  .spacer { flex:1; }
+  .btn { width:100%; height:64px; border:0; border-radius:32px; font:700 22px 'Fredoka',sans-serif; color:var(--ink); display:flex; align-items:center; justify-content:center; gap:10px; flex:none;
+         background:linear-gradient(180deg,#a6fbf3,#2ee6d6 46%,#14b5a8); box-shadow:0 6px 0 var(--aqua-edge),0 14px 20px rgba(14,146,135,.4),inset 0 3px 1px rgba(255,255,255,.85); }
+  .btn.white { background:linear-gradient(180deg,#fff,#ece4ff); box-shadow:0 5px 0 rgba(0,0,0,.3),0 14px 20px rgba(0,0,0,.22),inset 0 2px 1px #fff; }
+  .btn.ghost { background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.1)); color:#fff; box-shadow:inset 0 1.5px 0 rgba(255,255,255,.7),0 5px 10px rgba(20,8,70,.2); height:52px; font-size:18px; }
+  .btn.small { height:50px; font-size:17px; }
+  .mic-svg { width:1em; height:1em; }
+
+  .shout { width:100%; border-radius:26px; padding:16px 18px; display:flex; align-items:center; gap:16px; text-align:left; background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(236,228,255,.96)); color:var(--deep); box-shadow:0 6px 0 rgba(43,27,107,.3),0 14px 22px rgba(30,15,90,.3); flex:none; }
+  .micbtn { position:relative; flex:none; width:84px; height:84px; border-radius:50%; border:0; font-size:40px; color:var(--ink); display:flex; align-items:center; justify-content:center;
+            background:radial-gradient(circle at 35% 25%,#d9fffb,#2ee6d6 55%,#0f9d92); box-shadow:0 5px 0 var(--aqua-edge),inset 0 3px 3px rgba(255,255,255,.8); }
+  .micbtn.pulse::before,.micbtn.pulse::after { content:''; position:absolute; inset:-8px; border-radius:50%; border:3px solid rgba(46,230,214,.55); animation:ring 2s ease-out infinite; }
+  .micbtn.pulse::after { animation-delay:1s; }
+  .micbtn.off { background:radial-gradient(circle at 35% 25%,#f3eeff,#c9bff0 60%,#9d8fd6); box-shadow:0 5px 0 #6e5cb5,inset 0 3px 3px rgba(255,255,255,.8); }
+  @keyframes ring { from { transform:scale(.85); opacity:1 } to { transform:scale(1.35); opacity:0 } }
+  .shout b { display:block; font:700 21px/1.1 'Fredoka',sans-serif; }
+  .shout span { display:block; font:700 13px/1.3 'Nunito',sans-serif; margin-top:4px; color:#5a4aa0; }
+  .chip { display:inline-block; margin-top:6px; padding:4px 12px; border-radius:14px; font:700 12px 'Nunito',sans-serif; }
+  .chip.warn { background:#ffd25e; color:#5a3a00; }
+  .chip.ok { background:#c9fff3; color:#06524a; }
+  .link { font:700 14px 'Nunito',sans-serif; color:var(--deep); text-decoration:underline; margin-top:6px; display:block; }
+
+  .dim { position:absolute; inset:0; background:rgba(20,8,70,.55); }
+  .sheet { position:absolute; inset:auto 0 0 0; border-radius:28px 28px 0 0; padding:24px 20px 34px; background:linear-gradient(180deg,#fff,#efe8ff); color:var(--deep); text-align:center; display:flex; flex-direction:column; gap:12px; align-items:center; }
+  .sheet h3 { margin:0; font:700 26px/1.1 'Fredoka',sans-serif; }
+  .sheet p { margin:0; font:700 15px/1.4 'Nunito',sans-serif; color:#5a4aa0; opacity:1; min-height:0; }
+  .sheet .btn.ghost { background:#efe8ff; color:var(--deep); box-shadow:inset 0 0 0 2px #cfc4f5; }
+
+  .ring-big { position:relative; width:220px; height:220px; flex:none; display:flex; align-items:center; justify-content:center; margin-top:14px; }
+  .ring-big::before { content:''; position:absolute; inset:0; border-radius:50%; border:3px solid rgba(255,255,255,.2); }
+  .ring-big::after { content:''; position:absolute; inset:28px; border-radius:50%; border:3px solid rgba(255,255,255,.35); }
+  .ring-big .micbtn { width:110px; height:110px; font-size:56px; }
+  .badge { display:inline-block; padding:8px 18px; border-radius:20px; font:700 15px 'Fredoka',sans-serif; background:#2ee6d6; color:var(--ink); }
+  .hint { margin:0; font:700 16px 'Nunito',sans-serif; color:#d8d2ff; }
+  .shouttxt { font:700 26px 'Fredoka',sans-serif; margin:0; } .bingo { font:700 80px/1 'Fredoka',sans-serif; margin:0; }
+  .bar { width:100%; height:20px; border-radius:10px; background:rgba(255,255,255,.2); position:relative; } .bar i { position:absolute; left:0; top:0; bottom:0; width:60%; border-radius:10px; background:#2ee6d6; } .bar u { position:absolute; left:78%; top:-6px; width:3px; height:32px; background:#fff; }
+  .holdbig { width:100%; height:150px; border-radius:40px; border:0; color:var(--ink); font:700 34px/1.1 'Fredoka',sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+             background:linear-gradient(180deg,#a6fbf3,#2ee6d6 46%,#14b5a8); box-shadow:0 8px 0 var(--aqua-edge),0 16px 24px rgba(14,146,135,.4),inset 0 4px 2px rgba(255,255,255,.85); }
+  .holdbig small { font:700 14px 'Nunito',sans-serif; opacity:.8; }
+  .toast { position:absolute; left:16px; right:16px; top:62px; border-radius:20px; padding:12px 16px; background:#fff; color:var(--deep); font:700 14px/1.3 'Nunito',sans-serif; text-align:left; box-shadow:0 8px 20px rgba(20,8,70,.35); }
+  .ios { position:absolute; left:50%; top:46%; transform:translate(-50%,-50%); width:270px; border-radius:20px; background:#f2f2f7; color:#000; padding:18px 16px 0; text-align:center; font:600 15px -apple-system,system-ui,sans-serif; }
+  .ios small { display:block; font-weight:400; font-size:13px; margin:6px 0 14px; color:#333; }
+  .ios div { display:flex; border-top:1px solid #c6c6c8; margin:0 -16px; } .ios div span { flex:1; padding:12px; color:#007aff; } .ios div span+span { border-left:1px solid #c6c6c8; font-weight:700; }
+</style></head><body>
+<h1>Microphone: how it works</h1>
+<p class="lead">The home-screen mic card has two looks, so you can tell at a glance whether the mic is set up. Pressing Play without a setup asks what to do. In the game, the call screen only offers the mic if it was set up; otherwise it is just the big press-and-hold button. Scroll sideways to see all six screens.</p>
+<div class="row">
+
+<div class="col"><h2>1. Home: mic not set up</h2><p>The card is grey-ish with a yellow “Not set up yet” tag, and the main button on it says what to do next.</p>
+<div class="phone"><button class="gear">🔊</button><div class="caller">🙂</div><div class="title">Solo Bingo</div>
+  <div class="speed"><span>Relaxed</span><small>10 seconds a call · 1x credits</small></div>
+  <div class="speed on"><span>Steady</span><small>7 seconds a call · 1.5x credits</small></div>
+  <div class="speed"><span>Quick</span><small>5 seconds a call · 3x credits</small></div>
+  <div class="shout"><button class="micbtn off">🎙</button><div><b>Shout BINGO to win!</b><span>Set up your microphone so the caller can hear you.</span><i class="chip warn">Not set up yet</i></div></div>
+  <div class="btn small ghost" style="margin-top:-6px;background:linear-gradient(180deg,#2ee6d6,#14b5a8);color:var(--ink)">Set up microphone</div>
+  <div class="spacer"></div><button class="btn">Play</button></div></div>
+
+<div class="col"><h2>2. Home: mic set up</h2><p>The mic is aqua and pulsing with a green “Mic ready” tag. Tapping the card re-opens the test so you can recalibrate if the room is noisier or quieter.</p>
+<div class="phone"><button class="gear">🔊</button><div class="caller">🙂</div><div class="title">Solo Bingo</div>
+  <div class="speed"><span>Relaxed</span><small>10 seconds a call · 1x credits</small></div>
+  <div class="speed on"><span>Steady</span><small>7 seconds a call · 1.5x credits</small></div>
+  <div class="speed"><span>Quick</span><small>5 seconds a call · 3x credits</small></div>
+  <div class="shout"><button class="micbtn pulse">🎙</button><div><b>Shout BINGO to win!</b><span>Your mic is ready.</span><i class="chip ok">✓ Mic ready</i></div></div>
+  <div class="btn small ghost" style="margin-top:-6px">Recalibrate my shout</div>
+  <div class="spacer"></div><button class="btn">Play</button></div></div>
+
+<div class="col"><h2>3. Play pressed, no setup yet</h2><p>A friendly stop, not a block. One button goes to the setup, the other lets them play with the press-and-hold button.</p>
+<div class="phone"><div class="caller">🙂</div><div class="title">Solo Bingo</div><div class="dim"></div>
+  <div class="sheet"><div class="micbtn off" style="width:72px;height:72px;font-size:34px">🎙</div><h3>You haven't set up your microphone</h3><p>Set it up to shout BINGO to win, or play by pressing a button to call it.</p>
+    <button class="btn">Set up microphone</button><button class="btn ghost">Just press to call bingo</button></div></div></div>
+
+<div class="col"><h2>4. Play pressed, iPhone forgot</h2><p>If the mic was set up before but the iPhone has lost permission, the game asks straight away so the question never pops up mid-game. If they say no, it switches to press-to-call and says so.</p>
+<div class="phone"><div class="caller">🙂</div><div class="title">Solo Bingo</div><div class="dim"></div>
+  <div class="toast">Tap Allow so you can shout BINGO.</div>
+  <div class="ios">“Solo Bingo” Would Like to Access the Microphone<small>Shout BINGO to win.</small><div><span>Don't Allow</span><span>Allow</span></div></div></div></div>
+
+<div class="col"><h2>5. Call screen: mic set up</h2><p>Exactly as it is now: shout to call, and the “Can't shout? Hold to call it” button still works, with the same short wait.</p>
+<div class="phone dark"><span class="badge">Mic is live</span><p class="hint">Shout before the next number is called.</p>
+  <div class="ring-big"><button class="micbtn">🎙</button></div>
+  <p class="shouttxt">Shout</p><p class="bingo">BINGO!</p>
+  <div class="bar" style="margin-top:6px"><i></i><u></u></div>
+  <div class="spacer"></div><button class="btn white">Can't shout? Hold to call it</button><button class="btn ghost small" style="width:auto;padding:0 28px">← Back to my cards</button></div></div>
+
+<div class="col"><h2>6. Call screen: no mic</h2><p>No meter and no “Shout” at all. One big press-and-hold button with the same ring that fills while you hold it.</p>
+<div class="phone dark"><span class="badge" style="background:#fff">Hold to call</span><p class="hint">Call before the next number is called.</p>
+  <div class="spacer"></div>
+  <button class="holdbig">Hold to call<br>BINGO!<small>Keep holding...</small></button>
+  <div class="spacer"></div><button class="btn ghost small" style="width:auto;padding:0 28px">← Back to my cards</button></div></div>
+
+</div></body></html>

@@ -4,6 +4,7 @@ import { SpeechBubble } from './speech.js';
 import { attachCaller, emote } from './callerStage.js';
 import { shuffle } from '../engine/rng.js';
 import { popIn } from './speech.js';
+import { soundCard } from './soundCard.js';
 
 // Each screen function returns { el, update(game, now) }. update runs every frame
 // and only changes the page when something really changed.
@@ -120,30 +121,57 @@ function startCallerTalk(el, callerEl, { voice, config, callerLines }) {
   });
 }
 
-export function startScreen({ config, callerLines, chosenSpeed, voice, settings, sfx, music, haptics, onPlay, onChoose, onTest }) {
+export function startScreen({ config, callerLines, chosenSpeed, voice, settings, sfx, music, haptics, micStatus, onPlay, onChoose, onSetupMic, onChoosePressToCall }) {
   const speeds = config.speeds
     .map((s) => `<button class="speed${s.id === chosenSpeed ? ' chosen' : ''}" data-speed="${s.id}">
         <span>${esc(s.name)}</span><small>${s.secondsPerCall} seconds a call · ${s.creditMultiplier}x credits</small>
       </button>`)
     .join('');
+
+  // The microphone card looks different once the shout has been set up: ready (aqua and pulsing),
+  // press-to-call chosen, or not set up yet.
+  const status = micStatus(); // 'ready', 'pressToCall' or 'none'
+  const mic = {
+    ready: { chip: '✓ Mic ready', chipClass: 'ok', note: 'Your mic is ready.', button: 'Recalibrate my shout', buttonClass: 'btn-ghost' },
+    pressToCall: { chip: 'Press to call', chipClass: 'plain', note: 'You call bingo by pressing a button.', button: 'Set up microphone', buttonClass: 'btn-aqua' },
+    none: { chip: 'Not set up yet', chipClass: 'warn', note: 'Set up your microphone so the caller can hear you.', button: 'Set up microphone', buttonClass: 'btn-aqua' },
+  }[status];
+
   const el = html(`<main class="screen">
+    <button class="sound-btn" data-sound-btn aria-label="Sound settings">${icons.speaker(22)}</button>
     <div class="start">
       <div class="home-row">
         <div class="start-caller" data-start-caller role="button" aria-label="Tickle the caller"></div>
         <div class="speech home-speech"><span data-home-line></span></div>
       </div>
       <h1>${esc(config.gameName)}</h1>
-      <p class="tagline">Eyes down! Mark your own cards and call bingo when you think you have a line.</p>
       <div class="speeds">${speeds}</div>
-      <div class="extras">
-        <button class="btn btn-ghost" data-test>${icons.mic(18, 2.6)}Test your shout</button>
-        <button class="btn btn-ghost" data-voice></button>
-        <button class="btn btn-ghost" data-sfx></button>
-        <button class="btn btn-ghost" data-music></button>
-        <button class="btn btn-ghost" data-buzz></button>
+      <div class="shout-card" data-mic-card role="button" tabindex="0">
+        <div class="mic-orb${status === 'ready' ? ' live' : status === 'none' ? ' off' : ''}">${icons.mic(40, 2.2)}</div>
+        <div class="shout-card-text">
+          <b>Shout BINGO to win!</b>
+          <span>${mic.note}</span>
+          <i class="mic-chip ${mic.chipClass}">${mic.chip}</i>
+        </div>
       </div>
+      <button class="btn btn-small ${mic.buttonClass}" data-setup-mic>${mic.button}</button>
       <div class="spacer"></div>
       <div class="buttons"><button class="btn btn-aqua" data-play>Play</button></div>
+    </div>
+    <div class="confirm" data-sound-sheet hidden>
+      <div class="confirm-box sound-sheet" role="dialog" aria-modal="true" aria-label="Sound settings">
+        <div data-sound-holder></div>
+        <button class="btn btn-aqua" data-sound-done>Done</button>
+      </div>
+    </div>
+    <div class="confirm" data-mic-ask hidden>
+      <div class="confirm-box" role="dialog" aria-modal="true" aria-label="Microphone not set up">
+        <div class="mic-orb off ask-orb">${icons.mic(40, 2.2)}</div>
+        <h2>You haven't set up your microphone</h2>
+        <p>Set it up to shout BINGO to win, or play by pressing a button to call it.</p>
+        <button class="btn btn-aqua" data-ask-setup>Set up microphone</button>
+        <button class="btn btn-white" data-ask-press>Just press to call bingo</button>
+      </div>
     </div>
   </main>`);
   el.querySelectorAll('[data-speed]').forEach((button) => {
@@ -152,39 +180,32 @@ export function startScreen({ config, callerLines, chosenSpeed, voice, settings,
       onChoose(button.dataset.speed);
     });
   });
-  el.querySelector('[data-play]').addEventListener('click', onPlay);
-  el.querySelector('[data-test]').addEventListener('click', onTest);
+
   const callerEl = el.querySelector('[data-start-caller]');
   attachCaller(callerEl, { voice, mood: 'happy', lively: true });
   startCallerTalk(el, callerEl, { voice, config, callerLines });
-  const voiceButton = el.querySelector('[data-voice]');
-  const showVoice = () => {
-    voiceButton.hidden = !voice.supported;
-    voiceButton.innerHTML = `${voice.on ? icons.speaker() : icons.speakerOff()}Caller's voice: ${voice.on ? 'on' : 'off'}`;
-  };
-  voiceButton.addEventListener('click', () => {
-    voice.toggle();
-    showVoice();
-    if (voice.on) voice.speak('Eyes down, everyone!');
+
+  // Microphone: the card and its button both open the setup (or the recalibration).
+  el.querySelector('[data-mic-card]').addEventListener('click', () => onSetupMic(false));
+  el.querySelector('[data-setup-mic]').addEventListener('click', () => onSetupMic(false));
+
+  // Play: with no microphone setup yet the game asks what to do instead of just starting.
+  const askBox = el.querySelector('[data-mic-ask]');
+  el.querySelector('[data-play]').addEventListener('click', () => {
+    if (status === 'none') askBox.hidden = false;
+    else onPlay();
   });
-  showVoice();
-  // Sound effects, music and buzz: each is a simple on/off switch kept on this device.
-  const switches = [
-    ['[data-sfx]', 'sfxOn', 'Sounds', () => sfx.play('mark-pop')],
-    ['[data-music]', 'musicOn', 'Music', () => music.sync()],
-    ['[data-buzz]', 'hapticsOn', 'Buzz', () => haptics.buzz(30)],
-  ];
-  for (const [selector, key, label, after] of switches) {
-    const button = el.querySelector(selector);
-    const showState = () => { button.textContent = `${label}: ${settings.get(key) ? 'on' : 'off'}`; };
-    if (key === 'hapticsOn') button.hidden = !haptics.supported;
-    button.addEventListener('click', () => {
-      settings.set(key, !settings.get(key));
-      showState();
-      after();
-    });
-    showState();
-  }
+  askBox.addEventListener('click', (event) => { if (event.target === askBox) askBox.hidden = true; });
+  el.querySelector('[data-ask-setup]').addEventListener('click', () => onSetupMic(true));
+  el.querySelector('[data-ask-press]').addEventListener('click', onChoosePressToCall);
+
+  // Sound: one button, and a sheet with all the switches.
+  const sound = soundCard({ voice, settings, sfx, music, haptics, greetOnVoice: true });
+  el.querySelector('[data-sound-holder]').replaceWith(sound.el);
+  const sheet = el.querySelector('[data-sound-sheet]');
+  el.querySelector('[data-sound-btn]').addEventListener('click', () => { sound.update(); sheet.hidden = false; });
+  el.querySelector('[data-sound-done]').addEventListener('click', () => { sheet.hidden = true; });
+  sheet.addEventListener('click', (event) => { if (event.target === sheet) sheet.hidden = true; });
   return { el, update() {} };
 }
 
@@ -329,7 +350,7 @@ export function playScreen(game, { voice, mic, settings }) {
   callButton.addEventListener('click', () => {
     if (!game.canClaim) return;
     // The microphone has to be asked for inside the tap, or the phone will not allow it.
-    if (!settings.get('holdToCallMode')) mic.start();
+    if (!settings.get('holdToCallMode') && !mic.blocked) mic.start();
     game.openShout();
   });
   const pauseButton = el.querySelector('[data-pause]');

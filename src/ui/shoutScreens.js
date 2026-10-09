@@ -14,11 +14,11 @@ export function shoutScreen(game, { mic, settings }) {
   const R = 108;
   const length = 2 * Math.PI * R;
   const holdMs = game.config.shout.holdToCallSeconds * 1000;
-  const holdMode = settings.get('holdToCallMode');
+  const holdMode = settings.get('holdToCallMode') || mic.blocked; // pressing to call: chosen, or the phone refused the mic
   const threshold = settings.get('shoutThreshold');
 
   const el = html(`<main class="screen tense">
-    <div class="shout">
+    <div class="shout${holdMode ? ' holdonly' : ''}">
       <div class="top">
         <div class="badge" data-badge></div>
         <p class="hint" data-hint></p>
