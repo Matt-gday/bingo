@@ -96,7 +96,7 @@ export function shoutScreen(game, { mic, settings }) {
     setClass(badge, 'warm', useMic && mic.state === 'live');
     setText(badge, useMic ? (mic.state === 'live' ? 'Mic is live' : 'Starting the microphone...') : 'Hold to call');
     setText(hint, !holdMode && micFailed
-      ? game.callerLines.shout.denied
+      ? `${game.callerLines.shout.denied}${mic.errorName ? ` (${mic.errorName})` : ''}`
       : useMic ? 'Shout before the next number is called.' : 'Call before the next number is called.');
 
     if (useMic && mic.state === 'live') {
@@ -216,7 +216,7 @@ export function testScreen({ config, callerLines, mic, settings, onDone }) {
     if (mic.state === 'denied' || mic.state === 'unavailable') {
       mic.stop();
       phase = 'idle';
-      resultEl.textContent = 'The microphone is off';
+      resultEl.textContent = `The microphone is off${mic.errorName ? ` (${mic.errorName})` : ''}`;
       say('denied');
       return;
     }

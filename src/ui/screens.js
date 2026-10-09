@@ -20,7 +20,7 @@ function callerBubble(game, el, { voice, maxLines }) {
 
 // ---------- Splash: one tap to wake the caller (and, on a phone, the sound) ----------
 
-export function splashScreen({ config, voice, onDone }) {
+export function splashScreen({ config, callerLines, voice, onDone }) {
   const el = html(`<main class="screen splash" role="button" tabindex="0" aria-label="Tap to start">
     <div class="splash-body">
       <h1>${esc(config.gameName)}</h1>
@@ -38,7 +38,7 @@ export function splashScreen({ config, voice, onDone }) {
     woken = true;
     el.classList.add('awake');
     emote({ face: 'excited', jump: 3.4, wobble: 4, talkMs: 1200 });
-    const line = config.intro?.splashLine ?? 'Eyes down, everyone!';
+    const line = callerLines.game.splash?.[0] ?? "Yay, it's bingo time!";
     let wait = 1100;
     if (voice.on) {
       voice.speak(line);

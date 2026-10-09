@@ -14,6 +14,7 @@ import { AudioEngine } from './audio/engine.js';
 import { Sfx } from './audio/sfx.js';
 import { Music } from './audio/music.js';
 import { configureCaller } from './ui/callerStage.js';
+import { keepScreenOn } from './wakeLock.js';
 import { Haptics } from './audio/haptics.js';
 import { attachGameSounds } from './audio/gameSounds.js';
 import { createIntroPicker } from './introLines.js';
@@ -43,6 +44,7 @@ const voice = new Voice(config, settings, engine);
 const sfx = new Sfx(engine, settings);
 const music = new Music(engine, settings);
 const haptics = new Haptics(settings);
+keepScreenOn();
 configureCaller(config);
 const introPicker = createIntroPicker(callerLines.game.intro, settings);
 const audioBase = `${import.meta.env.BASE_URL}audio/`;
@@ -123,7 +125,7 @@ function show(name, build) {
 
 // The very first screen: a tap here is what lets a phone play sound, so the music and voice work from the start.
 function showSplash() {
-  show('splash', () => splashScreen({ config, voice, onDone: showStart }));
+  show('splash', () => splashScreen({ config, callerLines, voice, onDone: showStart }));
 }
 
 function showStart() {

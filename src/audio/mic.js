@@ -2,6 +2,16 @@
 // "Test your shout" screen, and it is switched off again the moment either closes.
 // It measures loudness only. It never records or recognises words.
 
+// On newer iPhones the page chooses how it uses audio. The game plays sound in 'playback' mode, but listening
+// to the microphone needs 'play-and-record'.
+function setSessionType(type) {
+  try {
+    if (navigator.audioSession) navigator.audioSession.type = type;
+  } catch {
+    // Not supported on this phone, which is fine.
+  }
+}
+
 export class Mic {
   constructor(config) {
     this.settings = config.shout;
@@ -12,6 +22,7 @@ export class Mic {
     this.analyser = null;
     this.buffer = null;
     this.session = 0;
+    this.errorName = ''; // what the phone said when it refused, shown on screen to help find the cause
   }
 
   // Call this straight from a tap, because phones only allow the microphone
@@ -25,6 +36,8 @@ export class Mic {
     }
     const session = ++this.session;
     this.state = 'starting';
+    this.errorName = '';
+    setSessionType('play-and-record'); // the sound-only mode used for the game's sounds does not allow a microphone
     this.level = 0;
     this.ctx = new AudioContextClass();
     this.ctx.resume?.();
@@ -45,6 +58,7 @@ export class Mic {
       })
       .catch((error) => {
         if (session !== this.session) return;
+        this.errorName = error?.name || 'Error';
         this.state = error?.name === 'NotAllowedError' || error?.name === 'SecurityError' ? 'denied' : 'unavailable';
         this.release();
       });
@@ -63,6 +77,7 @@ export class Mic {
     this.analyser = null;
     this.ctx?.close?.().catch(() => {});
     this.ctx = null;
+    setSessionType('playback'); // back to the mode that ignores the phone's silent switch
   }
 
   // Read the loudness right now. Call it once a frame while the mic is on.
