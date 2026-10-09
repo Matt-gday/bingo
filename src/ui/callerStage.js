@@ -53,7 +53,7 @@ if (canvas) canvas.className = 'caller-canvas';
 function build() {
   if (caller || failed || !canvas) return caller;
   try {
-    caller = new Caller3D(canvas, { size: 320 });
+    caller = new Caller3D(canvas, { size: 400 });
     caller.heartEyes(heartEyes);
   } catch {
     failed = true; // no 3D on this phone: the screens show the flat pictures instead

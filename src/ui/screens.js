@@ -39,12 +39,22 @@ export function splashScreen({ config, callerLines, voice, onDone }) {
     el.classList.add('awake');
     emote({ face: 'excited', jump: 3.4, wobble: 4, talkMs: 1200 });
     const line = callerLines.game.splash?.[0] ?? "Yay, it's bingo time!";
-    let wait = 1100;
-    if (voice.on) {
-      voice.speak(line);
-      wait = Math.max(wait, voice.estimateMs(line) + 350);
-    }
-    setTimeout(onDone, wait);
+    // He always says this greeting, even if the player turned the sound off last time. In 'ambient' mode an
+    // iPhone's silent switch still silences it, and the game's own mode comes back afterwards.
+    const setMode = (type) => { try { if (navigator.audioSession) navigator.audioSession.type = type; } catch { /* not supported */ } };
+    setMode('ambient');
+    let finished = false;
+    const done = () => {
+      if (finished) return;
+      finished = true;
+      setMode('playback');
+      voice.onProtectedFinished = previous;
+      onDone();
+    };
+    const previous = voice.onProtectedFinished;
+    voice.onProtectedFinished = done; // the greeting has finished being said: now move on
+    voice.speak(line, { protect: true, force: true });
+    setTimeout(done, 7000); // never get stuck here if the sound does not play
   };
   el.addEventListener('click', wake);
   el.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') wake(); });
