@@ -22,6 +22,9 @@ import {
   splashScreen, startScreen, playScreen, checkingScreen, resultScreen,
 } from './ui/screens.js';
 import { shoutScreen, testScreen } from './ui/shoutScreens.js';
+import { tonightScreen, stageWonScreen } from './ui/nightScreens.js';
+import regularsData from '../Data/regulars.json';
+import { pickSome } from './engine/rng.js';
 import { pauseScreen } from './ui/pauseScreen.js';
 
 const root = document.getElementById('app');
@@ -34,8 +37,6 @@ motion.setProperty('--slide', `${config.animation.slidePx}px`);
 motion.setProperty('--pop-ms', `${config.animation.popMs}ms`);
 motion.setProperty('--stagger-ms', `${config.animation.staggerMs}ms`);
 
-// Phase 2 still plays one line. Later phases will let the player pick the night's length.
-const STAGES = ['line'];
 
 const settings = createSettings(config);
 const mic = new Mic(config);
@@ -94,7 +95,7 @@ document.addEventListener('click', (event) => {
 // Which music belongs with which screen. The music only plays if the player has turned it on.
 // (null means no music: the microphone screens, because music makes the phone's microphone crackle)
 const MUSIC_FOR = {
-  splash: 'home', start: 'home', test: null, play: 'play-loop', shout: null, checking: 'play-loop', pause: 'play-loop', result: 'home',
+  splash: 'home', start: 'home', tonight: 'home', stageWon: 'play-loop', test: null, play: 'play-loop', shout: null, checking: 'play-loop', pause: 'play-loop', result: 'home',
 };
 
 if (!config.speeds.some((s) => s.id === settings.get('speedId'))) settings.set('speedId', config.speeds[0].id);
@@ -129,6 +130,26 @@ function showSplash() {
   show('splash', () => splashScreen({ config, callerLines, voice, onDone: showStart }));
 }
 
+let table = []; // the regulars at the table tonight
+
+// "Tonight's game": choose how long the night is and how fast the caller goes. Three regulars sit down.
+function showTonight() {
+  game = null;
+  voice.cancel();
+  table = pickSome(regularsData.regulars, regularsData.regularsPerNight);
+  show('tonight', () => tonightScreen({
+    config,
+    patterns,
+    table,
+    chosenNight: settings.get('nightId'),
+    chosenSpeed: settings.get('speedId'),
+    onChooseNight: (id) => settings.set('nightId', id),
+    onChooseSpeed: (id) => settings.set('speedId', id),
+    onDeal: playTapped,
+    onBack: showStart,
+  }));
+}
+
 function showStart() {
   game = null;
   voice.cancel();
@@ -143,12 +164,12 @@ function showStart() {
     haptics,
     micStatus,
     onChoose: (id) => settings.set('speedId', id),
-    onPlay: playTapped,
+    onPlay: showTonight,
     onSetupMic: (thenPlay) => showTest(thenPlay),
     onChoosePressToCall: () => {
       settings.set('holdToCallMode', true);
       settings.set('shoutTested', true); // a decision has been made, so Play does not ask again
-      startGame();
+      showTonight();
     },
   }));
 }
@@ -198,7 +219,7 @@ function showTest(thenPlay) {
     mic,
     settings,
     onDone: (result) => {
-      if (result !== 'back' && playAfterTest) startGame();
+      if (result !== 'back' && playAfterTest) showTonight();
       else showStart();
     },
   }));
@@ -211,7 +232,9 @@ function startGame() {
   current = null;
   let starting = true;
   game = new Game({
-    config, patterns, callerLines, speedId: settings.get('speedId'), stageIds: STAGES,
+    config, patterns, callerLines, speedId: settings.get('speedId'),
+    stageIds: (config.nights.find((n) => n.id === settings.get('nightId')) ?? config.nights[0]).stageIds,
+    regulars: table,
     introLine: introPicker.next(), // a different welcome each game, using every line before any repeats
   });
   attachGameSounds(game, { sfx, haptics, music });
@@ -241,13 +264,14 @@ function sync() {
   if (!game) return;
   const wanted = game.pauseState
     ? 'pause'
-    : { cards: 'play', shout: 'shout', checking: 'checking', result: 'result' }[game.screen];
+    : { cards: 'play', shout: 'shout', checking: 'checking', stageWon: 'stageWon', result: 'result' }[game.screen];
   if (current?.name === wanted) return;
   const builders = {
     play: () => playScreen(game, { voice, mic, settings }),
     shout: () => shoutScreen(game, { mic, settings }),
     checking: () => checkingScreen(game, { voice }),
-    result: () => resultScreen(game, { onAgain: startGame, onChange: showStart }),
+    stageWon: () => stageWonScreen(game, { voice }),
+    result: () => resultScreen(game, { onAgain: showTonight, onChange: showStart }),
     pause: () => pauseScreen(game, {
       onQuit: showStart,
       onResume: () => game.resume(),

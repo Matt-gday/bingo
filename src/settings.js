@@ -8,6 +8,7 @@ const VERSION = 2;
 export function createSettings(config) {
   const defaults = {
     speedId: 'steady',
+    nightId: 'line', // how long a night: see 'nights' in Data/config.json
     voiceOn: true,
     sfxOn: true, // sound effects
     musicOn: true, // background music: on unless the player turned it off

@@ -39,6 +39,7 @@ export const icons = {
   tick: (size = 14) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#1A1446" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>`,
   cross: (size = 16) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#1A1446" stroke-width="3.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>`,
   pause: () => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M9 6v12M15 6v12"></path></svg>`,
+  gem: (size = 16) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22 2 9l4-6h12l4 6z" fill="#2EE6D6" stroke="#12A99C" stroke-width="1.6" stroke-linejoin="round"/><path d="M2 9h20M9 3l-2 6 5 13M15 3l2 6-5 13" fill="none" stroke="#12A99C" stroke-width="1.2"/></svg>`,
   speaker: (size = 18) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"></path></svg>`,
   speakerOff: (size = 18) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path d="M17 9l5 6M22 9l-5 6"></path></svg>`,
   back: () => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>`,
@@ -107,7 +108,7 @@ export function updateBall(wrap, game) {
 }
 
 // A tiny picture of the pattern being played, built from Data/patterns.json.
-export function patternPreview(pattern) {
+export function patternPreview(pattern, pixels = 16, off = '#fff') {
   let cells;
   if (pattern.rule === 'lines') cells = [2, 0, 4, 1, 3].slice(0, pattern.count).flatMap((r) => [0, 1, 2, 3, 4].map((c) => [r, c]));
   else if (pattern.rule === 'all') cells = Array.from({ length: 25 }, (_, i) => [Math.floor(i / 5), i % 5]);
@@ -120,10 +121,10 @@ export function patternPreview(pattern) {
   let rects = '';
   for (let r = 0; r < 5; r++) {
     for (let c = 0; c < 5; c++) {
-      rects += `<rect x="${c * size + 0.6}" y="${r * size + 0.6}" width="${size - 1.2}" height="${size - 1.2}" rx="1.2" fill="${on.has(`${r},${c}`) ? '#6A3DF0' : '#fff'}"></rect>`;
+      rects += `<rect x="${c * size + 0.6}" y="${r * size + 0.6}" width="${size - 1.2}" height="${size - 1.2}" rx="1.2" fill="${on.has(`${r},${c}`) ? '#6A3DF0' : off}"></rect>`;
     }
   }
-  return `<svg width="16" height="16" viewBox="0 0 40 40" aria-hidden="true" style="flex-shrink:0">${rects}</svg>`;
+  return `<svg width="${pixels}" height="${pixels}" viewBox="0 0 40 40" aria-hidden="true" style="flex-shrink:0">${rects}</svg>`;
 }
 
 export function confetti(container) {

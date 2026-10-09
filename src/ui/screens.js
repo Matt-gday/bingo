@@ -2,6 +2,7 @@ import { esc, html, setText, setClass, setRing, updateBall, ballMarkup, icons, c
 import { columnLetters } from '../engine/cards.js';
 import { SpeechBubble } from './speech.js';
 import { attachCaller, emote } from './callerStage.js';
+import { faceSvg } from './faces.js';
 import { shuffle } from '../engine/rng.js';
 import { popIn } from './speech.js';
 import { soundCard } from './soundCard.js';
@@ -9,7 +10,7 @@ import { soundCard } from './soundCard.js';
 // Each screen function returns { el, update(game, now) }. update runs every frame
 // and only changes the page when something really changed.
 
-function callerBubble(game, el, { voice, maxLines }) {
+export function callerBubble(game, el, { voice, maxLines }) {
   const speech = new SpeechBubble(el.querySelector('.speech'), { voice, maxLines });
   attachCaller(el.querySelector('[data-caller]'), { game, voice });
   return {
@@ -122,12 +123,6 @@ function startCallerTalk(el, callerEl, { voice, config, callerLines }) {
 }
 
 export function startScreen({ config, callerLines, chosenSpeed, voice, settings, sfx, music, haptics, micStatus, onPlay, onChoose, onSetupMic, onChoosePressToCall }) {
-  const speeds = config.speeds
-    .map((s) => `<button class="speed${s.id === chosenSpeed ? ' chosen' : ''}" data-speed="${s.id}">
-        <span>${esc(s.name)}</span><small>${s.secondsPerCall} seconds a call · ${s.creditMultiplier}x credits</small>
-      </button>`)
-    .join('');
-
   // The microphone card looks different once the shout has been set up: ready (aqua and pulsing),
   // press-to-call chosen, or not set up yet.
   const status = micStatus(); // 'ready', 'pressToCall' or 'none'
@@ -145,7 +140,6 @@ export function startScreen({ config, callerLines, chosenSpeed, voice, settings,
         <div class="speech home-speech"><span data-home-line></span></div>
       </div>
       <h1>${esc(config.gameName)}</h1>
-      <div class="speeds">${speeds}</div>
       <div class="shout-card" data-mic-card role="button" tabindex="0">
         <div class="mic-orb${status === 'ready' ? ' live' : status === 'none' ? ' off' : ''}">${icons.mic(40, 2.2)}</div>
         <div class="shout-card-text">
@@ -174,13 +168,6 @@ export function startScreen({ config, callerLines, chosenSpeed, voice, settings,
       </div>
     </div>
   </main>`);
-  el.querySelectorAll('[data-speed]').forEach((button) => {
-    button.addEventListener('click', () => {
-      el.querySelectorAll('[data-speed]').forEach((b) => b.classList.toggle('chosen', b === button));
-      onChoose(button.dataset.speed);
-    });
-  });
-
   const callerEl = el.querySelector('[data-start-caller]');
   attachCaller(callerEl, { voice, mood: 'happy', lively: true });
   startCallerTalk(el, callerEl, { voice, config, callerLines });
@@ -314,7 +301,8 @@ export function playScreen(game, { voice, mic, settings }) {
       ${game.cards.map((_, i) => cardMarkup(i)).join('')}
       <div class="toast" data-toast hidden></div>
       <div class="play-bottom">
-        <button class="btn btn-aqua call-bingo" data-call>${icons.mic()}Call bingo!</button>
+        ${game.bots.length ? `<div class="table-pill" data-table>${game.bots.map((b) => `<div class="seat" data-seat="${b.id}"><span class="seat-face"></span><b>${esc(b.name)}</b><i class="togo"></i></div>`).join('')}</div>` : ''}
+        <button class="btn btn-aqua call-bingo${game.bots.length ? ' with-table' : ''}" data-call>${icons.mic()}Call bingo!</button>
         <div class="sit-banner" data-sit hidden>
           <div class="top"><span>Sitting out</span><span class="dots" data-dots></span></div>
           <div class="why" data-why></div>
@@ -391,7 +379,27 @@ export function playScreen(game, { voice, mic, settings }) {
     speechEl.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 350, easing: 'ease-out' });
   }
 
+  // The regulars: a face that shows their mood, and how many squares they still need. A magenta tag marks
+  // anyone who is one away.
+  const seatEls = new Map(game.bots.map((b) => [b.id, el.querySelector(`[data-seat="${b.id}"]`)]));
+  const seatShown = new Map();
+  function syncTable() {
+    for (const b of game.bots) {
+      const seat = seatEls.get(b.id);
+      const mood = game.botMood(b);
+      const toGo = game.botToGo(b);
+      const key = `${mood}|${toGo}`;
+      if (seatShown.get(b.id) === key) continue;
+      seatShown.set(b.id, key);
+      seat.querySelector('.seat-face').innerHTML = faceSvg(b.colour, mood, 44);
+      const tag = seat.querySelector('.togo');
+      tag.textContent = `${toGo} to go`;
+      tag.classList.toggle('one', toGo === 1);
+    }
+  }
+
   function update(_game, now) {
+    if (game.bots.length) syncTable();
     if (inIntro && game.phase !== 'intro') leaveIntro();
     callButton.disabled = game.phase === 'intro'; // nothing to call before the first number
     updateBall(ballWrap, game);
@@ -539,14 +547,32 @@ export function checkingScreen(game, { voice }) {
 // ---------- Result ----------
 
 export function resultScreen(game, { onAgain, onChange }) {
-  const won = game.result.outcome === 'win';
+  const result = game.result;
+  const won = result.outcome === 'win';
+  const drawn = result.outcome === 'drawn';
+  const lastWinner = result.stages.at(-1)?.winner;
+  const title = won ? 'BINGO!' : drawn ? 'No winner tonight' : `${esc(lastWinner?.name ?? 'Someone')} won it`;
+  const tagline = won
+    ? `You won with ${esc(game.pattern.spoken)}.`
+    : drawn ? 'All 75 numbers were called, and nobody got there.'
+      : `${esc(lastWinner?.name ?? 'A regular')} took ${esc(game.pattern.spoken)}. Better luck next time!`;
+  const rows = result.stages.map((r) => {
+    const you = r.winner.type === 'you';
+    const credits = Math.round(r.credits * result.multiplier);
+    return `<div class="stage-row"><span>${esc(r.pattern.name)}</span><span class="who">${you ? 'You' : esc(r.winner.name)}</span><b>${credits ? `${you ? '' : '+'}${credits}` : '0'}</b></div>`;
+  }).join('');
+  const lines = result.stages.length
+    ? `<div class="stage-rows">${rows}
+        ${result.falseCalls ? `<div class="stage-row minus"><span>${result.falseCalls} false ${result.falseCalls === 1 ? 'call' : 'calls'}</span><span class="who">-${Math.round(result.penalty * 100)}%</span><b></b></div>` : ''}
+        <div class="stage-row total"><span>Total credits</span><span class="who"></span><b>${icons.gem(16)} ${result.total}</b></div>
+      </div>`
+    : '';
   const el = html(`<main class="screen">
     <div class="result">
       <div class="caller-hero" data-result-caller></div>
-      <h1>${won ? 'BINGO!' : 'No winner tonight'}</h1>
-      <p class="tagline">${won
-        ? `You won with ${esc(game.pattern.spoken)}.`
-        : 'All 75 numbers were called, and nobody got there.'}</p>
+      <h1>${title}</h1>
+      <p class="tagline">${tagline}</p>
+      ${lines}
       <div class="stats">
         <div class="stat"><b>${game.called.length}</b>numbers called</div>
         <div class="stat"><b>${game.falseCalls}</b>false ${game.falseCalls === 1 ? 'call' : 'calls'}</div>
@@ -554,7 +580,7 @@ export function resultScreen(game, { onAgain, onChange }) {
       <div class="spacer"></div>
       <div class="buttons">
         <button class="btn btn-aqua" data-again>Play again</button>
-        <button class="btn btn-ghost" style="align-self:center" data-change>Change speed</button>
+        <button class="btn btn-ghost" style="align-self:center" data-change>Back to home</button>
       </div>
     </div>
   </main>`);

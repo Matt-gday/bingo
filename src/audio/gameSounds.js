@@ -49,6 +49,18 @@ export function attachGameSounds(game, { sfx, haptics, music }) {
           haptics.buzz([60, 60, 60, 60, 120]);
         }
         break;
+      case 'stageWon':
+        if (data?.winner?.type === 'you') {
+          sfx.play('win-fanfare');
+          haptics.buzz([60, 60, 60, 60, 120]);
+        } else {
+          sfx.play('claim-whoosh'); // a regular shouted
+          haptics.buzz(20);
+        }
+        break;
+      case 'botFalseCall':
+        sfx.play('too-slow');
+        break;
       case 'pause':
         sfx.play('pause-on');
         music?.duck(true);

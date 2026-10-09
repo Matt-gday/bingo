@@ -205,7 +205,8 @@ export class Game {
   // otherwise the night is over and the result shows.
   finishStage(winner, credits) {
     const last = this.stageIndex === this.stages.length - 1;
-    this.stageResults.push({ index: this.stageIndex, pattern: this.pattern, winner, credits });
+    const numbers = winner.type === 'you' ? this.checking?.evaluation?.order?.map((item) => item.number) ?? [] : [];
+    this.stageResults.push({ index: this.stageIndex, pattern: this.pattern, winner, credits, numbers });
     this.checking = null;
     for (const bot of this.bots) bot.claim = null;
     if (last) {

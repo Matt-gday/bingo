@@ -172,5 +172,34 @@
       3.5
     ],
     "moodSeconds": 3.5
-  }
+  },
+  "nights": [
+    {
+      "id": "line",
+      "name": "Just a line",
+      "sub": "Short game, small prize",
+      "stageIds": [
+        "line"
+      ]
+    },
+    {
+      "id": "two",
+      "name": "A line, then two lines",
+      "sub": "Two chances to shout",
+      "stageIds": [
+        "line",
+        "two-lines"
+      ]
+    },
+    {
+      "id": "full",
+      "name": "The full night",
+      "sub": "Line, two lines, then full house",
+      "stageIds": [
+        "line",
+        "two-lines",
+        "full-house"
+      ]
+    }
+  ]
 }
