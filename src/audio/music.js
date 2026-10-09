@@ -37,8 +37,8 @@ export class Music {
 
   sync() {
     const entry = this.tracks[this.wanted];
-    if (!this.on) {
-      this.stopCurrent();
+    if (!this.on || !this.wanted) {
+      this.stopCurrent(); // music off, or this screen wants none (the microphone test)
       return;
     }
     // Wait until the phone really has the audio running, so the track never starts into a sleeping system.
