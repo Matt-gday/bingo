@@ -18,7 +18,7 @@ import { Haptics } from './audio/haptics.js';
 import { attachGameSounds } from './audio/gameSounds.js';
 import { createIntroPicker } from './introLines.js';
 import {
-  startScreen, playScreen, checkingScreen, resultScreen,
+  splashScreen, startScreen, playScreen, checkingScreen, resultScreen,
 } from './ui/screens.js';
 import { shoutScreen, testScreen } from './ui/shoutScreens.js';
 import { pauseScreen } from './ui/pauseScreen.js';
@@ -91,7 +91,7 @@ document.addEventListener('click', (event) => {
 
 // Which music belongs with which screen. The music only plays if the player has turned it on.
 const MUSIC_FOR = {
-  start: 'home', test: 'home', play: 'play-loop', shout: 'play-loop', checking: 'play-loop', pause: 'play-loop', result: 'home',
+  splash: 'home', start: 'home', test: 'home', play: 'play-loop', shout: 'play-loop', checking: 'play-loop', pause: 'play-loop', result: 'home',
 };
 
 if (!config.speeds.some((s) => s.id === settings.get('speedId'))) settings.set('speedId', config.speeds[0].id);
@@ -119,6 +119,11 @@ function show(name, build) {
   // Anything the screen does not cover takes the colour of the bottom of its gradient, so no dark strip shows.
   document.documentElement.style.background = current.el.classList.contains('tense') ? '#7a2a96' : '#c257d9';
   music.play(MUSIC_FOR[name] ?? 'home');
+}
+
+// The very first screen: a tap here is what lets a phone play sound, so the music and voice work from the start.
+function showSplash() {
+  show('splash', () => splashScreen({ config, voice, onDone: showStart }));
 }
 
 function showStart() {
@@ -266,5 +271,5 @@ if ('mediaSession' in navigator && typeof MediaMetadata !== 'undefined') {
   });
 }
 
-showStart();
+showSplash();
 requestAnimationFrame(frame);

@@ -18,6 +18,39 @@ function callerBubble(game, el, { voice, maxLines }) {
   };
 }
 
+// ---------- Splash: one tap to wake the caller (and, on a phone, the sound) ----------
+
+export function splashScreen({ config, voice, onDone }) {
+  const el = html(`<main class="screen splash" role="button" tabindex="0" aria-label="Tap to start">
+    <div class="splash-body">
+      <h1>${esc(config.gameName)}</h1>
+      <div class="splash-caller" data-splash-caller>
+        <span class="zzz z1">z</span><span class="zzz z2">z</span><span class="zzz z3">Z</span>
+      </div>
+    </div>
+    <div class="buttons"><button class="btn btn-aqua splash-btn" data-splash-go>Tap to start</button></div>
+  </main>`);
+  const callerEl = el.querySelector('[data-splash-caller]');
+  attachCaller(callerEl, { mood: 'noPeeking' }); // eyes shut: he is fast asleep
+  let woken = false;
+  const wake = () => {
+    if (woken) return;
+    woken = true;
+    el.classList.add('awake');
+    emote({ face: 'excited', jump: 3.4, wobble: 4, talkMs: 1200 });
+    const line = config.intro?.splashLine ?? 'Eyes down, everyone!';
+    let wait = 1100;
+    if (voice.on) {
+      voice.speak(line);
+      wait = Math.max(wait, voice.estimateMs(line) + 350);
+    }
+    setTimeout(onDone, wait);
+  };
+  el.addEventListener('click', wake);
+  el.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') wake(); });
+  return { el, update() {} };
+}
+
 // ---------- Start ----------
 
 // The caller on the start screen chats away on his own with funny welcomes, and giggles if he is tapped.
