@@ -3,15 +3,20 @@
 import { build } from 'esbuild';
 import { writeFileSync, readFileSync } from 'node:fs';
 
-const result = await build({
-  entryPoints: ['prototype3d/lab.js'],
+async function page(entry, htmlFile, outFile, scriptTag) {
+  const result = await build({
+  entryPoints: [entry],
   bundle: true,
   minify: true,
   format: 'iife',
   write: false,
   loader: { '.json': 'json' },
 });
-const script = result.outputFiles[0].text.replace(/<\/script>/g, '<\/script>');
-const html = readFileSync('avatar-lab.html', 'utf8').replace('<script type="module" src="/prototype3d/lab.js"></script>', `<script>${script}</script>`);
-writeFileSync('avatar-lab-standalone.html', html);
-console.log('Wrote avatar-lab-standalone.html');
+  const script = result.outputFiles[0].text.replaceAll('</script>', '<\\/script>');
+  const html = readFileSync(htmlFile, 'utf8').replace(scriptTag, `<script>${script}</script>`);
+  writeFileSync(outFile, html);
+  console.log('Wrote', outFile);
+}
+
+await page('prototype3d/lab.js', 'avatar-lab.html', 'avatar-lab-standalone.html', '<script type="module" src="/prototype3d/lab.js"></script>');
+await page('prototype3d/wearables.js', 'wearables-sheet.html', 'wearables-sheet-standalone.html', '<script type="module" src="/prototype3d/wearables.js"></script>');

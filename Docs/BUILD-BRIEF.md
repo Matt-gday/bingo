@@ -114,8 +114,8 @@ At the start the player chooses how long the night is:
 
 ## 11. Prizes and sets
 
-- There are 54 prizes in `Data/prizes.json`. Each has a price, tags, a size and a room.
-- Tags come from three families: **what it is** (Art & Craft, Stationery, Music, Sport, Soft Toys, Food, Home, Garden, Tools), **its colour** (Pink, Purple, Aqua, Rainbow) and **its feel** (Fluffy, Sparkly, Mini, Animals). Each tag is a set, giving 17 sets in `Data/sets.json`.
+- There are 74 prizes in `Data/prizes.json`: 54 everyday prizes and 20 wearables (hats, glasses and neckwear for the avatars, each one colourway of an item in `Data/avatar.json`). Each has a price, tags, a size and a room.
+- Tags come from three families: **what it is** (Art & Craft, Stationery, Music, Sport, Soft Toys, Food, Home, Garden, Tools), **its colour** (Pink, Purple, Aqua, Rainbow) and **its feel** (Fluffy, Sparkly, Mini, Animals). Each tag is a set, giving 18 sets in `Data/sets.json`, including **Dress-up** for the wearables.
 - A prize counts its **full price toward every set it belongs to**. Prizes with three or four tags are the most contested.
 - **A set is finished when the prices of the prizes you own with that tag reach the set's target.** Targets are about 60 percent of the set's total value, so a set can never become impossible.
 - **One of each prize per player.** The player and each regular can own a given prize once.
