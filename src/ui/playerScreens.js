@@ -69,7 +69,7 @@ export function avatarScreen({ mode, name = '', look, owned = null, onSave, onBa
       </div>
       <div class="avatar-preview" data-preview></div>
       <label class="name-field">Your name
-        <input type="text" data-name maxlength="14" value="${esc(name)}" placeholder="Type your name" autocomplete="off" autocapitalize="words">
+        <input type="text" data-name maxlength="14" value="${esc(name)}" placeholder="Type your name" autocomplete="off" autocapitalize="words" enterkeyhint="done">
       </label>
       <div class="avatar-tabs" role="tablist">${TABS.map(([id, label]) => `<button role="tab" data-tab="${id}">${label}</button>`).join('')}</div>
       <div class="avatar-options" data-options></div>
@@ -143,6 +143,13 @@ export function avatarScreen({ mode, name = '', look, owned = null, onSave, onBa
     });
   });
   el.querySelector('[data-preview]').addEventListener('click', () => preview.setMood('cheer'));
+  // The Enter / Done key on the keyboard just puts the keyboard away.
+  nameInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      nameInput.blur();
+    }
+  });
   el.querySelector('[data-save]').addEventListener('click', () => onSave({ name: nameInput.value, look: current }));
   el.querySelector('[data-back]')?.addEventListener('click', onBack);
   render();
