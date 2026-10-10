@@ -133,7 +133,8 @@
       "quick": 0.6
     },
     "regularStartingCredits": 60,
-    "note": "The prize table. slots: how many prizes are on it. soldBeatMs: how long 'Sold to...' shows. firstBotDelaySeconds / secondsBetweenBotArrivals: when the regulars arrive. desperationSpeedUp: a ring runs this much faster if the prize would finish one of their sets. speedScaleBySetting: rings follow the night's calling speed. regularStartingCredits: what each regular starts with in a new player's world."
+    "note": "The prize table. slots: how many prizes are on it. soldBeatMs: how long 'Sold to...' shows. firstBotDelaySeconds / secondsBetweenBotArrivals: when the regulars arrive. desperationSpeedUp: a ring runs this much faster if the prize would finish one of their sets. speedScaleBySetting: rings follow the night's calling speed. regularStartingCredits: what each regular starts with in a new player's world. arrivalsPerNight: how many unsold prizes are swapped for new, covered ones between nights.",
+    "arrivalsPerNight": 2
   },
   "sets": {
     "targetShare": 0.6,

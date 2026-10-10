@@ -169,6 +169,7 @@ export class PrizeRound {
     for (const bot of this.bots) {
       if (bot.status === 'eyeing' && bot.target && bot.target.slot === slot && bot.id !== buyer) {
         bot.target = null;
+        bot.beatenOn = prize.id;
         this.think(bot, 1400); // a moment to be annoyed, then pick again
         this.emit('broken', { bot, slot, by: buyer });
       }
@@ -184,12 +185,20 @@ export class PrizeRound {
     if (id) this.emit('drop', { slot, prize: this.data.prizes.get(id) });
   }
 
-  // Writes the slots back to the save, so what is left stays on the table for next time.
+  // Writes the slots back to the save, so what is left stays on the table for next time. A couple of the
+  // unsold prizes are swapped for new arrivals, which stay covered until the player next opens the table.
   commit() {
     this.slots.forEach((s, i) => {
       this.state.table[i] = s.sold ? null : s.prize;
     });
+    this.state.covered = [];
+    const keep = this.state.table.map((id, i) => (id ? i : -1)).filter((i) => i >= 0);
+    for (let n = 0; n < (this.rules.arrivalsPerNight ?? 0) && keep.length > 0; n++) {
+      const slot = keep.splice(Math.floor(this.rng() * keep.length), 1)[0];
+      this.state.table[slot] = null;
+    }
     refillTable(this.data, this.state, this.slots.length, { rng: this.rng }); // empty slots get new arrivals, covered until looked at
+    this.arrivals = this.state.covered.length;
   }
 
   // What everyone did, for the "Table closed" summary.
@@ -198,6 +207,7 @@ export class PrizeRound {
       player: this.log.filter((l) => l.owner === 'player'),
       regulars: this.bots.map((b) => ({ id: b.id, name: b.name, bought: this.log.filter((l) => l.owner === b.id) })),
       left: this.slots.filter((s) => s.prize && !s.sold).length,
+      arrivals: this.arrivals ?? 0,
     };
   }
 }

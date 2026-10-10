@@ -174,3 +174,15 @@ test('what is left on the table stays for next time and empty slots get new arri
   round.commit();
   assert.equal(state.table.filter(Boolean).length, 6);
 });
+
+test('between nights a couple of unsold prizes are swapped for new covered arrivals', () => {
+  const { round, state } = roundOf({ credits: 0, wallet: 0 }); // nobody buys anything
+  const before = [...state.table];
+  round.fastForward();
+  round.commit();
+  assert.equal(state.table.filter(Boolean).length, 6);
+  const changed = state.table.filter((id, i) => id !== before[i]).length;
+  assert.equal(changed, config.prizeTable.arrivalsPerNight);
+  assert.equal(round.arrivals, config.prizeTable.arrivalsPerNight);
+  assert.equal(state.covered.length, config.prizeTable.arrivalsPerNight, 'they stay covered until the table is next opened');
+});

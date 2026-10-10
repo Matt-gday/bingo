@@ -119,7 +119,7 @@ function startCallerTalk(el, callerEl, { voice, config, callerLines }) {
   });
 }
 
-export function startScreen({ config, callerLines, player, voice, micStatus, onPlay, onSetupMic, onChoosePressToCall, onSwitchPlayer, onAvatar, onSettings }) {
+export function startScreen({ config, callerLines, player, voice, micStatus, onPlay, onSetupMic, onChoosePressToCall, onSwitchPlayer, onAvatar, onSettings, onPeek, onSets, onCabinet }) {
   // The microphone card looks different once the shout has been set up: ready (aqua and pulsing),
   // press-to-call chosen, or not set up yet.
   const status = micStatus(); // 'ready', 'pressToCall' or 'none'
@@ -152,6 +152,9 @@ export function startScreen({ config, callerLines, player, voice, micStatus, onP
       <div class="spacer"></div>
       <div class="buttons"><button class="btn btn-aqua" data-play>Play tonight</button></div>
       <div class="home-tiles">
+        <button class="home-tile" data-peek><span class="tile-icon">🎁</span><b>Peek at prizes</b></button>
+        <button class="home-tile" data-sets><span class="tile-icon">⭐</span><b>Sets</b></button>
+        <button class="home-tile" data-cabinet><span class="tile-icon">🗄️</span><b>My cabinet</b></button>
         <button class="home-tile" data-avatar><span class="tile-icon">🎨</span><b>My avatar</b></button>
         <button class="home-tile" data-settings><span class="tile-icon">⚙️</span><b>Settings</b></button>
       </div>
@@ -187,6 +190,9 @@ export function startScreen({ config, callerLines, player, voice, micStatus, onP
   // Who is playing, and where to go from here.
   const meFace = mountFace(el.querySelector('[data-me-face]'), player.look, { size: 54 });
   el.querySelector('[data-me]').addEventListener('click', onSwitchPlayer);
+  el.querySelector('[data-peek]').addEventListener('click', onPeek);
+  el.querySelector('[data-sets]').addEventListener('click', onSets);
+  el.querySelector('[data-cabinet]').addEventListener('click', onCabinet);
   el.querySelector('[data-avatar]').addEventListener('click', onAvatar);
   el.querySelector('[data-settings]').addEventListener('click', onSettings);
   return { el, update() {}, destroy: () => meFace.destroy() };
@@ -574,7 +580,7 @@ export function checkingScreen(game, { voice, settings }) {
 
 // ---------- Result ----------
 
-export function resultScreen(game, { onAgain, onChange, player }) {
+export function resultScreen(game, { onAgain, onChange, onPrizes, player }) {
   const result = game.result;
   const won = result.outcome === 'win';
   const drawn = result.outcome === 'drawn';
@@ -618,14 +624,16 @@ export function resultScreen(game, { onAgain, onChange, player }) {
       <p class="total-line">You now have ${icons.gem(16)} <b>${player?.credits ?? result.total}</b></p>
       <div class="spacer"></div>
       <div class="buttons">
-        <button class="btn btn-aqua" data-again>Play another night</button>
-        <button class="btn btn-ghost" style="align-self:center" data-change>Back to home</button>
+        ${spamming ? '' : '<button class="btn btn-aqua" data-prizes>To the prize table</button>'}
+        <button class="btn ${spamming ? 'btn-aqua' : 'btn-ghost'}" ${spamming ? '' : 'style="align-self:center"'} data-again>Play another night</button>
+        ${spamming ? '<button class="btn btn-ghost" style="align-self:center" data-change>Back to home</button>' : ''}
       </div>
     </div>
   </main>`);
   const regFaces = game.bots.map((b) => mountFace(el.querySelector(`[data-reg="${b.id}"]`), b, { size: 40, mood: lastWinner?.id === b.id ? 'cheer' : won ? 'sulky' : 'content' }));
   el.querySelector('[data-again]').addEventListener('click', onAgain);
-  el.querySelector('[data-change]').addEventListener('click', onChange);
+  el.querySelector('[data-prizes]')?.addEventListener('click', onPrizes);
+  el.querySelector('[data-change]')?.addEventListener('click', onChange);
   if (won) confetti(el);
   attachCaller(el.querySelector('[data-result-caller]'), { mood: won ? 'cheer' : 'smile', jump: won });
   return { el, update() {}, destroy: () => regFaces.forEach((f) => f.destroy()) };

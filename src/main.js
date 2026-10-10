@@ -28,6 +28,9 @@ import regularsData from '../Data/regulars.json';
 import { pickSome } from './engine/rng.js';
 import { pauseScreen } from './ui/pauseScreen.js';
 import { welcomeScreen, avatarScreen, howToPlayScreen, settingsScreen } from './ui/playerScreens.js';
+import { whoWantsWhatScreen, cabinetScreen, setsScreen } from './ui/prizeScreens.js';
+import { prizeTableScreen, tableClosedScreen } from './ui/prizeTableScreen.js';
+import { ensureWorld } from './prizeWorld.js';
 import { defaultLook } from './ui/caller3d/avatar.js';
 
 const root = document.getElementById('app');
@@ -99,7 +102,7 @@ document.addEventListener('click', (event) => {
 // Which music belongs with which screen. The music only plays if the player has turned it on.
 // (null means no music: the microphone screens, because music makes the phone's microphone crackle)
 const MUSIC_FOR = {
-  splash: 'home', start: 'home', welcome: 'home', avatar: 'home', howto: 'home', settings: 'home', tonight: 'home', stageWon: 'play-loop', test: null, play: 'play-loop', shout: null, checking: 'play-loop', pause: 'play-loop', result: 'home',
+  splash: 'home', start: 'home', who: 'home', ptable: 'home', closed: 'home', cabinet: 'home', sets: 'home', welcome: 'home', avatar: 'home', howto: 'home', settings: 'home', tonight: 'home', stageWon: 'play-loop', test: null, play: 'play-loop', shout: null, checking: 'play-loop', pause: 'play-loop', result: 'home',
 };
 
 if (!config.speeds.some((s) => s.id === settings.get('speedId'))) settings.set('speedId', config.speeds[0].id);
@@ -198,6 +201,69 @@ function showHowTo({ first }) {
   }));
 }
 
+// ---- the prize round ----
+
+// After the night: who is after what, then the timed prize table.
+function showWho() {
+  game = null;
+  const player = profiles.active();
+  if (!player) return showStart();
+  ensureWorld(player);
+  show('who', () => whoWantsWhatScreen({
+    profile: player,
+    tableRegulars: table,
+    callerLines,
+    voice,
+    onOpenTable: () => showPrizeTable({ lookOnly: false }),
+    onCabinet: (ownerId) => showCabinet(ownerId, showWho),
+  }));
+}
+
+function showCabinet(ownerId, backTo) {
+  const player = profiles.active();
+  if (!player) return showStart();
+  ensureWorld(player);
+  show('cabinet', () => cabinetScreen({ profile: player, ownerId, onBack: backTo }));
+}
+
+function showSets() {
+  const player = profiles.active();
+  if (!player) return showStart();
+  ensureWorld(player);
+  show('sets', () => setsScreen({ profile: player, onBack: showStart }));
+}
+
+// The timed prize table (or, from the home screen, a peek at it with nothing to buy).
+function showPrizeTable({ lookOnly }) {
+  game = null;
+  const player = profiles.active();
+  if (!player) return showStart();
+  ensureWorld(player);
+  const regs = table.length ? table : regularsData.regulars.slice(0, 3);
+  show('ptable', () => prizeTableScreen({
+    profile: player,
+    tableRegulars: regs,
+    speedId: settings.get('speedId'),
+    lookOnly,
+    callerLines,
+    voice,
+    sfx,
+    haptics,
+    profiles,
+    onDone: (summary, state) => showTableClosed(summary, state),
+    onBack: showStart,
+  }));
+}
+
+function showTableClosed(summary, state) {
+  const player = profiles.active();
+  show('closed', () => tableClosedScreen({
+    summary, state, profile: player, callerLines, voice,
+    onAgain: showTonight,
+    onHome: showStart,
+  }));
+}
+
 function showSettings() {
   show('settings', () => settingsScreen({
     config, settings, profiles, voice, sfx, music, haptics,
@@ -248,6 +314,9 @@ function showStart() {
     onSwitchPlayer: showWelcome,
     onAvatar: showAvatarEdit,
     onSettings: showSettings,
+    onPeek: () => showPrizeTable({ lookOnly: true }),
+    onSets: showSets,
+    onCabinet: () => showCabinet('player', showStart),
     onPlay: showTonight,
     onSetupMic: (thenPlay) => showTest(thenPlay),
     onChoosePressToCall: () => {
@@ -332,7 +401,8 @@ function startGame() {
         credits: game.result.total,
         stagesWon: game.result.stagesWon,
         won: game.result.outcome === 'win',
-        regularEarnings: game.result.regularEarnings,
+        regularEarnings: Object.fromEntries(Object.entries(game.result.regularEarnings).map(([id, earned]) => [id, earned + config.credits.regularAllowance])),
+        regularStart: config.prizeTable.regularStartingCredits,
       });
     }
   });
@@ -374,7 +444,7 @@ function sync() {
     shout: () => shoutScreen(game, { mic, settings }),
     checking: () => checkingScreen(game, { voice, settings }),
     stageWon: () => stageWonScreen(game, { voice }),
-    result: () => resultScreen(game, { onAgain: showTonight, onChange: showStart, player: profiles.active() }),
+    result: () => resultScreen(game, { onAgain: showTonight, onChange: showStart, onPrizes: showWho, player: profiles.active() }),
     pause: () => pauseScreen(game, {
       onQuit: showStart,
       onResume: () => game.resume(),
@@ -440,6 +510,8 @@ if ('mediaSession' in navigator && typeof MediaMetadata !== 'undefined') {
     setLockScreenState('playing');
   });
 }
+
+if (import.meta.env.DEV) window.__app = { showWho, showPrizeTable, showSets, showCabinet, showStart, showTableClosed }; // for testing in the browser console only
 
 showSplash();
 requestAnimationFrame(frame);
