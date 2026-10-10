@@ -178,7 +178,7 @@
       1.0
     ],
     "race": {
-      "note": "Each night is planned as a story. 'arcs' lists the shapes a night can take for 1, 2 or 3 stages and how likely each is: W = a stage the player can win, L = a near miss where a regular gets there just ahead. A W stage is 'comfortable' (comfortableShare of the time: the best-placed regular finishes comfortableCalls after a sensible player) or 'close' (closeCalls after, a real race). A near miss has the regular finish nearMissCalls before. decoySpread: the other regulars finish this many calls after the rival (0 = the very same call, so they wait for the same number). decoyTieChance: in a close race, the chance one of them finishes on the player's own call. selfAdjust: the game remembers the last historyLength stages and tilts the shapes towards the targetWinRate. earliestCall stops anyone winning absurdly early. samples is how many random cards are tried to find the best fit. fullHouseCall: when a night includes a full house, the order of the numbers is nudged so one of the player's cards can complete it somewhere in this range of calls (otherwise a full house often never happens in 75 numbers).",
+      "note": "Each night is planned as a story. 'arcs' lists the shapes a night can take for 1, 2 or 3 stages and how likely each is: W = a stage the player can win, L = a near miss where a regular gets there just ahead. A W stage is 'comfortable' (comfortableShare of the time: the best-placed regular finishes comfortableCalls after a sensible player) or 'close' (closeCalls after, a real race). A near miss has the regular finish nearMissCalls before. decoySpread: the other regulars finish this many calls after the rival (0 = the very same call, so they wait for the same number). decoyTieChance: in a close race, the chance one of them finishes on the player's own call. selfAdjust: the game remembers the last historyLength stages and tilts the shapes towards the targetWinRate. earliestCall stops anyone winning absurdly early. samples is how many random cards are tried to find the best fit.",
       "enabled": true,
       "earliestCall": 14,
       "samples": 2500,
@@ -227,11 +227,7 @@
         "targetWinRate": 0.62,
         "strength": 3,
         "minSamples": 4
-      },
-      "fullHouseCall": [
-        60,
-        68
-      ]
+      }
     }
   },
   "nights": [

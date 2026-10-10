@@ -29,7 +29,7 @@ Three ideas make the game what it is. Protect them.
 - **The mark can go anywhere.** Usually it goes on the number just called. It can also go on a number called earlier that the player skipped, which is how they catch up. Nothing stops the player marking a number that has not been called. That is a mistake they will pay for later.
 - **The mark is movable until it locks.** The mark for the current call is shown in aqua with a darker outline. While the ring is running the player can tap it again to remove it, or tap another square on either card to move it there.
 - **When the ring runs out the mark locks.** It turns purple like the others and can never be changed. If no mark was placed, that call's mark is lost. A brief lock moment shows a padlock in the ball and the caller says "Marks locked!" before the next number appears.
-- **Each number can only be used once.** If a number is on both cards, a mark on one card is the only valid mark for that number. The app does not prevent a second mark on the other card. It is simply invalid when the card is checked.
+- **A number on both cards can be marked on both.** There is still only one mark per call, so the second mark goes on a later call. Keeping track of doubles is part of the skill. Both marks count when a card is checked.
 - **Nothing is highlighted or checked while playing.** A wrong mark looks exactly like a right one.
 
 Internally, record each locked mark with its card, its square, its number and the call it was made on. Keep a single "pending mark" slot for the current call. Do no validation until a card is checked.
@@ -51,7 +51,7 @@ When a claim is made, the game pauses and the caller checks the card.
 - A mark is **valid** if its number has been called and it was the first mark made for that number.
 - Reveal the numbers of the pattern **one at a time in random order**. A valid number gets a green tick. The caller reads each one aloud.
 - The wait before each reveal grows a little each time. If four are ticked and one remains, the last reveal is slow and dramatic, like the final slow-motion moment in Peggle: dim everything else, enlarge the last number, build the sound, then cut to silence before the result.
-- **Stop at the first invalid number.** It gets an X, the remaining numbers are left unchecked, and the caller says why: the number was not called, or it was already used on the other card. A failure can come on the very first reveal.
+- **Stop at the first invalid number.** It gets an X, the remaining numbers are left unchecked, and the caller says why: the number was not called. A failure can come on the very first reveal.
 
 ## 6. False calls
 

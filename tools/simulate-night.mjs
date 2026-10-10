@@ -45,11 +45,13 @@ for (let g = 0; g < games; g++) {
     )));
     if (game.called.length !== lastCall && game.phase === 'calling') {
       lastCall = game.called.length;
-      const number = game.currentNumber;
+      // one mark per call: the called square (this call or an earlier one) that helps the most
+      const calledNow = new Set(game.called);
       let best = null;
       game.cards.forEach((card, c) => card.grid.forEach((row, r) => row.forEach((n, col) => {
-        if (n !== number) return;
+        if (n === 0 || !calledNow.has(n)) return;
         const key = `${c}:${r},${col}`;
+        if (marked.has(key)) return;
         let score = 0;
         for (const squares of setsFor(pattern)) {
           if (!squares.some(([rr, cc]) => rr === r && cc === col)) continue;
@@ -63,7 +65,7 @@ for (let g = 0; g < games; g++) {
         marked.add(best.key);
       }
       claimAt = null;
-      if (complete()) claimAt = game.callElapsed + lag * 1000;
+      if (complete(best?.key)) claimAt = game.callElapsed + lag * 1000;
     }
     if (game.screen === 'cards' && game.phase === 'calling' && claimAt === null && complete()) claimAt = game.callElapsed + lag * 1000;
     if (claimAt !== null && game.screen === 'cards' && game.phase === 'calling' && game.callElapsed >= claimAt) {

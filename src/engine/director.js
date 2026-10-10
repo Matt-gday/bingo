@@ -23,13 +23,14 @@ export function completionCall(cards, positions, pattern, config) {
   return best;
 }
 
-// How fast a sensible player really gets there. They can mark only one number per call, and a number on both
-// cards can only be marked on one of them, so they finish a little later than the earliest possible call.
-// This plays the game for them with a sensible rule (mark the number where it helps most) and notes the call at
-// which each stage is first complete.
+// How fast a sensible player really gets there. They can mark only one number per call, so a number on both
+// cards (or one they were too busy to mark) is marked a call or two later. This plays the game for them with a
+// sensible rule (each call, mark the called square that helps most) and notes the call at which each stage is
+// first complete.
 export function playerPace(playerCards, deck, stages, config) {
   const marked = new Set();
   const done = stages.map(() => Infinity);
+  const called = new Set();
   const progress = (c, pattern, extra) => {
     let best = 0;
     for (const squares of setsFor(pattern)) {
@@ -45,61 +46,22 @@ export function playerPace(playerCards, deck, stages, config) {
     ([r, col]) => isFreeSquare(r, col, config) || marked.has(`${c}:${r},${col}`),
   )));
   deck.forEach((number, i) => {
+    called.add(number);
     const target = Math.max(0, done.findIndex((d) => d === Infinity));
     let choice = null;
     playerCards.forEach((card, c) => card.grid.forEach((row, r) => row.forEach((n, col) => {
-      if (n !== number) return;
+      if (n === 0 || !called.has(n)) return;
       const key = `${c}:${r},${col}`;
+      if (marked.has(key)) return;
       const score = progress(c, stages[target], key);
       if (!choice || score > choice.score) choice = { key, score };
     })));
     if (choice) marked.add(choice.key);
-    stages.forEach((pattern, s) => {
-      if (done[s] === Infinity && complete(pattern)) done[s] = i + 1;
+    stages.forEach((pattern, s2) => {
+      if (done[s2] === Infinity && complete(pattern)) done[s2] = i + 1;
     });
   });
   return done;
-}
-
-// A full house needs all 24 numbers on one card to come out, which in a 75-number draw often does not happen at
-// all. So when the night includes a full house, the order of the numbers is nudged: one of the player's cards is
-// made to complete somewhere around call 60 to 68, so a full house is a real chance and not a mere hope. Only a
-// few numbers move, and they swap with numbers that are not on that card.
-export function shapeDeck(deck, playerCards, config, rng = Math.random, earlier = 0) {
-  const race = config.table.race;
-  const [rawLow, rawHigh] = race.fullHouseCall ?? [60, 68];
-  const low = rawLow - earlier;
-  const high = rawHigh - earlier;
-  const target = low + Math.floor(rng() * (high - low + 1));
-  const card = playerCards[Math.floor(rng() * playerCards.length)];
-  const onCard = new Set(card.grid.flat().filter((n) => n !== 0));
-  const shaped = deck.slice();
-  const late = [];
-  shaped.forEach((n, i) => { if (onCard.has(n) && i + 1 > target) late.push(i); });
-  const spare = [];
-  for (let i = 25; i < target; i++) if (!onCard.has(shaped[i])) spare.push(i); // keep the first 25 calls untouched
-  for (let i = spare.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [spare[i], spare[j]] = [spare[j], spare[i]];
-  }
-  late.forEach((from, k) => {
-    const to = spare[k];
-    if (to === undefined) return;
-    [shaped[from], shaped[to]] = [shaped[to], shaped[from]];
-  });
-  return shaped;
-}
-
-// Keeps nudging until a sensible player (who can mark only one number per call) really could finish the full house.
-export function shapeForFullHouse(deck, playerCards, stages, config, rng = Math.random) {
-  const index = stages.findIndex((p) => p.rule === 'all');
-  let shaped = deck;
-  for (let attempt = 0; attempt < 8; attempt++) {
-    shaped = shapeDeck(deck, playerCards, config, rng, attempt * 3);
-    const pace = playerPace(playerCards, shaped, stages, config);
-    if (pace[index] <= 68) break;
-  }
-  return shaped;
 }
 
 function weightedPick(weights, rng) {

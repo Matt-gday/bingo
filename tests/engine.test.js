@@ -107,15 +107,13 @@ test('a number that was never called fails', () => {
   assert.equal(result.order.at(-1), result.failItem); // it stops at the first bad number
 });
 
-test('a number already used on the other card fails', () => {
+test('a number on both cards can be marked on both, and both marks count', () => {
   const card = simpleCard();
   const called = [1, 2, 3, 4, 5];
   const marks = [0, 1, 2, 3, 4].map((r) => mark(0, r, 0, r + 1, r + 10));
-  marks.push(mark(1, 0, 0, 3, 0)); // the same number 3 was marked first on card two
+  marks.push(mark(1, 0, 0, 3, 0)); // the same number 3 was also marked on card two, earlier
   const result = evaluateClaim({ cards: [card, simpleCard()], marks, called, pattern: line, config });
-  assert.equal(result.result, 'fail');
-  assert.equal(result.reason, 'usedOnOtherCard');
-  assert.equal(result.failItem.number, 3);
+  assert.equal(result.result, 'win', 'the line on card one still checks out');
 });
 
 test('no complete line means a false call straight away', () => {

@@ -49,7 +49,6 @@ export function collectLines({ callerLines, patterns, regulars }) {
   for (const n of NUMBERS) {
     const number = numberInWords(n);
     for (const line of callerLines.game.falseCall.notCalled) add('false calls', fillLine(line, { number }));
-    for (const line of callerLines.game.falseCall.usedOnOtherCard) add('false calls', fillLine(line, { number }));
   }
 
   return Object.fromEntries(Object.entries(groups).map(([group, set]) => [group, [...set]]));

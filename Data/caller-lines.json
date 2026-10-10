@@ -92,9 +92,6 @@
       "notCalled": [
         "Ooh, unlucky. I haven't called {number} yet."
       ],
-      "usedOnOtherCard": [
-        "Not quite. {number} is already on your other card."
-      ],
       "noPattern": [
         "I can't see {pattern} there, I'm afraid."
       ]
@@ -122,7 +119,6 @@
       "Spot any numbers that are on both cards? Keep an eye out!",
       "Two cards, a few shared numbers. Choose wisely tonight!",
       "Take a moment to scan your cards. Some numbers might be twins!",
-      "Remember, each number can only be used once, so choose wisely!",
       "A number only counts once, even if it's on both cards. Choose wisely!",
       "Is it going to be your night? Let's find out!",
       "Feeling lucky? Here comes the first number!",
@@ -133,7 +129,8 @@
       "Only call bingo when you really mean it. I'll be checking!",
       "May all your numbers come up early tonight.",
       "Same club, same lucky balls. Welcome back!",
-      "Nobody here has ever lost at bingo. They just win later!"
+      "Nobody here has ever lost at bingo. They just win later!",
+      "Got a number on both cards? You can mark both, one call at a time. Just don't forget!"
     ],
     "introCountdown": [
       "Three! Two! One! Here we go!"

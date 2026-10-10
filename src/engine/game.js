@@ -3,7 +3,7 @@ import { pickOne, shuffle } from './rng.js';
 import { evaluateClaim } from './check.js';
 import { callText, capital, fillLine, numberInWords, sayLine } from './caller.js';
 import { createBot, botMarks, botToGo, botNeeds, playerCloseness } from './table.js';
-import { planRace, shapeForFullHouse } from './director.js';
+import { planRace } from './director.js';
 
 // The rules of one game of bingo. This file knows nothing about the screen.
 // The screen calls advance() many times a second and reads the state it needs.
@@ -64,7 +64,6 @@ export class Game {
     // The race director picks each regular's cards so every stage is a real race (see director.js).
     this.plan = null;
     if (this.bots.length && this.config.table?.race?.enabled) {
-      if (this.stages.some((p) => p.rule === 'all')) this.deck = shapeForFullHouse(this.deck, this.cards, this.stages, this.config); // make a full house reachable
       const { plan, cards } = planRace({
         playerCards: this.cards, deck: this.deck, stages: this.stages, botCount: this.bots.length, config: this.config, history: this.history,
       });
@@ -654,13 +653,11 @@ export class Game {
 
   falseCallHeadline(reason, number) {
     if (reason === 'notCalled') return `${number} not called`;
-    if (reason === 'usedOnOtherCard') return `${number} already used`;
     return 'Not yet!';
   }
 
   falseCallShort(reason, number) {
     if (reason === 'notCalled') return `${number} was not called`;
-    if (reason === 'usedOnOtherCard') return `${number} was already used`;
     return `Nothing to check yet`;
   }
 

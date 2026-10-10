@@ -4,19 +4,13 @@ import { isFreeSquare } from './cards.js';
 
 // Works out what the caller finds when the player claims bingo.
 //
-// A mark is valid when its number has been called AND it was the first mark made
-// for that number (a number on both cards only counts once).
+// A mark is valid when its number has been called. A number that is on both cards can be marked on both
+// (one mark per call, so the second goes on a later call) and both marks count.
 //
 // A marks list holds { card, row, col, number, seq }, where seq says the order the marks were made in.
 
 export function evaluateClaim({ cards, marks, called, pattern, config }) {
   const calledSet = new Set(called);
-
-  const firstSeqForNumber = new Map();
-  for (const mark of marks) {
-    const best = firstSeqForNumber.get(mark.number);
-    if (best === undefined || mark.seq < best) firstSeqForNumber.set(mark.number, mark.seq);
-  }
 
   const markAt = new Map(marks.map((m) => [`${m.card}:${m.row},${m.col}`, m]));
 
@@ -37,7 +31,6 @@ export function evaluateClaim({ cards, marks, called, pattern, config }) {
         const number = card.grid[row][col];
         let problem = null;
         if (!calledSet.has(number)) problem = 'notCalled';
-        else if (firstSeqForNumber.get(number) !== mark.seq) problem = 'usedOnOtherCard';
         items.push({ card: cardIndex, row, col, number, problem });
       }
       options.push({ allMarked, items });
