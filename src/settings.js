@@ -8,6 +8,7 @@ const VERSION = 2;
 export function createSettings(config) {
   const defaults = {
     speedId: 'steady',
+    raceHistory: [], // how the last stages went (1 = the player won), used to keep nights fair
     nightId: 'line', // how long a night: see 'nights' in Data/config.json
     voiceOn: true,
     sfxOn: true, // sound effects

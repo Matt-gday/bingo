@@ -219,3 +219,34 @@ test('the race director plants one rival per stage who usually finishes right on
   }
   assert.ok(close / total >= 0.75, `${close} of ${total} rivals finished within 3 calls of the plan`);
 });
+
+test('after a run of losses the likely shapes of the night have more wins, and after a run of wins fewer', async () => {
+  const { arcWeights } = await import('../src/engine/director.js');
+  const race = config.table.race;
+  const share = (weights) => {
+    let total = 0;
+    let winWeight = 0;
+    for (const [arc, w] of Object.entries(weights)) {
+      total += w;
+      winWeight += w * [...arc].filter((c) => c === 'W').length / arc.length;
+    }
+    return winWeight / total;
+  };
+  const neutral = share(arcWeights(race, 3, []));
+  const losing = share(arcWeights(race, 3, [0, 0, 0, 0, 0, 1]));
+  const winning = share(arcWeights(race, 3, [1, 1, 1, 1, 1, 1]));
+  assert.ok(losing > neutral + 0.03, `losing ${losing} vs neutral ${neutral}`);
+  assert.ok(winning < neutral - 0.03, `winning ${winning} vs neutral ${neutral}`);
+});
+
+test('nudging the deck for a full house keeps all 75 numbers and lets a card complete', async () => {
+  const { shapeDeck } = await import('../src/engine/director.js');
+  const game = newGame({ stageIds: ['line'] });
+  const deck = game.deck.slice();
+  const shaped = shapeDeck(deck, game.cards, config);
+  assert.deepEqual([...shaped].sort((a, b) => a - b), Array.from({ length: 75 }, (_, i) => i + 1));
+  const positions = [];
+  shaped.forEach((n, i) => { positions[n] = i + 1; });
+  const completes = game.cards.some((card) => Math.max(...card.grid.flat().filter((n) => n !== 0).map((n) => positions[n])) <= config.table.race.fullHouseCall[1]);
+  assert.ok(completes, 'one card has all its numbers out by the planned call');
+});

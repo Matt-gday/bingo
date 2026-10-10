@@ -3,7 +3,7 @@ import { pickOne, shuffle } from './rng.js';
 import { evaluateClaim } from './check.js';
 import { callText, capital, fillLine, numberInWords, sayLine } from './caller.js';
 import { createBot, botMarks, botToGo, botNeeds, playerCloseness } from './table.js';
-import { planRace } from './director.js';
+import { planRace, shapeForFullHouse } from './director.js';
 
 // The rules of one game of bingo. This file knows nothing about the screen.
 // The screen calls advance() many times a second and reads the state it needs.
@@ -22,8 +22,9 @@ import { planRace } from './director.js';
 const MAX_FRAME_MS = 250; // a long gap (the phone slept, the tab was hidden) must not skip calls
 
 export class Game {
-  constructor({ config, patterns, callerLines, speedId, stageIds = ['line'], introLine = null, regulars = [] }) {
+  constructor({ config, patterns, callerLines, speedId, stageIds = ['line'], introLine = null, regulars = [], history = [] }) {
     this.config = config;
+    this.history = history; // how the player's recent stages went (1 = won, 0 = lost), to keep nights fair
     this.regulars = regulars; // the regulars at the table tonight (none = a game with just the player)
     this.introLine = introLine; // the welcome the caller says before the first number (none = start straight away)
     this.callerLines = callerLines;
@@ -63,8 +64,9 @@ export class Game {
     // The race director picks each regular's cards so every stage is a real race (see director.js).
     this.plan = null;
     if (this.bots.length && this.config.table?.race?.enabled) {
+      if (this.stages.some((p) => p.rule === 'all')) this.deck = shapeForFullHouse(this.deck, this.cards, this.stages, this.config); // make a full house reachable
       const { plan, cards } = planRace({
-        playerCards: this.cards, deck: this.deck, stages: this.stages, botCount: this.bots.length, config: this.config,
+        playerCards: this.cards, deck: this.deck, stages: this.stages, botCount: this.bots.length, config: this.config, history: this.history,
       });
       this.plan = plan;
       this.bots.forEach((bot, i) => {
@@ -234,6 +236,7 @@ export class Game {
     this.stageResults.push({ index: this.stageIndex, pattern: this.pattern, winner, credits, numbers, beat });
     this.checking = null;
     for (const bot of this.bots) bot.claim = null;
+    this.emit('stageDone', { won: winner.type === 'you' });
     if (last) {
       this.phase = winner.type === 'you' ? 'won' : 'over';
       this.screen = 'result';

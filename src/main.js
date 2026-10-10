@@ -235,9 +235,13 @@ function startGame() {
     config, patterns, callerLines, speedId: settings.get('speedId'),
     stageIds: (config.nights.find((n) => n.id === settings.get('nightId')) ?? config.nights[0]).stageIds,
     regulars: table,
+    history: settings.get('raceHistory'),
     introLine: introPicker.next(), // a different welcome each game, using every line before any repeats
   });
   attachGameSounds(game, { sfx, haptics, music });
+  game.on((type, data) => {
+    if (type === 'stageDone') settings.set('raceHistory', [...settings.get('raceHistory'), data.won ? 1 : 0].slice(-20));
+  });
   game.on((type, data) => {
     if (type === 'say') {
       if (starting) return; // start() emits both a greeting and the first number

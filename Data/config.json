@@ -178,13 +178,33 @@
       1.0
     ],
     "race": {
-      "note": "Each stage is planned as a race. 'odds' says how often it goes each way: comfortable = the best-placed regular finishes comfortableCalls after the earliest a perfect player could; close = closeCalls after (a real race); rivalWins = rivalWinsCalls BEFORE, so a regular simply gets there first. The other regulars are kept othersBehindCalls further back. earliestCall stops a regular winning absurdly early. samples is how many random cards are tried to find the best fit.",
+      "note": "Each night is planned as a story. 'arcs' lists the shapes a night can take for 1, 2 or 3 stages and how likely each is: W = a stage the player can win, L = a near miss where a regular gets there just ahead. A W stage is 'comfortable' (comfortableShare of the time: the best-placed regular finishes comfortableCalls after a sensible player) or 'close' (closeCalls after, a real race). A near miss has the regular finish nearMissCalls before. decoySpread: the other regulars finish this many calls after the rival (0 = the very same call, so they wait for the same number). decoyTieChance: in a close race, the chance one of them finishes on the player's own call. selfAdjust: the game remembers the last historyLength stages and tilts the shapes towards the targetWinRate. earliestCall stops anyone winning absurdly early. samples is how many random cards are tried to find the best fit. fullHouseCall: when a night includes a full house, the order of the numbers is nudged so one of the player's cards can complete it somewhere in this range of calls (otherwise a full house often never happens in 75 numbers).",
       "enabled": true,
-      "odds": {
-        "comfortable": 0.55,
-        "close": 0.42,
-        "rivalWins": 0.03
+      "earliestCall": 14,
+      "samples": 2500,
+      "arcs": {
+        "1": {
+          "W": 72,
+          "L": 28
+        },
+        "2": {
+          "WW": 32,
+          "WL": 26,
+          "LW": 26,
+          "LL": 16
+        },
+        "3": {
+          "WWL": 24,
+          "WWW": 14,
+          "WLW": 14,
+          "WLL": 12,
+          "LWW": 12,
+          "LWL": 6,
+          "LLW": 14,
+          "LLL": 4
+        }
       },
+      "comfortableShare": 0.75,
       "comfortableCalls": [
         3,
         7
@@ -193,13 +213,25 @@
         1,
         2
       ],
-      "rivalWinsCalls": [
+      "nearMissCalls": [
         1,
         3
       ],
-      "othersBehindCalls": 6,
-      "earliestCall": 14,
-      "samples": 2500
+      "decoySpread": [
+        0,
+        3
+      ],
+      "decoyTieChance": 0.2,
+      "selfAdjust": {
+        "historyLength": 12,
+        "targetWinRate": 0.62,
+        "strength": 3,
+        "minSamples": 4
+      },
+      "fullHouseCall": [
+        60,
+        68
+      ]
     }
   },
   "nights": [
