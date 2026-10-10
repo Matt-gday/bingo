@@ -2309,3 +2309,52 @@ button {
 .big-face .character-canvas {
   transform: translate(-50%, -57%);
 }
+
+/* ---------- The player's own avatar ---------- */
+.call-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.call-row .call-bingo,
+.call-row .sit-banner {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.you-face {
+  position: relative;
+  display: block;
+  flex: 0 0 62px;
+  width: 62px;
+  height: 62px;
+  margin-bottom: 8px;
+}
+.you-face .character-canvas {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 190% !important;
+  height: 190% !important;
+  transform: translate(-50%, -54%);
+  pointer-events: none;
+}
+.check-head {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.check-head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.check-you {
+  flex: 0 0 92px;
+  width: 92px;
+  height: 92px;
+  margin: 0 6px 0 0;
+}
+.check-you .character-canvas {
+  width: 170% !important;
+  height: 170% !important;
+}

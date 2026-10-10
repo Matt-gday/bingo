@@ -3,6 +3,7 @@ import { columnLetters } from '../engine/cards.js';
 import { SpeechBubble } from './speech.js';
 import { attachCaller, emote } from './callerStage.js';
 import { mountFace } from './characterView.js';
+import { mountPlayer, checkingMood, playingMood } from './playerAvatar.js';
 import { shuffle } from '../engine/rng.js';
 import { popIn } from './speech.js';
 import { soundCard } from './soundCard.js';
@@ -303,10 +304,13 @@ export function playScreen(game, { voice, mic, settings }) {
       <div class="toast" data-toast hidden></div>
       <div class="play-bottom">
         ${game.bots.length ? `<div class="table-pill" data-table>${game.bots.map((b) => `<div class="seat" data-seat="${b.id}"><span class="seat-face"></span><b>${esc(b.name)}</b><span class="togo"></span></div>`).join('')}</div>` : ''}
-        <button class="btn btn-aqua call-bingo" data-call>${icons.mic()}Call bingo!</button>
-        <div class="sit-banner" data-sit hidden>
-          <div class="top"><span>Sitting out</span><span class="dots" data-dots></span></div>
-          <div class="why" data-why></div>
+        <div class="call-row">
+          <span class="you-face" data-you></span>
+          <button class="btn btn-aqua call-bingo" data-call>${icons.mic()}Call bingo!</button>
+          <div class="sit-banner" data-sit hidden>
+            <div class="top"><span>Sitting out</span><span class="dots" data-dots></span></div>
+            <div class="why" data-why></div>
+          </div>
         </div>
       </div>
     </div>
@@ -410,8 +414,16 @@ export function playScreen(game, { voice, mic, settings }) {
     }
   }
 
+  const youFace = mountPlayer(el.querySelector('[data-you]'), settings, { size: 64 });
+  let youMood = 'content';
+
   function update(_game, now) {
     if (game.bots.length) syncTable();
+    const mood = playingMood(game);
+    if (mood !== youMood) {
+      youMood = mood;
+      youFace.setMood(mood);
+    }
     if (inIntro && game.phase !== 'intro') leaveIntro();
     callButton.disabled = game.phase === 'intro'; // nothing to call before the first number
     updateBall(ballWrap, game);
@@ -461,7 +473,7 @@ export function playScreen(game, { voice, mic, settings }) {
       setText(whyEl, game.falseCall?.short ?? '');
     }
   }
-  return { el, update, destroy: () => seatFaces.forEach((face) => face.destroy()) };
+  return { el, update, destroy: () => { seatFaces.forEach((face) => face.destroy()); youFace.destroy(); } };
 }
 
 // ---------- Checking (the whole check, including a failed one, is on this one screen) ----------
@@ -491,13 +503,16 @@ function paintDiscs(root, order, revealed, currentIndex) {
   }
 }
 
-export function checkingScreen(game, { voice }) {
+export function checkingScreen(game, { voice, settings }) {
   const dotCount = game.config.falseCall.sitOutCalls;
   const el = html(`<main class="screen tense">
     <div class="check-page">
       <div class="check-head">
-        <div class="pill-label">The caller has your card</div>
-        <h1>Checking</h1>
+        <div class="check-head-text">
+          <div class="pill-label">The caller has your card</div>
+          <h1>Checking</h1>
+        </div>
+        <span class="you-face check-you" data-you></span>
       </div>
       <div class="check-body">
         <div class="discs"></div>
@@ -522,6 +537,8 @@ export function checkingScreen(game, { voice }) {
   const discs = el.querySelector('.discs');
   discRow(game.checking.evaluation.items, discs);
   const bubble = callerBubble(game, el, { voice, maxLines: () => 3 });
+  const youFace = mountPlayer(el.querySelector('[data-you]'), settings, { size: 96 });
+  let youMood = 'content';
   const live = el.querySelector('[data-live]');
   const note = el.querySelector('[data-note]');
   const back = el.querySelector('[data-back]');
@@ -532,6 +549,11 @@ export function checkingScreen(game, { voice }) {
 
   function update(_game, now) {
     const c = game.checking;
+    const mood = checkingMood(game);
+    if (mood !== youMood) {
+      youMood = mood;
+      youFace.setMood(mood);
+    }
     if (c) {
       paintDiscs(discs, c.evaluation.order, c.revealed, c.stage === 'waiting' ? c.index : -1);
       setClass(discs, 'final', game.isFinalReveal);
@@ -553,7 +575,7 @@ export function checkingScreen(game, { voice }) {
     }
     bubble.sync(now);
   }
-  return { el, update };
+  return { el, update, destroy: () => youFace.destroy() };
 }
 
 // ---------- Result ----------

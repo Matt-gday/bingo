@@ -7,7 +7,7 @@ import { Caller3D } from './caller.js';
 // canvas on the page. One renderer keeps the phone's graphics memory and battery use down.
 
 const MOOD_TO_EXPRESSION = {
-  content: 'neutral', smug: 'smug', shocked: 'shocked', sulky: 'sulky', cheer: 'cheer', happy: 'happy', worried: 'worried', talking: 'talking',
+  content: 'neutral', smug: 'smug', shocked: 'shocked', sulky: 'sulky', cheer: 'cheer', happy: 'happy', worried: 'worried', talking: 'talking', wince: 'wince',
 };
 
 export class CharacterHub {
@@ -64,7 +64,7 @@ export class CharacterHub {
         character.setExpression(MOOD_TO_EXPRESSION[mood] ?? 'neutral');
         if (mood === 'cheer') character.jump(2.6);
         if (mood === 'shocked') character.jump(1.2);
-        if (mood === 'sulky') character.shake();
+        if (mood === 'sulky' || mood === 'wince') character.shake();
       },
       setLook: (next) => character.setLook(next),
       destroy: () => {

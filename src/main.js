@@ -275,7 +275,7 @@ function sync() {
   const builders = {
     play: () => playScreen(game, { voice, mic, settings }),
     shout: () => shoutScreen(game, { mic, settings }),
-    checking: () => checkingScreen(game, { voice }),
+    checking: () => checkingScreen(game, { voice, settings }),
     stageWon: () => stageWonScreen(game, { voice }),
     result: () => resultScreen(game, { onAgain: showTonight, onChange: showStart }),
     pause: () => pauseScreen(game, {
