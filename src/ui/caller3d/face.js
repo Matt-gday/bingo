@@ -104,37 +104,41 @@ export function drawFace(ctx, W, H, p, style = {}) {
       ctx.fill();
       // glossy highlights
       if (eyeStyle === 'dots') {
+        // plain solid dots, no shine at all
         ctx.fillStyle = INK;
         ctx.beginPath();
         ctx.ellipse(cx, cy, w / 2, h / 2, 0, 0, Math.PI * 2);
         ctx.fill();
+      } else {
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.ellipse(cx - w * 0.14, cy - h * 0.22, w * 0.17, h * 0.15, -0.5, 0, Math.PI * 2);
+        ctx.fill();
       }
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.ellipse(cx - w * 0.14, cy - h * 0.22, w * 0.17, h * 0.15, -0.5, 0, Math.PI * 2);
-      ctx.fill();
       if (eyeStyle === 'sparkle') {
-        // big shiny glints and a little star
+        // big shiny glints and two little stars
+        ctx.fillStyle = '#fff';
         ctx.beginPath();
-        ctx.ellipse(cx - w * 0.14, cy - h * 0.22, w * 0.24, h * 0.2, -0.5, 0, Math.PI * 2);
+        ctx.ellipse(cx - w * 0.12, cy - h * 0.2, w * 0.26, h * 0.22, -0.5, 0, Math.PI * 2);
         ctx.fill();
-        const sx = cx + w * 0.2;
-        const sy = cy + h * 0.12;
-        const r = w * 0.17;
-        ctx.beginPath();
-        ctx.moveTo(sx, sy - r); ctx.quadraticCurveTo(sx, sy, sx + r, sy); ctx.quadraticCurveTo(sx, sy, sx, sy + r);
-        ctx.quadraticCurveTo(sx, sy, sx - r, sy); ctx.quadraticCurveTo(sx, sy, sx, sy - r);
-        ctx.fill();
+        const star = (sx, sy, r) => {
+          ctx.beginPath();
+          ctx.moveTo(sx, sy - r); ctx.quadraticCurveTo(sx, sy, sx + r, sy); ctx.quadraticCurveTo(sx, sy, sx, sy + r);
+          ctx.quadraticCurveTo(sx, sy, sx - r, sy); ctx.quadraticCurveTo(sx, sy, sx, sy - r);
+          ctx.fill();
+        };
+        star(cx + w * 0.2, cy + h * 0.16, w * 0.24);
+        star(cx + w * 0.3, cy - h * 0.28, w * 0.13);
       }
       if (eyeStyle === 'lashes') {
         ctx.strokeStyle = INK;
         ctx.lineCap = 'round';
-        ctx.lineWidth = unit * 0.035;
+        ctx.lineWidth = unit * 0.05;
         for (let i = 0; i < 3; i++) {
           const a = -0.9 - i * 0.42;
           ctx.beginPath();
           ctx.moveTo(cx + side * Math.cos(a) * w * 0.5, cy + Math.sin(a) * h * 0.5);
-          ctx.lineTo(cx + side * Math.cos(a) * w * 0.82, cy + Math.sin(a) * h * 0.78 - unit * 0.01);
+          ctx.lineTo(cx + side * Math.cos(a) * w * 1.05, cy + Math.sin(a) * h * 0.95 - unit * 0.02);
           ctx.stroke();
         }
       }

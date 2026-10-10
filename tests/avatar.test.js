@@ -6,7 +6,7 @@ const load = (name) => JSON.parse(readFileSync(new URL(`../Data/${name}.json`, i
 const avatar = load('avatar');
 const regulars = load('regulars');
 
-const SHAPES = ['sphere', 'hemisphere', 'cylinder', 'cone', 'torus', 'box', 'bow', 'headband'];
+const SHAPES = ['sphere', 'hemisphere', 'cylinder', 'cone', 'torus', 'box', 'bow', 'headband', 'tie'];
 const HEX = /^#[0-9a-f]{6}$/i;
 
 test('every wearable item has a slot, a name and parts made of known shapes', () => {

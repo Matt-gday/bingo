@@ -64,6 +64,18 @@ function bowGroup(material, size) {
   return group;
 }
 
+// The hanging part of a long tie: thin under the knot, widening to a pointed bottom.
+function tieGeometry() {
+  const shape = new THREE.Shape();
+  shape.moveTo(-0.07, 0);
+  shape.lineTo(0.07, 0);
+  shape.lineTo(0.2, -0.62);
+  shape.lineTo(0, -0.98);
+  shape.lineTo(-0.2, -0.62);
+  shape.closePath();
+  return new THREE.ExtrudeGeometry(shape, { depth: 0.05, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.025, bevelSegments: 4 });
+}
+
 function geometryFor(part) {
   const a = part.args ?? [];
   switch (part.shape) {
@@ -73,6 +85,7 @@ function geometryFor(part) {
     case 'cone': return new THREE.ConeGeometry(a[0] ?? 0.5, a[1] ?? 1, a[2] ?? 32);
     case 'torus': return new THREE.TorusGeometry(a[0] ?? 0.5, a[1] ?? 0.05, 16, a[2] ?? 40);
     case 'box': return new THREE.BoxGeometry(a[0] ?? 1, a[1] ?? 1, a[2] ?? 1, 1, 1, 1);
+    case 'tie': return tieGeometry();
     default: return null;
   }
 }

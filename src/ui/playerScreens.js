@@ -78,7 +78,7 @@ export function avatarScreen({ mode, name = '', look, owned = null, onSave, onBa
     </div>
   </main>`);
 
-  const preview = mountFace(el.querySelector('[data-preview]'), current, { size: 150, mood: 'happy', frameSize: 360 });
+  const preview = mountFace(el.querySelector('[data-preview]'), current, { size: 150, mood: 'content', frameSize: 360 }); // open eyes, so every eye style can be seen
   const optionsEl = el.querySelector('[data-options]');
   const nameInput = el.querySelector('[data-name]');
 
@@ -142,7 +142,10 @@ export function avatarScreen({ mode, name = '', look, owned = null, onSave, onBa
       neckColour: neck ? randomItem(itemById(neck).colours) : null,
     });
   });
-  el.querySelector('[data-preview]').addEventListener('click', () => preview.setMood('cheer'));
+  el.querySelector('[data-preview]').addEventListener('click', () => {
+    preview.setMood('cheer');
+    setTimeout(() => preview.setMood('content'), 1400);
+  });
   // The Enter / Done key on the keyboard just puts the keyboard away.
   nameInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
