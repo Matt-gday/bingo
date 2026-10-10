@@ -116,5 +116,6 @@ export function buildItem(item, primary) {
     if (part.scale) object.scale.multiply(new THREE.Vector3(...part.scale));
     group.add(object);
   }
+  if (item.rot) group.rotation.set(...item.rot); // tilts the whole item around the middle of the head
   return group;
 }

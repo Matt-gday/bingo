@@ -250,7 +250,9 @@ export class Caller3D {
   }
 
   jump(power = 3.4) {
-    this.jumpVel = power;
+    // Already in the air: ignore it. (Without this, tapping quickly kept restarting the jump and he rose out of sight.)
+    if (this.jumpY > 0.05) return;
+    this.jumpVel = Math.min(power, 4.2);
   }
 
   shake() {
@@ -336,7 +338,7 @@ export class Caller3D {
 
     // jumping, squashing and stretching
     this.jumpVel -= 11 * dt;
-    this.jumpY += this.jumpVel * dt;
+    this.jumpY = Math.min(1.1, this.jumpY + this.jumpVel * dt); // never higher than this
     if (this.jumpY <= 0) {
       if (this.jumpVel < -1.2) this.squashVel = this.jumpVel * -1.1; // landing squashes him flat
       this.jumpY = 0;

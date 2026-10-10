@@ -55,6 +55,7 @@ function build() {
   try {
     caller = new Caller3D(canvas, { size: 400 });
     caller.heartEyes(heartEyes);
+    if (import.meta.env?.DEV) window.__caller = caller; // for testing in the browser console only
   } catch {
     failed = true; // no 3D on this phone: the screens show the flat pictures instead
   }
