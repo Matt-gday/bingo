@@ -318,7 +318,11 @@ export class Game {
     const intro = this.intro;
     const { welcome, countdown } = this.introMs;
     intro.elapsedMs += dt;
-    if (intro.stage === 'welcome' && intro.elapsedMs >= welcome) {
+    // The 3, 2, 1 starts once the welcome has been on for its minimum time AND the caller has finished saying it
+    // (or a limit passes), so a long line is never cut off.
+    const welcomeFinished = intro.welcomeDone || intro.elapsedMs >= welcome + (this.config.intro.maxWelcomeWaitMs ?? 0);
+    if (intro.stage === 'welcome' && intro.elapsedMs >= welcome && welcomeFinished) {
+      intro.elapsedMs = welcome; // the countdown always runs for its full length from here
       intro.stage = 'countdown';
       intro.count = Math.ceil(countdown / 1000);
       this.say(pickOne(this.callerLines.game.introCountdown), 'cheer', 'introCountdown');
@@ -636,6 +640,7 @@ export class Game {
   // The caller has finished the false-call line. Start the next number after a short beat.
   lineFinished({ silent = false } = {}) {
     if (this.intro?.stage === 'countdown') this.intro.voiceDone = true; // the caller has finished counting in
+    if (this.intro?.stage === 'welcome') this.intro.welcomeDone = true; // the caller has finished the welcome
     if (!this.pendingRestart) return;
     const beat = silent ? this.config.check.silentFailMs : this.config.check.afterLineMs;
     this.pendingRestart.msLeft = Math.min(this.pendingRestart.msLeft, beat);

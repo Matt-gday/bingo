@@ -469,6 +469,7 @@ test('a claim with no complete line leaves the checking screen with a complete, 
 function introGame() {
   const game = new Game({ config, patterns, callerLines, speedId: 'steady', stageIds: ['line'], introLine: 'Welcome to Bingo night, everyone!' });
   game.start();
+  game.lineFinished(); // the welcome has been said (the screen tells the game when the voice finishes)
   return game;
 }
 

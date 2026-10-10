@@ -246,8 +246,8 @@ function startGame() {
     if (type === 'say') {
       if (starting) return; // start() emits both a greeting and the first number
       // The false-call line and the "Here we go!" count-in are left to finish.
-      voice.speak(data.spoken ?? data.text, { protect: data.kind === 'falseCall' || data.kind === 'introCountdown' });
-      if (data.kind === 'introCountdown' && !voice.on) game.lineFinished({ silent: true }); // no voice, nothing to wait for
+      voice.speak(data.spoken ?? data.text, { protect: data.kind === 'falseCall' || data.kind === 'introCountdown' || data.kind === 'intro' });
+      if ((data.kind === 'introCountdown' || data.kind === 'intro') && !voice.on) game.lineFinished({ silent: true }); // no voice, nothing to wait for
     } else if (type === 'falseCall') {
       // With the voice off there is no line to wait for, so give the player a moment to read it.
       if (!voice.on) game.lineFinished({ silent: true });
@@ -259,7 +259,9 @@ function startGame() {
   });
   game.start();
   starting = false;
-  voice.speak(game.bubble.text); // real speech directly inside the Play tap
+  // real speech directly inside the Play tap. The welcome is protected so the countdown waits for it to finish.
+  voice.speak(game.bubble.text, { protect: game.phase === 'intro' });
+  if (game.phase === 'intro' && !voice.on) game.lineFinished({ silent: true });
   if (import.meta.env.DEV) window.__game = game; // for testing in the browser console only
 }
 

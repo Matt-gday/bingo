@@ -103,10 +103,11 @@
     "creditPenaltyShare": 0.25
   },
   "intro": {
-    "note": "Before the first number: the caller welcomes the player (a random line) while they look over their cards, then a 3, 2, 1 counts in the number circle.",
+    "note": "Before the first number: the caller welcomes the player (a random line) while they look over their cards, then a 3, 2, 1 counts in the number circle. The 3, 2, 1 waits for the welcome line to finish being said (up to maxWelcomeWaitMs longer than welcomeSeconds).",
     "welcomeSeconds": 4,
     "countdownSeconds": 3,
-    "maxWaitForVoiceMs": 2500
+    "maxWaitForVoiceMs": 2500,
+    "maxWelcomeWaitMs": 7000
   },
   "stageWon": {
     "nextStageCountdownSeconds": 3

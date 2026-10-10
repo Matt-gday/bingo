@@ -238,3 +238,19 @@ test('after a run of losses the likely shapes of the night have more wins, and a
   assert.ok(losing > neutral + 0.03, `losing ${losing} vs neutral ${neutral}`);
   assert.ok(winning < neutral - 0.03, `winning ${winning} vs neutral ${neutral}`);
 });
+
+test('the 3, 2, 1 waits for a long welcome line to finish being said', () => {
+  const game = new Game({ config, patterns, callerLines, speedId: 'steady', stageIds: ['line'], introLine: 'A very long welcome line.' });
+  game.start();
+  assert.equal(game.phase, 'intro');
+  run(game, config.intro.welcomeSeconds * 1000 + 1500);
+  assert.equal(game.intro.stage, 'welcome', 'still welcoming: the caller has not finished');
+  game.lineFinished();
+  run(game, 300);
+  assert.equal(game.intro.stage, 'countdown');
+  // and with no one to finish it, it still moves on after the limit
+  const quiet = new Game({ config, patterns, callerLines, speedId: 'steady', stageIds: ['line'], introLine: 'Hello.' });
+  quiet.start();
+  run(quiet, config.intro.welcomeSeconds * 1000 + config.intro.maxWelcomeWaitMs + 500);
+  assert.equal(quiet.intro.stage, 'countdown');
+});
