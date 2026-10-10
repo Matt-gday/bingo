@@ -176,7 +176,31 @@
     "reactionShareDefault": [
       0.6,
       1.0
-    ]
+    ],
+    "race": {
+      "note": "Each stage is planned as a race. 'odds' says how often it goes each way: comfortable = the best-placed regular finishes comfortableCalls after the earliest a perfect player could; close = closeCalls after (a real race); rivalWins = rivalWinsCalls BEFORE, so a regular simply gets there first. The other regulars are kept othersBehindCalls further back. earliestCall stops a regular winning absurdly early. samples is how many random cards are tried to find the best fit.",
+      "enabled": true,
+      "odds": {
+        "comfortable": 0.5,
+        "close": 0.35,
+        "rivalWins": 0.15
+      },
+      "comfortableCalls": [
+        3,
+        7
+      ],
+      "closeCalls": [
+        0,
+        2
+      ],
+      "rivalWinsCalls": [
+        1,
+        3
+      ],
+      "othersBehindCalls": 6,
+      "earliestCall": 14,
+      "samples": 2500
+    }
   },
   "nights": [
     {

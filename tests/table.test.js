@@ -200,3 +200,22 @@ test('the card check never drags: a full house takes about as long as a couple o
   assert.equal(game.revealDelay(evaluation, 23), config.check.finalDelayMs, 'the last number is the slowest');
   assert.ok(game.revealDelay(evaluation, 5) <= config.check.briskDelayMs, 'numbers in the middle are quick');
 });
+
+test('the race director plants one rival per stage who usually finishes right on the planned call', async () => {
+  const { completionCall } = await import('../src/engine/director.js');
+  let close = 0;
+  let total = 0;
+  for (let i = 0; i < 12; i++) {
+    const game = newGame({ stageIds: ['line', 'two-lines'], regulars: tableOf(3, (r) => r) });
+    assert.ok(game.plan, 'a plan was made');
+    const positions = [];
+    game.deck.forEach((n, k) => { positions[n] = k + 1; });
+    game.plan.forEach((p) => {
+      const pattern = patterns.patterns.find((x) => x.id === p.stage);
+      const calls = game.bots.map((b) => completionCall(b.cards, positions, pattern, config));
+      total += 1;
+      if (Math.abs(calls[p.rival] - p.finish) <= 3) close += 1;
+    });
+  }
+  assert.ok(close / total >= 0.75, `${close} of ${total} rivals finished within 3 calls of the plan`);
+});

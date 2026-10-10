@@ -3,6 +3,7 @@ import { pickOne, shuffle } from './rng.js';
 import { evaluateClaim } from './check.js';
 import { callText, capital, fillLine, numberInWords, sayLine } from './caller.js';
 import { createBot, botMarks, botToGo, botNeeds, playerCloseness } from './table.js';
+import { planRace } from './director.js';
 
 // The rules of one game of bingo. This file knows nothing about the screen.
 // The screen calls advance() many times a second and reads the state it needs.
@@ -59,6 +60,18 @@ export class Game {
     this.resumeMs = 0;
     // The table: the regulars' own cards and marks, and how the night has gone so far.
     this.bots = this.regulars.map((regular) => createBot(regular, this.config));
+    // The race director picks each regular's cards so every stage is a real race (see director.js).
+    this.plan = null;
+    if (this.bots.length && this.config.table?.race?.enabled) {
+      const { plan, cards } = planRace({
+        playerCards: this.cards, deck: this.deck, stages: this.stages, botCount: this.bots.length, config: this.config,
+      });
+      this.plan = plan;
+      this.bots.forEach((bot, i) => {
+        bot.cards = cards[i];
+        bot.missChance = 0; // their pace is planned, not left to luck
+      });
+    }
     this.clockMs = 0; // game time, which stops whenever the game is paused or checking a claim
     this.stageResults = []; // one entry per finished stage: who won it and what the player earned
     this.stageWon = null; // the "Stage won" screen while it is showing

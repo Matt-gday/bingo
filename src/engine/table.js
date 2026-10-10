@@ -6,7 +6,7 @@ import { candidateSquareSets } from './patterns.js';
 // shout.
 
 const setCache = new Map();
-function setsFor(pattern) {
+export function setsFor(pattern) {
   if (!setCache.has(pattern.id)) setCache.set(pattern.id, candidateSquareSets(pattern));
   return setCache.get(pattern.id);
 }
