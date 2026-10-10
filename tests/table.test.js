@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { Game } from '../src/engine/game.js';
-import { createBot, botMarks, botToGo, playerCloseness } from '../src/engine/table.js';
+import { createBot, botMarks, botToGo, botNeeds, playerCloseness } from '../src/engine/table.js';
 
 const load = (name) => JSON.parse(readFileSync(new URL(`../Data/${name}.json`, import.meta.url), 'utf8'));
 const config = load('config');
@@ -37,10 +37,14 @@ test('a regular who marks every number never misses and counts down to zero squa
   assert.equal(botToGo(bot, line, config), 0);
 });
 
-test('a regular who misses every number never gets anywhere', () => {
+test('a number a regular misses is noticed one call later', () => {
   const bot = createBot({ ...regularsData.regulars[0], missChance: 1 }, config);
-  for (let n = 1; n <= 75; n++) botMarks(bot, n, () => 0);
-  assert.ok(botToGo(bot, line, config) >= 4);
+  const number = bot.cards[0].grid[0][0];
+  botMarks(bot, number, () => 0); // missed
+  assert.ok(!bot.marked.has('0:0,0'));
+  const other = bot.cards[0].grid[4][4];
+  botMarks(bot, other, () => 0.99); // the next call: they notice the first one
+  assert.ok(bot.marked.has('0:0,0'));
 });
 
 test('a regular who is sitting out does not mark', () => {
@@ -133,4 +137,50 @@ test('a game with no regulars still works exactly as before', () => {
   run(game, 20000);
   assert.equal(game.bots.length, 0);
   assert.notEqual(game.screen, 'stageWon');
+});
+
+test('a regular one square away is waiting for the numbers that would finish the line', () => {
+  const bot = createBot(perfect(regularsData.regulars[0]), config);
+  const card = bot.cards[0];
+  // Mark the whole top row except its last square.
+  for (let c = 0; c < 4; c++) bot.marked.add(`0:0,${c}`);
+  const needed = card.grid[0][4];
+  const waiting = botNeeds(bot, line, config, new Set());
+  assert.ok(waiting.includes(needed), `waiting for ${waiting} and should include ${needed}`);
+  assert.deepEqual(botNeeds(bot, line, config, new Set([needed])).includes(needed), false, 'a number already called is not waited for');
+  const farAway = createBot(perfect(regularsData.regulars[0]), config);
+  assert.deepEqual(botNeeds(farAway, line, config, new Set()), [], 'nothing is shown until they are one away');
+});
+
+test('nobody shouts over the player while they are calling bingo', () => {
+  const game = newGame();
+  const bot = game.bots[0];
+  game.openShout();
+  assert.equal(game.screen, 'shout');
+  bot.claim = { dueAt: 0, kind: 'bingo' };
+  for (const b of game.bots) for (const card of b.cards) card.grid.forEach((row, r) => row.forEach((n, c) => bot.marked.add(`${game.bots.indexOf(b) === 0 ? bot.cards.indexOf(card) : 0}:${r},${c}`)));
+  game.advanceBots();
+  assert.equal(game.screen, 'shout', 'the regular waits while the player calls');
+});
+
+test('a regular who has just got the pattern takes at least the minimum reaction time', () => {
+  const game = newGame({ speedId: 'quick' });
+  const bot = game.bots[0];
+  for (let c = 0; c < 5; c++) for (let r = 0; r < 5; r++) bot.marked.add(`0:${r},${c}`);
+  game.botConsiders(bot);
+  assert.ok(bot.claim, 'they decide to shout');
+  assert.ok(bot.claim.dueAt - game.clockMs >= config.table.minReactionSeconds * 1000 - 1);
+});
+
+test('when the player wins first, the result says which regular they beat and by how long', () => {
+  const game = newGame();
+  const bot = game.bots[0];
+  game.clockMs = 10000;
+  game.claimClock = 10000;
+  bot.claim = { dueAt: 11500, kind: 'bingo' };
+  game.finishStage({ type: 'you' }, 20);
+  const beat = game.stageResults[0].beat;
+  assert.equal(beat.length, 1);
+  assert.equal(beat[0].name, bot.name);
+  assert.ok(Math.abs(beat[0].seconds - 1.5) < 0.01);
 });

@@ -84,6 +84,10 @@ export function stageWonScreen(game, { voice }) {
           ? `${won.credits} banked`
           : won.credits > 0 ? `+${won.credits} for getting close` : 'No credits this time'}</span>
       </div>
+      ${(() => {
+        const beaten = you ? game.stageResults.at(-1)?.beat?.[0] : null;
+        return beaten ? `<p class="beat-line">${beaten.seconds < 1 ? 'Photo finish! ' : ''}You beat ${esc(beaten.name)} to it, by ${beaten.seconds.toFixed(1)} seconds!</p>` : '';
+      })()}
       <div class="seats table-seats">${faces}</div>
       <div class="spacer"></div>
       <div class="next-card">

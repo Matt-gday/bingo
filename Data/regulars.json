@@ -23,9 +23,9 @@
         "pink",
         "home"
       ],
-      "reactionSeconds": [
-        1.0,
-        2.2
+      "reactionShare": [
+        0.55,
+        0.8
       ]
     },
     {
@@ -48,9 +48,9 @@
         "soft-toys",
         "food"
       ],
-      "reactionSeconds": [
-        2.8,
-        4.5
+      "reactionShare": [
+        0.85,
+        1.15
       ]
     },
     {
@@ -69,9 +69,9 @@
         ]
       },
       "collects": [],
-      "reactionSeconds": [
-        1.5,
-        4.5
+      "reactionShare": [
+        0.4,
+        1.1
       ]
     },
     {
@@ -94,9 +94,9 @@
         "music",
         "mini"
       ],
-      "reactionSeconds": [
-        1.8,
-        3.2
+      "reactionShare": [
+        0.7,
+        0.95
       ]
     },
     {
@@ -119,9 +119,9 @@
         "garden",
         "sport"
       ],
-      "reactionSeconds": [
-        2.2,
-        4.2
+      "reactionShare": [
+        0.75,
+        1.0
       ]
     }
   ],

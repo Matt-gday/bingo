@@ -21,9 +21,10 @@ export function createBot(regular, config) {
     colour: regular.colour,
     missChance: regular.missChance,
     falseCallChance: regular.falseCallChance,
-    reactionSeconds: regular.reactionSeconds ?? config.table?.reactionSecondsDefault ?? [1.5, 3.5],
+    reactionShare: regular.reactionShare ?? config.table?.reactionShareDefault ?? [0.6, 1.0],
     cards: dealCards(cardsConfig),
     marked: new Set(), // "card:row,col"
+    missed: [], // numbers they did not notice; they spot them one call later
     sitOut: 0, // calls left to sit out after a false call
     claim: null, // { dueAt, kind: 'bingo' | 'false' } once they have decided to shout
     mood: null, // { name, until } a mood that lasts a little while (shocked, sulky, cheer)
@@ -33,12 +34,16 @@ export function createBot(regular, config) {
 // The regular marks a called number on every card that has it, unless they miss it.
 export function botMarks(bot, number, rng = Math.random) {
   if (bot.sitOut > 0) return;
-  if (rng() < bot.missChance) return;
-  bot.cards.forEach((card, c) => {
+  const markNumber = (wanted) => bot.cards.forEach((card, c) => {
     card.grid.forEach((row, r) => row.forEach((n, col) => {
-      if (n === number) bot.marked.add(`${c}:${r},${col}`);
+      if (n === wanted) bot.marked.add(`${c}:${r},${col}`);
     }));
   });
+  // A number they missed last time dawns on them now, so a slip only costs a call, not the whole game.
+  for (const late of bot.missed) markNumber(late);
+  bot.missed = [];
+  if (rng() < bot.missChance) bot.missed.push(number);
+  else markNumber(number);
 }
 
 // How many squares the regular still needs for the pattern on their best card (0 = they have it).
@@ -55,6 +60,32 @@ export function botToGo(bot, pattern, config) {
     }
   });
   return best;
+}
+
+// The numbers that would complete the pattern for this regular right now, when they are one square away.
+// Numbers already called are left out (those are only waiting to be noticed). Empty if they are not one away.
+export function botNeeds(bot, pattern, config, calledSet) {
+  const needs = new Set();
+  let best = Infinity;
+  const found = [];
+  bot.cards.forEach((card, c) => {
+    for (const squares of setsFor(pattern)) {
+      let missing = 0;
+      let lastMissing = null;
+      for (const [r, col] of squares) {
+        if (isFreeSquare(r, col, config)) continue;
+        if (!bot.marked.has(`${c}:${r},${col}`)) {
+          missing += 1;
+          lastMissing = card.grid[r][col];
+        }
+      }
+      if (missing < best) best = missing;
+      if (missing === 1) found.push(lastMissing);
+    }
+  });
+  if (best !== 1) return [];
+  for (const n of found) if (!calledSet.has(n)) needs.add(n);
+  return [...needs].sort((a, b) => a - b);
 }
 
 // How much of the pattern the player has marked correctly (0 to 1), counting only called numbers.

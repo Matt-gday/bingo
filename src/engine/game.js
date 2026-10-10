@@ -2,7 +2,7 @@ import { dealCards, letterFor } from './cards.js';
 import { pickOne, shuffle } from './rng.js';
 import { evaluateClaim } from './check.js';
 import { callText, capital, fillLine, numberInWords, sayLine } from './caller.js';
-import { createBot, botMarks, botToGo, playerCloseness } from './table.js';
+import { createBot, botMarks, botToGo, botNeeds, playerCloseness } from './table.js';
 
 // The rules of one game of bingo. This file knows nothing about the screen.
 // The screen calls advance() many times a second and reads the state it needs.
@@ -136,6 +136,11 @@ export class Game {
     return botToGo(bot, this.pattern, this.config);
   }
 
+  // The numbers a regular is waiting for (only when they are one square away). Shown at the table.
+  botNeeds(bot) {
+    return botNeeds(bot, this.pattern, this.config, new Set(this.called));
+  }
+
   // What a regular's face shows right now.
   botMood(bot) {
     if (this.stageWon?.moods?.[bot.id]) return this.stageWon.moods[bot.id];
@@ -160,8 +165,9 @@ export class Game {
   botConsiders(bot) {
     if (bot.claim || bot.sitOut > 0) return;
     const toGo = this.botToGo(bot);
-    const [low, high] = bot.reactionSeconds;
-    const delay = (low + Math.random() * (high - low)) * 1000;
+    const [low, high] = bot.reactionShare; // a share of one call: slower calling gives the player more time
+    const floor = (this.config.table?.minReactionSeconds ?? 0) * 1000;
+    const delay = Math.max(floor, (low + Math.random() * (high - low)) * this.callMs);
     if (toGo === 0) {
       bot.claim = { dueAt: this.clockMs + delay, kind: 'bingo' };
     } else if (toGo <= (this.config.table?.nearGoForFalseCall ?? 2) && Math.random() < bot.falseCallChance) {
@@ -171,6 +177,7 @@ export class Game {
 
   advanceBots() {
     if (this.phase !== 'calling' && this.phase !== 'locking') return;
+    if (this.screen === 'shout') return; // the player is calling bingo: nobody shouts over them
     for (const bot of this.bots) {
       if (bot.claim && this.clockMs >= bot.claim.dueAt) {
         const claim = bot.claim;
@@ -206,7 +213,12 @@ export class Game {
   finishStage(winner, credits) {
     const last = this.stageIndex === this.stages.length - 1;
     const numbers = winner.type === 'you' ? this.checking?.evaluation?.order?.map((item) => item.number) ?? [] : [];
-    this.stageResults.push({ index: this.stageIndex, pattern: this.pattern, winner, credits, numbers });
+    // Whom the player beat to it, and by how much: regulars who had the pattern and were about to shout.
+    const beat = winner.type !== 'you' ? [] : this.bots
+      .filter((b) => b.claim?.kind === 'bingo' && b.claim.dueAt >= (this.claimClock ?? this.clockMs))
+      .map((b) => ({ id: b.id, name: b.name, seconds: Math.max(0.1, (b.claim.dueAt - (this.claimClock ?? this.clockMs)) / 1000) }))
+      .sort((a, b) => a.seconds - b.seconds);
+    this.stageResults.push({ index: this.stageIndex, pattern: this.pattern, winner, credits, numbers, beat });
     this.checking = null;
     for (const bot of this.bots) bot.claim = null;
     if (last) {
@@ -497,6 +509,7 @@ export class Game {
   submitClaim() {
     if (this.screen !== 'shout' || (this.phase !== 'calling' && this.phase !== 'locking')) return;
     this.lockMarks();
+    this.claimClock = this.clockMs; // when the player's claim went in
     const evaluation = evaluateClaim({
       cards: this.cards,
       marks: this.marks,

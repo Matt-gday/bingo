@@ -163,15 +163,16 @@
     ]
   },
   "table": {
-    "note": "The regulars at the table. cardsPerRegular: how many cards each one plays. nearGoForFalseCall: a regular can only shout too soon when this close to the pattern. botSitOutCalls: how long a regular sits out after a false call. A regular's own reactionSeconds (in regulars.json) is how long they take to shout once they have it.",
+    "note": "The regulars at the table. cardsPerRegular: how many cards each one plays. nearGoForFalseCall: a regular can only shout too soon when this close. botSitOutCalls: how long one sits out after a false call. A regular's reactionShare (in regulars.json) is how long they take to shout once they have it, as a share of one call, so slower speeds give the player more time. minReactionSeconds is the fastest anyone ever shouts.",
     "cardsPerRegular": 2,
     "nearGoForFalseCall": 2,
     "botSitOutCalls": 2,
-    "reactionSecondsDefault": [
-      1.5,
-      3.5
-    ],
-    "moodSeconds": 3.5
+    "moodSeconds": 3.5,
+    "minReactionSeconds": 3,
+    "reactionShareDefault": [
+      0.6,
+      1.0
+    ]
   },
   "nights": [
     {

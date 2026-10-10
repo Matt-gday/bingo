@@ -301,8 +301,8 @@ export function playScreen(game, { voice, mic, settings }) {
       ${game.cards.map((_, i) => cardMarkup(i)).join('')}
       <div class="toast" data-toast hidden></div>
       <div class="play-bottom">
-        ${game.bots.length ? `<div class="table-pill" data-table>${game.bots.map((b) => `<div class="seat" data-seat="${b.id}"><span class="seat-face"></span><b>${esc(b.name)}</b><i class="togo"></i></div>`).join('')}</div>` : ''}
-        <button class="btn btn-aqua call-bingo${game.bots.length ? ' with-table' : ''}" data-call>${icons.mic()}Call bingo!</button>
+        ${game.bots.length ? `<div class="table-pill" data-table>${game.bots.map((b) => `<div class="seat" data-seat="${b.id}"><span class="seat-face"></span><b>${esc(b.name)}</b><span class="togo"></span></div>`).join('')}</div>` : ''}
+        <button class="btn btn-aqua call-bingo" data-call>${icons.mic()}Call bingo!</button>
         <div class="sit-banner" data-sit hidden>
           <div class="top"><span>Sitting out</span><span class="dots" data-dots></span></div>
           <div class="why" data-why></div>
@@ -388,13 +388,23 @@ export function playScreen(game, { voice, mic, settings }) {
       const seat = seatEls.get(b.id);
       const mood = game.botMood(b);
       const toGo = game.botToGo(b);
-      const key = `${mood}|${toGo}`;
+      const needs = toGo === 1 ? game.botNeeds(b) : [];
+      const shouting = b.claim?.kind === 'bingo';
+      const key = `${mood}|${toGo}|${needs.join(',')}|${shouting}`;
       if (seatShown.get(b.id) === key) continue;
       seatShown.set(b.id, key);
-      seat.querySelector('.seat-face').innerHTML = faceSvg(b.colour, mood, 44);
+      seat.querySelector('.seat-face').innerHTML = faceSvg(b.colour, mood, 46);
+      seat.classList.toggle('shouting', shouting);
       const tag = seat.querySelector('.togo');
-      tag.textContent = `${toGo} to go`;
-      tag.classList.toggle('one', toGo === 1);
+      // Two or more away: "3 to go". One away: the numbers that would finish it, in magenta.
+      if (toGo === 1 && needs.length) {
+        const shown = needs.slice(0, 3).map((n) => `<i>${n}</i>`).join('');
+        tag.innerHTML = shown + (needs.length > 3 ? `<i class="more">+${needs.length - 3}</i>` : '');
+        tag.className = 'togo need';
+      } else {
+        tag.textContent = toGo === 0 ? 'Bingo!' : `${toGo} to go`;
+        tag.className = `togo${toGo === 1 ? ' one' : ''}`;
+      }
     }
   }
 
@@ -556,6 +566,9 @@ export function resultScreen(game, { onAgain, onChange }) {
     ? `You won with ${esc(game.pattern.spoken)}.`
     : drawn ? 'All 75 numbers were called, and nobody got there.'
       : `${esc(lastWinner?.name ?? 'A regular')} took ${esc(game.pattern.spoken)}. Better luck next time!`;
+  const beaten = result.stages.at(-1)?.beat?.[0];
+  const beatLine = won && beaten
+    ? `<p class="beat-line">${beaten.seconds < 1 ? 'Photo finish! ' : ''}You beat ${esc(beaten.name)} to it, by ${beaten.seconds.toFixed(1)} seconds!</p>` : '';
   const rows = result.stages.map((r) => {
     const you = r.winner.type === 'you';
     const credits = Math.round(r.credits * result.multiplier);
@@ -572,6 +585,7 @@ export function resultScreen(game, { onAgain, onChange }) {
       <div class="caller-hero" data-result-caller></div>
       <h1>${title}</h1>
       <p class="tagline">${tagline}</p>
+      ${beatLine}
       ${lines}
       <div class="stats">
         <div class="stat"><b>${game.called.length}</b>numbers called</div>

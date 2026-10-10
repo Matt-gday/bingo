@@ -2152,3 +2152,118 @@ button {
 .stage-row.minus {
   color: #c92a86;
 }
+
+/* ---------- The table above Call bingo (layout C) ---------- */
+.play-bottom {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+.table-pill {
+  align-self: stretch;
+  justify-content: space-around;
+  margin-bottom: 0;
+  padding: 6px 10px 8px;
+}
+.table-pill .seat {
+  flex: 1;
+  gap: 2px;
+}
+.table-pill .seat-face {
+  height: 46px;
+}
+.togo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  min-height: 22px;
+  min-width: 60px;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font: 700 12px/1.2 var(--font-body);
+  font-style: normal;
+  color: #6b5aa8;
+}
+.togo.one {
+  background: #c92a86;
+  color: #fff;
+}
+.togo.need {
+  background: none;
+  padding: 0;
+}
+.togo.need i,
+.togo i.more {
+  padding: 3px 7px;
+  border-radius: 10px;
+  background: #c92a86;
+  color: #fff;
+  font: 700 14px/1.1 var(--font-display);
+  font-style: normal;
+  box-shadow: 0 2px 0 #8d1960;
+}
+.seat.shouting .seat-face {
+  animation: about-to-shout 0.5s ease-in-out infinite alternate;
+}
+@keyframes about-to-shout {
+  from { transform: scale(1); filter: drop-shadow(0 0 0 rgba(201, 42, 134, 0)); }
+  to { transform: scale(1.1); filter: drop-shadow(0 0 6px rgba(201, 42, 134, 0.9)); }
+}
+.call-bingo.with-table {
+  font-size: 27px;
+}
+.beat-line {
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.18);
+  font: 700 17px/1.25 var(--font-display);
+  text-align: center;
+}
+
+/* Short phones: a slimmer table so Call bingo is never pushed off the bottom. */
+@media (max-height: 740px) {
+  .table-pill {
+    padding: 4px 8px 5px;
+  }
+  .table-pill .seat-face {
+    height: 32px;
+  }
+  .table-pill .seat-face svg {
+    width: 32px;
+    height: 32px;
+  }
+  .table-pill .seat b {
+    font-size: 12px;
+  }
+  .togo {
+    min-height: 18px;
+    padding: 1px 5px;
+    font-size: 11px;
+  }
+  .togo.need i,
+  .togo i.more {
+    padding: 2px 6px;
+    font-size: 12px;
+  }
+  .play-bottom {
+    gap: 6px;
+  }
+}
+
+@media (max-height: 740px) {
+  :root {
+    --sq-min: 22px;
+    --pad-top: calc(max(env(safe-area-inset-top, 0px), 12px) + 6px);
+  }
+}
+.call-bingo,
+.sit-banner,
+.table-pill {
+  flex-shrink: 0;
+}
+.play-bottom .call-bingo,
+.play-bottom .sit-banner {
+  flex: 0 0 auto;
+}
