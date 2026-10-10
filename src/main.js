@@ -8,6 +8,7 @@ import patterns from '../Data/patterns.json';
 import callerLines from '../Data/caller-lines.json';
 import { Game } from './engine/game.js';
 import { createSettings } from './settings.js';
+import { createProfiles } from './profiles.js';
 import { Mic } from './audio/mic.js';
 import { Voice } from './audio/voice.js';
 import { AudioEngine } from './audio/engine.js';
@@ -26,6 +27,8 @@ import { tonightScreen, stageWonScreen } from './ui/nightScreens.js';
 import regularsData from '../Data/regulars.json';
 import { pickSome } from './engine/rng.js';
 import { pauseScreen } from './ui/pauseScreen.js';
+import { welcomeScreen, avatarScreen, howToPlayScreen, settingsScreen } from './ui/playerScreens.js';
+import { defaultLook } from './ui/caller3d/avatar.js';
 
 const root = document.getElementById('app');
 document.title = config.gameName;
@@ -38,7 +41,8 @@ motion.setProperty('--pop-ms', `${config.animation.popMs}ms`);
 motion.setProperty('--stagger-ms', `${config.animation.staggerMs}ms`);
 
 
-const settings = createSettings(config);
+const profiles = createProfiles(); // the players on this phone and their saves
+const settings = createSettings(config, profiles);
 const mic = new Mic(config);
 const engine = new AudioEngine(); // one audio system shared by the voice, the sound effects and the music
 const voice = new Voice(config, settings, engine);
@@ -95,7 +99,7 @@ document.addEventListener('click', (event) => {
 // Which music belongs with which screen. The music only plays if the player has turned it on.
 // (null means no music: the microphone screens, because music makes the phone's microphone crackle)
 const MUSIC_FOR = {
-  splash: 'home', start: 'home', tonight: 'home', stageWon: 'play-loop', test: null, play: 'play-loop', shout: null, checking: 'play-loop', pause: 'play-loop', result: 'home',
+  splash: 'home', start: 'home', welcome: 'home', avatar: 'home', howto: 'home', settings: 'home', tonight: 'home', stageWon: 'play-loop', test: null, play: 'play-loop', shout: null, checking: 'play-loop', pause: 'play-loop', result: 'home',
 };
 
 if (!config.speeds.some((s) => s.id === settings.get('speedId'))) settings.set('speedId', config.speeds[0].id);
@@ -103,6 +107,7 @@ if (!config.speeds.some((s) => s.id === settings.get('speedId'))) settings.set('
 let game = null;
 let current = null; // { name, el, update, destroy }
 let playAfterTest = false;
+let testReturn = null; // where the microphone test goes back to
 
 // Phones report the page height late and differently each time it opens (browser bars, home-screen app), which
 // left a dark strip at the bottom. Measure it again a few times and whenever it changes.
@@ -127,7 +132,84 @@ function show(name, build) {
 
 // The very first screen: a tap here is what lets a phone play sound, so the music and voice work from the start.
 function showSplash() {
-  show('splash', () => splashScreen({ config, callerLines, voice, onDone: showStart }));
+  show('splash', () => splashScreen({ config, callerLines, voice, onDone: afterSplash }));
+}
+
+// After the splash: a brand new phone makes its first player; one player goes straight in; several are asked.
+function afterSplash() {
+  const players = profiles.list();
+  if (!players.length) showNewPlayer({ first: true });
+  else if (players.length === 1) {
+    profiles.setActive(players[0].id);
+    showStart();
+  } else showWelcome();
+}
+
+// "Who's playing tonight?"
+function showWelcome() {
+  game = null;
+  voice.cancel();
+  show('welcome', () => welcomeScreen({
+    profiles,
+    onPick: (id) => { profiles.setActive(id); showStart(); },
+    onNew: () => showNewPlayer({ first: false }),
+  }));
+}
+
+// A new player: name and avatar, then the four rules, then (once on this phone) the shout test.
+function showNewPlayer({ first }) {
+  show('avatar', () => avatarScreen({
+    mode: 'new',
+    look: { ...defaultLook('player'), ball: ['#9FB4FF', '#FF8FCB', '#6FE9DD', '#D9B8FF', '#A6F2C4', '#8FD3FF'][Math.floor(Math.random() * 6)] },
+    onBack: first ? null : (profiles.list().length ? showWelcome : null),
+    onSave: ({ name, look }) => {
+      profiles.add({ name, look });
+      showHowTo({ first: true });
+    },
+  }));
+}
+
+// Change my name or face.
+function showAvatarEdit() {
+  const player = profiles.active();
+  if (!player) return showWelcome();
+  show('avatar', () => avatarScreen({
+    mode: 'edit',
+    name: player.name,
+    look: player.look,
+    onBack: showSettings,
+    onSave: ({ name, look }) => {
+      profiles.update(player.id, { name, look });
+      showStart();
+    },
+  }));
+}
+
+function showHowTo({ first }) {
+  show('howto', () => howToPlayScreen({
+    again: !first,
+    onDone: () => {
+      if (!first) showSettings();
+      else if (!settings.get('shoutTested')) showTest(false);
+      else showStart();
+    },
+  }));
+}
+
+function showSettings() {
+  show('settings', () => settingsScreen({
+    config, settings, profiles, voice, sfx, music, haptics,
+    onBack: showStart,
+    onTestShout: () => showTest(false, showSettings),
+    onHowTo: () => showHowTo({ first: false }),
+    onSwitch: showWelcome,
+    onEdit: showAvatarEdit,
+    onReset: () => {
+      const player = profiles.active();
+      if (player) profiles.reset(player.id);
+      showStart();
+    },
+  }));
 }
 
 let table = []; // the regulars at the table tonight
@@ -141,6 +223,7 @@ function showTonight() {
     config,
     patterns,
     table,
+    player: profiles.active(),
     chosenNight: settings.get('nightId'),
     chosenSpeed: settings.get('speedId'),
     onChooseNight: (id) => settings.set('nightId', id),
@@ -153,17 +236,16 @@ function showTonight() {
 function showStart() {
   game = null;
   voice.cancel();
+  if (!profiles.active()) return showWelcome();
   show('start', () => startScreen({
     config,
     callerLines,
-    chosenSpeed: settings.get('speedId'),
+    player: profiles.active(),
     voice,
-    settings,
-    sfx,
-    music,
-    haptics,
     micStatus,
-    onChoose: (id) => settings.set('speedId', id),
+    onSwitchPlayer: showWelcome,
+    onAvatar: showAvatarEdit,
+    onSettings: showSettings,
     onPlay: showTonight,
     onSetupMic: (thenPlay) => showTest(thenPlay),
     onChoosePressToCall: () => {
@@ -211,8 +293,9 @@ function hideNotice() {
   noticeEl = null;
 }
 
-function showTest(thenPlay) {
+function showTest(thenPlay, returnTo = null) {
   playAfterTest = thenPlay;
+  testReturn = returnTo;
   show('test', () => testScreen({
     config,
     callerLines,
@@ -220,7 +303,7 @@ function showTest(thenPlay) {
     settings,
     onDone: (result) => {
       if (result !== 'back' && playAfterTest) showTonight();
-      else showStart();
+      else (testReturn ?? showStart)();
     },
   }));
 }
@@ -239,6 +322,18 @@ function startGame() {
     introLine: introPicker.next(), // a different welcome each game, using every line before any repeats
   });
   attachGameSounds(game, { sfx, haptics, music });
+  const playerId = profiles.active()?.id;
+  game.on((type) => {
+    // The night is over: bank the credits and what the regulars earned, in this player's own save.
+    if (type === 'end' && playerId && game.result) {
+      profiles.recordNight(playerId, {
+        credits: game.result.total,
+        stagesWon: game.result.stagesWon,
+        won: game.result.outcome === 'win',
+        regularEarnings: game.result.regularEarnings,
+      });
+    }
+  });
   game.on((type, data) => {
     if (type === 'stageDone') settings.set('raceHistory', [...settings.get('raceHistory'), data.won ? 1 : 0].slice(-20));
   });
@@ -277,7 +372,7 @@ function sync() {
     shout: () => shoutScreen(game, { mic, settings }),
     checking: () => checkingScreen(game, { voice, settings }),
     stageWon: () => stageWonScreen(game, { voice }),
-    result: () => resultScreen(game, { onAgain: showTonight, onChange: showStart }),
+    result: () => resultScreen(game, { onAgain: showTonight, onChange: showStart, player: profiles.active() }),
     pause: () => pauseScreen(game, {
       onQuit: showStart,
       onResume: () => game.resume(),

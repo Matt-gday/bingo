@@ -6,7 +6,6 @@ import { mountFace } from './characterView.js';
 import { mountPlayer, checkingMood, playingMood } from './playerAvatar.js';
 import { shuffle } from '../engine/rng.js';
 import { popIn } from './speech.js';
-import { soundCard } from './soundCard.js';
 
 // Each screen function returns { el, update(game, now) }. update runs every frame
 // and only changes the page when something really changed.
@@ -124,7 +123,7 @@ function startCallerTalk(el, callerEl, { voice, config, callerLines }) {
   });
 }
 
-export function startScreen({ config, callerLines, chosenSpeed, voice, settings, sfx, music, haptics, micStatus, onPlay, onChoose, onSetupMic, onChoosePressToCall }) {
+export function startScreen({ config, callerLines, player, voice, micStatus, onPlay, onSetupMic, onChoosePressToCall, onSwitchPlayer, onAvatar, onSettings }) {
   // The microphone card looks different once the shout has been set up: ready (aqua and pulsing),
   // press-to-call chosen, or not set up yet.
   const status = micStatus(); // 'ready', 'pressToCall' or 'none'
@@ -135,13 +134,16 @@ export function startScreen({ config, callerLines, chosenSpeed, voice, settings,
   }[status];
 
   const el = html(`<main class="screen">
-    <button class="sound-btn" data-sound-btn aria-label="Sound settings">${icons.speaker(22)}</button>
     <div class="start">
+      <div class="home-head">
+        <button class="home-me" data-me aria-label="Switch player"><span class="home-face" data-me-face></span></button>
+        <div class="home-hi"><b>Hi ${esc(player.name)}!</b><span>Tap your face to switch player</span></div>
+        <div class="credits-pill">${icons.gem(20)}<b>${player.credits}</b></div>
+      </div>
       <div class="home-row">
         <div class="start-caller" data-start-caller role="button" aria-label="Tickle the caller"></div>
         <div class="speech home-speech"><span data-home-line></span></div>
       </div>
-      <h1>${esc(config.gameName)}</h1>
       <div class="shout-card" data-mic-card role="button" tabindex="0">
         <div class="mic-orb${status === 'ready' ? ' live' : status === 'none' ? ' off' : ''}">${icons.mic(40, 2.2)}</div>
         <div class="shout-card-text">
@@ -152,12 +154,10 @@ export function startScreen({ config, callerLines, chosenSpeed, voice, settings,
       </div>
       <button class="btn btn-small ${mic.buttonClass}" data-setup-mic>${mic.button}</button>
       <div class="spacer"></div>
-      <div class="buttons"><button class="btn btn-aqua" data-play>Play</button></div>
-    </div>
-    <div class="confirm" data-sound-sheet hidden>
-      <div class="confirm-box sound-sheet" role="dialog" aria-modal="true" aria-label="Sound settings">
-        <div data-sound-holder></div>
-        <button class="btn btn-aqua" data-sound-done>Done</button>
+      <div class="buttons"><button class="btn btn-aqua" data-play>Play tonight</button></div>
+      <div class="home-tiles">
+        <button class="home-tile" data-avatar><span class="tile-icon">🎨</span><b>My avatar</b></button>
+        <button class="home-tile" data-settings><span class="tile-icon">⚙️</span><b>Settings</b></button>
       </div>
     </div>
     <div class="confirm" data-mic-ask hidden>
@@ -188,14 +188,12 @@ export function startScreen({ config, callerLines, chosenSpeed, voice, settings,
   el.querySelector('[data-ask-setup]').addEventListener('click', () => onSetupMic(true));
   el.querySelector('[data-ask-press]').addEventListener('click', onChoosePressToCall);
 
-  // Sound: one button, and a sheet with all the switches.
-  const sound = soundCard({ voice, settings, sfx, music, haptics, greetOnVoice: true });
-  el.querySelector('[data-sound-holder]').replaceWith(sound.el);
-  const sheet = el.querySelector('[data-sound-sheet]');
-  el.querySelector('[data-sound-btn]').addEventListener('click', () => { sound.update(); sheet.hidden = false; });
-  el.querySelector('[data-sound-done]').addEventListener('click', () => { sheet.hidden = true; });
-  sheet.addEventListener('click', (event) => { if (event.target === sheet) sheet.hidden = true; });
-  return { el, update() {} };
+  // Who is playing, and where to go from here.
+  const meFace = mountFace(el.querySelector('[data-me-face]'), player.look, { size: 54 });
+  el.querySelector('[data-me]').addEventListener('click', onSwitchPlayer);
+  el.querySelector('[data-avatar]').addEventListener('click', onAvatar);
+  el.querySelector('[data-settings]').addEventListener('click', onSettings);
+  return { el, update() {}, destroy: () => meFace.destroy() };
 }
 
 // ---------- The row of recent calls ----------
@@ -580,51 +578,58 @@ export function checkingScreen(game, { voice, settings }) {
 
 // ---------- Result ----------
 
-export function resultScreen(game, { onAgain, onChange }) {
+export function resultScreen(game, { onAgain, onChange, player }) {
   const result = game.result;
   const won = result.outcome === 'win';
   const drawn = result.outcome === 'drawn';
   const lastWinner = result.stages.at(-1)?.winner;
-  const title = won ? 'BINGO!' : drawn ? 'No winner tonight' : `${esc(lastWinner?.name ?? 'Someone')} won it`;
-  const tagline = won
-    ? `You won with ${esc(game.pattern.spoken)}.`
-    : drawn ? 'All 75 numbers were called, and nobody got there.'
-      : `${esc(lastWinner?.name ?? 'A regular')} took ${esc(game.pattern.spoken)}. Better luck next time!`;
+  const winnerBot = game.bots.find((b) => b.id === lastWinner?.id);
+  const finalName = result.stages.at(-1)?.pattern.name ?? game.pattern.name;
+  const title = won ? (result.stages.length > 1 ? `${finalName}!` : 'BINGO!') : drawn ? 'No winner tonight' : `${esc(lastWinner?.name ?? 'Someone')} called it`;
+  const last = result.stages.at(-1);
+  const progress = last?.progress;
+  const sub = won ? '' : drawn
+    ? 'All 75 numbers were called, and nobody got there.'
+    : progress ? `You were ${progress.total - progress.have} ${progress.total - progress.have === 1 ? 'number' : 'numbers'} from ${esc(last.pattern.spoken)}.` : '';
+  const bubbleText = won ? 'What a night that was!' : drawn ? 'Every ball is out, and nobody got there. Better luck next time!' : 'Better luck next time.';
   const beaten = result.stages.at(-1)?.beat?.[0];
   const beatLine = won && beaten
     ? `<p class="beat-line">${beaten.seconds < 1 ? 'Photo finish! ' : ''}You beat ${esc(beaten.name)} to it, by ${beaten.seconds.toFixed(1)} seconds!</p>` : '';
   const rows = result.stages.map((r) => {
     const you = r.winner.type === 'you';
-    const credits = Math.round(r.credits * result.multiplier);
-    return `<div class="stage-row"><span>${esc(r.pattern.name)}</span><span class="who">${you ? 'You' : esc(r.winner.name)}</span><b>${credits ? `${you ? '' : '+'}${credits}` : '0'}</b></div>`;
+    const note = you ? 'You won it' : `${esc(r.winner.name)} won it${r.progress ? `. You had ${r.progress.have} of ${r.progress.total}` : ''}`;
+    return `<div class="result-row"><span class="result-pic">${patternPreview(r.pattern, 40, '#e4dbff')}</span><span class="result-text"><b>${esc(r.pattern.name)}</b><small>${note}</small></span><b class="result-num">${r.credits}</b></div>`;
   }).join('');
-  const lines = result.stages.length
-    ? `<div class="stage-rows">${rows}
-        ${result.falseCalls ? `<div class="stage-row minus"><span>${result.falseCalls} false ${result.falseCalls === 1 ? 'call' : 'calls'}</span><span class="who">-${Math.round(result.penalty * 100)}%</span><b></b></div>` : ''}
-        <div class="stage-row total"><span>Total credits</span><span class="who"></span><b>${icons.gem(16)} ${result.total}</b></div>
-      </div>`
-    : '';
+  const lines = `<div class="stage-rows result-card">${rows}
+        ${result.forPlaying ? `<div class="stage-row"><span>For playing</span><span class="who"></span><b>${result.forPlaying}</b></div>` : ''}
+        <div class="stage-row"><span>${esc(game.speed.name)} speed</span><span class="who"></span><b>× ${result.multiplier}</b></div>
+        ${result.falseCalls ? `<div class="stage-row minus"><span>${result.falseCalls} false ${result.falseCalls === 1 ? 'call' : 'calls'}</span><span class="who"></span><b>less ${result.falseCalls === 1 ? 'a quarter' : `${Math.round(result.penalty * 100)}%`}</b></div>` : ''}
+        <div class="stage-row total"><span>Credits won tonight</span><span class="who"></span><b>${icons.gem(18)} ${result.total}</b></div>
+      </div>`;
+  const regs = game.bots.map((b) => `<div class="reg-pill"><span class="reg-face" data-reg="${b.id}"></span><span><b>${esc(b.name)}</b><small>earned ${result.regularEarnings[b.id] ?? 0}</small></span></div>`).join('');
   const el = html(`<main class="screen">
-    <div class="result">
-      <div class="caller-hero" data-result-caller></div>
+    <div class="result night-result">
+      <div class="caller-big">
+        <div class="caller-img" data-result-caller></div>
+        <div class="speech"><span>${bubbleText}</span></div>
+      </div>
       <h1>${title}</h1>
-      <p class="tagline">${tagline}</p>
+      ${sub ? `<p class="tagline">${sub}</p>` : ''}
       ${beatLine}
       ${lines}
-      <div class="stats">
-        <div class="stat"><b>${game.called.length}</b>numbers called</div>
-        <div class="stat"><b>${game.falseCalls}</b>false ${game.falseCalls === 1 ? 'call' : 'calls'}</div>
-      </div>
+      <div class="reg-pills">${regs}</div>
+      <p class="total-line">You now have ${icons.gem(16)} <b>${player?.credits ?? result.total}</b></p>
       <div class="spacer"></div>
       <div class="buttons">
-        <button class="btn btn-aqua" data-again>Play again</button>
+        <button class="btn btn-aqua" data-again>Play another night</button>
         <button class="btn btn-ghost" style="align-self:center" data-change>Back to home</button>
       </div>
     </div>
   </main>`);
+  const regFaces = game.bots.map((b) => mountFace(el.querySelector(`[data-reg="${b.id}"]`), b, { size: 40, mood: lastWinner?.id === b.id ? 'cheer' : won ? 'sulky' : 'content' }));
   el.querySelector('[data-again]').addEventListener('click', onAgain);
   el.querySelector('[data-change]').addEventListener('click', onChange);
   if (won) confetti(el);
   attachCaller(el.querySelector('[data-result-caller]'), { mood: won ? 'cheer' : 'smile', jump: won });
-  return { el, update() {} };
+  return { el, update() {}, destroy: () => regFaces.forEach((f) => f.destroy()) };
 }

@@ -9,7 +9,7 @@ import { callerBubble } from './screens.js';
 
 // ---------- Tonight's game ----------
 
-export function tonightScreen({ config, patterns, table, chosenNight, chosenSpeed, onChooseNight, onChooseSpeed, onDeal, onBack }) {
+export function tonightScreen({ config, patterns, table, player, chosenNight, chosenSpeed, onChooseNight, onChooseSpeed, onDeal, onBack }) {
   const patternById = (id) => patterns.patterns.find((p) => p.id === id);
   const nights = config.nights
     .map((night) => `<button class="night${night.id === chosenNight ? ' chosen' : ''}" data-night="${night.id}">
@@ -17,7 +17,7 @@ export function tonightScreen({ config, patterns, table, chosenNight, chosenSpee
         <span class="night-pics">${night.stageIds.map((id) => patternPreview(patternById(id), 34, '#e4dbff')).join('')}</span>
       </button>`)
     .join('');
-  const seatList = [{ name: 'You', colour: YOU_COLOUR, look: defaultLook('player') }, ...table];
+  const seatList = [{ name: 'You', colour: YOU_COLOUR, look: player?.look ?? defaultLook('player') }, ...table];
   const seats = seatList
     .map((s, i) => `<div class="seat"><span class="seat-face" data-seat-face="${i}"></span><span>${esc(s.name)}</span></div>`)
     .join('');
