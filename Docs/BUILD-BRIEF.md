@@ -60,7 +60,7 @@ When a claim is made, the game pauses and the caller checks the card.
 - On the cards screen during a sit-out, the cards are visible but faded and cannot be tapped, and a banner counts down the calls remaining.
 - Each false call also takes a quarter off the credits the player earns that night.
 - Shouting for a pattern that is not the current stage is a false call.
-- Regulars can make false calls too. They are told off by the caller and sit out in the same way.
+- Regulars never make false calls. (They did once, but it changed nothing in the game and talked over the calling.)
 
 ## 7. Stages and the length of a night
 

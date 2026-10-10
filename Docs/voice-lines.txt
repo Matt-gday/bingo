@@ -229,7 +229,7 @@ Seventy-three...
 Seventy-four...
 Seventy-five...
 
-== welcome (24) ==
+== welcome (23) ==
 Welcome to Bingo night, everyone! Get ready for the first number.
 Eyes down, everyone! Have a good look at your cards.
 Good evening, bingo friends! Cards at the ready.
@@ -242,8 +242,6 @@ Have a good look at your numbers. I'll start in a moment.
 Spot any numbers that are on both cards? Keep an eye out!
 Two cards, a few shared numbers. Choose wisely tonight!
 Take a moment to scan your cards. Some numbers might be twins!
-Remember, each number can only be used once, so choose wisely!
-A number only counts once, even if it's on both cards. Choose wisely!
 Is it going to be your night? Let's find out!
 Feeling lucky? Here comes the first number!
 The balls are bouncing and I'm ready. Are you?
@@ -254,8 +252,12 @@ Only call bingo when you really mean it. I'll be checking!
 May all your numbers come up early tonight.
 Same club, same lucky balls. Welcome back!
 Nobody here has ever lost at bingo. They just win later!
+Got a number on both cards? You can mark both, one call at a time. Just don't forget!
 
-== home screen (18) ==
+== splash (1) ==
+Yay, it's bingo time!
+
+== home screen (17) ==
 Well hello there, bingo champion! I've been waiting all day for you!
 Ooh, someone's looking lucky today. Is it you? It is you!
 Welcome back! I polished my bow tie just for you.
@@ -272,8 +274,19 @@ Come on in, the seats are warm and the biscuits are free!
 I'm all ears! Well, I'm all ball, really.
 Round and round the balls go, and where they stop, nobody knows!
 Tap me! Go on! I dare you!
-Ooh, that tickles! Do it again!
 Nobody calls a number quite like me. Want to hear?
+
+== home tickles (10) ==
+Hee hee hee! That tickles!
+Hey! That tickles! Hee hee!
+Ha ha! Stop it, I'm ticklish!
+Ooh, hee hee, right on my bow tie!
+Ooh, that tickles! Do it again!
+Ha ha ha! Careful, I'm all bouncy!
+Eek! Hee hee! Tickle, tickle!
+Hey, that's my best side! Hee hee!
+Oh stop, stop, hee hee, I can't stop giggling!
+Hehe! You've got the magic touch!
 
 == countdown (1) ==
 Three! Two! One! Here we go!
@@ -307,201 +320,85 @@ That's a line. Well played!
 That's two lines. Well played!
 That's a full house. Well played!
 
-== false calls (153) ==
+== false calls (78) ==
 I can't see a line there, I'm afraid.
 I can't see two lines there, I'm afraid.
 I can't see a full house there, I'm afraid.
 Ooh, unlucky. I haven't called one yet.
-Not quite. one is already on your other card.
 Ooh, unlucky. I haven't called two yet.
-Not quite. two is already on your other card.
 Ooh, unlucky. I haven't called three yet.
-Not quite. three is already on your other card.
 Ooh, unlucky. I haven't called four yet.
-Not quite. four is already on your other card.
 Ooh, unlucky. I haven't called five yet.
-Not quite. five is already on your other card.
 Ooh, unlucky. I haven't called six yet.
-Not quite. six is already on your other card.
 Ooh, unlucky. I haven't called seven yet.
-Not quite. seven is already on your other card.
 Ooh, unlucky. I haven't called eight yet.
-Not quite. eight is already on your other card.
 Ooh, unlucky. I haven't called nine yet.
-Not quite. nine is already on your other card.
 Ooh, unlucky. I haven't called ten yet.
-Not quite. ten is already on your other card.
 Ooh, unlucky. I haven't called eleven yet.
-Not quite. eleven is already on your other card.
 Ooh, unlucky. I haven't called twelve yet.
-Not quite. twelve is already on your other card.
 Ooh, unlucky. I haven't called thirteen yet.
-Not quite. thirteen is already on your other card.
 Ooh, unlucky. I haven't called fourteen yet.
-Not quite. fourteen is already on your other card.
 Ooh, unlucky. I haven't called fifteen yet.
-Not quite. fifteen is already on your other card.
 Ooh, unlucky. I haven't called sixteen yet.
-Not quite. sixteen is already on your other card.
 Ooh, unlucky. I haven't called seventeen yet.
-Not quite. seventeen is already on your other card.
 Ooh, unlucky. I haven't called eighteen yet.
-Not quite. eighteen is already on your other card.
 Ooh, unlucky. I haven't called nineteen yet.
-Not quite. nineteen is already on your other card.
 Ooh, unlucky. I haven't called twenty yet.
-Not quite. twenty is already on your other card.
 Ooh, unlucky. I haven't called twenty-one yet.
-Not quite. twenty-one is already on your other card.
 Ooh, unlucky. I haven't called twenty-two yet.
-Not quite. twenty-two is already on your other card.
 Ooh, unlucky. I haven't called twenty-three yet.
-Not quite. twenty-three is already on your other card.
 Ooh, unlucky. I haven't called twenty-four yet.
-Not quite. twenty-four is already on your other card.
 Ooh, unlucky. I haven't called twenty-five yet.
-Not quite. twenty-five is already on your other card.
 Ooh, unlucky. I haven't called twenty-six yet.
-Not quite. twenty-six is already on your other card.
 Ooh, unlucky. I haven't called twenty-seven yet.
-Not quite. twenty-seven is already on your other card.
 Ooh, unlucky. I haven't called twenty-eight yet.
-Not quite. twenty-eight is already on your other card.
 Ooh, unlucky. I haven't called twenty-nine yet.
-Not quite. twenty-nine is already on your other card.
 Ooh, unlucky. I haven't called thirty yet.
-Not quite. thirty is already on your other card.
 Ooh, unlucky. I haven't called thirty-one yet.
-Not quite. thirty-one is already on your other card.
 Ooh, unlucky. I haven't called thirty-two yet.
-Not quite. thirty-two is already on your other card.
 Ooh, unlucky. I haven't called thirty-three yet.
-Not quite. thirty-three is already on your other card.
 Ooh, unlucky. I haven't called thirty-four yet.
-Not quite. thirty-four is already on your other card.
 Ooh, unlucky. I haven't called thirty-five yet.
-Not quite. thirty-five is already on your other card.
 Ooh, unlucky. I haven't called thirty-six yet.
-Not quite. thirty-six is already on your other card.
 Ooh, unlucky. I haven't called thirty-seven yet.
-Not quite. thirty-seven is already on your other card.
 Ooh, unlucky. I haven't called thirty-eight yet.
-Not quite. thirty-eight is already on your other card.
 Ooh, unlucky. I haven't called thirty-nine yet.
-Not quite. thirty-nine is already on your other card.
 Ooh, unlucky. I haven't called forty yet.
-Not quite. forty is already on your other card.
 Ooh, unlucky. I haven't called forty-one yet.
-Not quite. forty-one is already on your other card.
 Ooh, unlucky. I haven't called forty-two yet.
-Not quite. forty-two is already on your other card.
 Ooh, unlucky. I haven't called forty-three yet.
-Not quite. forty-three is already on your other card.
 Ooh, unlucky. I haven't called forty-four yet.
-Not quite. forty-four is already on your other card.
 Ooh, unlucky. I haven't called forty-five yet.
-Not quite. forty-five is already on your other card.
 Ooh, unlucky. I haven't called forty-six yet.
-Not quite. forty-six is already on your other card.
 Ooh, unlucky. I haven't called forty-seven yet.
-Not quite. forty-seven is already on your other card.
 Ooh, unlucky. I haven't called forty-eight yet.
-Not quite. forty-eight is already on your other card.
 Ooh, unlucky. I haven't called forty-nine yet.
-Not quite. forty-nine is already on your other card.
 Ooh, unlucky. I haven't called fifty yet.
-Not quite. fifty is already on your other card.
 Ooh, unlucky. I haven't called fifty-one yet.
-Not quite. fifty-one is already on your other card.
 Ooh, unlucky. I haven't called fifty-two yet.
-Not quite. fifty-two is already on your other card.
 Ooh, unlucky. I haven't called fifty-three yet.
-Not quite. fifty-three is already on your other card.
 Ooh, unlucky. I haven't called fifty-four yet.
-Not quite. fifty-four is already on your other card.
 Ooh, unlucky. I haven't called fifty-five yet.
-Not quite. fifty-five is already on your other card.
 Ooh, unlucky. I haven't called fifty-six yet.
-Not quite. fifty-six is already on your other card.
 Ooh, unlucky. I haven't called fifty-seven yet.
-Not quite. fifty-seven is already on your other card.
 Ooh, unlucky. I haven't called fifty-eight yet.
-Not quite. fifty-eight is already on your other card.
 Ooh, unlucky. I haven't called fifty-nine yet.
-Not quite. fifty-nine is already on your other card.
 Ooh, unlucky. I haven't called sixty yet.
-Not quite. sixty is already on your other card.
 Ooh, unlucky. I haven't called sixty-one yet.
-Not quite. sixty-one is already on your other card.
 Ooh, unlucky. I haven't called sixty-two yet.
-Not quite. sixty-two is already on your other card.
 Ooh, unlucky. I haven't called sixty-three yet.
-Not quite. sixty-three is already on your other card.
 Ooh, unlucky. I haven't called sixty-four yet.
-Not quite. sixty-four is already on your other card.
 Ooh, unlucky. I haven't called sixty-five yet.
-Not quite. sixty-five is already on your other card.
 Ooh, unlucky. I haven't called sixty-six yet.
-Not quite. sixty-six is already on your other card.
 Ooh, unlucky. I haven't called sixty-seven yet.
-Not quite. sixty-seven is already on your other card.
 Ooh, unlucky. I haven't called sixty-eight yet.
-Not quite. sixty-eight is already on your other card.
 Ooh, unlucky. I haven't called sixty-nine yet.
-Not quite. sixty-nine is already on your other card.
 Ooh, unlucky. I haven't called seventy yet.
-Not quite. seventy is already on your other card.
 Ooh, unlucky. I haven't called seventy-one yet.
-Not quite. seventy-one is already on your other card.
 Ooh, unlucky. I haven't called seventy-two yet.
-Not quite. seventy-two is already on your other card.
 Ooh, unlucky. I haven't called seventy-three yet.
-Not quite. seventy-three is already on your other card.
 Ooh, unlucky. I haven't called seventy-four yet.
-Not quite. seventy-four is already on your other card.
 Ooh, unlucky. I haven't called seventy-five yet.
-Not quite. seventy-five is already on your other card.
-
-== regulars told off (39) ==
-Sit down, Dot, that's not a line.
-Sit down, Mabel, that's not a line.
-Sit down, Rex, that's not a line.
-Sit down, Pearl, that's not a line.
-Sit down, Gus, that's not a line.
-Sit down, Jerry, that's not a line.
-Sit down, Noreen, that's not a line.
-Sit down, Kev, that's not a line.
-Sit down, Lorraine, that's not a line.
-Sit down, Trev, that's not a line.
-Sit down, Deb, that's not a line.
-Sit down, Bruce, that's not a line.
-Sit down, Joyce, that's not a line.
-Sit down, Dot, that's not two lines.
-Sit down, Mabel, that's not two lines.
-Sit down, Rex, that's not two lines.
-Sit down, Pearl, that's not two lines.
-Sit down, Gus, that's not two lines.
-Sit down, Jerry, that's not two lines.
-Sit down, Noreen, that's not two lines.
-Sit down, Kev, that's not two lines.
-Sit down, Lorraine, that's not two lines.
-Sit down, Trev, that's not two lines.
-Sit down, Deb, that's not two lines.
-Sit down, Bruce, that's not two lines.
-Sit down, Joyce, that's not two lines.
-Sit down, Dot, that's not a full house.
-Sit down, Mabel, that's not a full house.
-Sit down, Rex, that's not a full house.
-Sit down, Pearl, that's not a full house.
-Sit down, Gus, that's not a full house.
-Sit down, Jerry, that's not a full house.
-Sit down, Noreen, that's not a full house.
-Sit down, Kev, that's not a full house.
-Sit down, Lorraine, that's not a full house.
-Sit down, Trev, that's not a full house.
-Sit down, Deb, that's not a full house.
-Sit down, Bruce, that's not a full house.
-Sit down, Joyce, that's not a full house.
 
 == regulars win (52) ==
 Dot has it! Well done, Dot.

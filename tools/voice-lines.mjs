@@ -40,7 +40,6 @@ export function collectLines({ callerLines, patterns, regulars }) {
     for (const line of callerLines.game.win) add('wins', fillLine(line, { pattern }));
     for (const line of callerLines.game.falseCall.noPattern) add('false calls', fillLine(line, { pattern }));
     for (const name of names) {
-      for (const line of callerLines.game.botFalseCall) add('regulars told off', fillLine(line, { name, pattern }));
       for (const line of callerLines.game.botWins) add('regulars win', fillLine(line, { name, pattern }));
     }
   }

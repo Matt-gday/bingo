@@ -10,7 +10,6 @@
       "colour": "#FF8FCB",
       "personality": "Decisive and competitive. Looks smug when she is close to winning.",
       "missChance": 0.03,
-      "falseCallChance": 0.02,
       "shopping": {
         "style": "Buys anything for her set the moment she can afford it.",
         "ringSeconds": [
@@ -46,7 +45,6 @@
       "colour": "#6FE9DD",
       "personality": "Gentle and careful. Takes her time over everything.",
       "missChance": 0.06,
-      "falseCallChance": 0.01,
       "shopping": {
         "style": "Saves for big items and thinks hard before buying.",
         "ringSeconds": [
@@ -82,7 +80,6 @@
       "colour": "#A6F2C4",
       "personality": "Cheerful and scatterbrained. Sometimes shouts bingo when he has not got it.",
       "missChance": 0.12,
-      "falseCallChance": 0.15,
       "shopping": {
         "style": "Buys whatever takes his fancy. His ring is a different speed every time.",
         "ringSeconds": [
@@ -114,7 +111,6 @@
       "colour": "#D9B8FF",
       "personality": "Stylish and a little proud. Hates losing a prize she had her eye on.",
       "missChance": 0.05,
-      "falseCallChance": 0.02,
       "shopping": {
         "style": "Steady and deliberate. Goes for the best-looking thing in her set.",
         "ringSeconds": [
@@ -151,7 +147,6 @@
       "colour": "#8FD3FF",
       "personality": "Gruff but kind. Grumbles when the caller goes too fast.",
       "missChance": 0.08,
-      "falseCallChance": 0.03,
       "shopping": {
         "style": "Slow to decide, but stubborn once he has chosen.",
         "ringSeconds": [

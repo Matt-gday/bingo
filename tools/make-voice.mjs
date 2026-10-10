@@ -77,7 +77,6 @@ function tagFor(text) {
   if (tags.lines?.[text]) return tags.lines[text];
   const named = regularNames.find((name) => text.split(/[^A-Za-z']+/).includes(name)); // whole words only
   if (named && group === 'regulars win' && tags.regulars[named].win) return tags.regulars[named].win;
-  if (named && group === 'regulars told off' && tags.regulars[named].toldOff) return tags.regulars[named].toldOff;
   const entry = tags.groups?.[group];
   if (Array.isArray(entry)) return entry[(groupLists[group]?.indexOf(text) ?? 0) % entry.length]; // a pool: lines take turns
   return entry ?? tags.default ?? '';
@@ -134,7 +133,6 @@ if (args.includes('--tester')) {
     ['no winner', 'No winner tonight', 'When all 75 balls are called and nobody has won.'],
     ['stage opens', 'A new stage starts', 'Announcing what the next target is.'],
     ['regulars win', 'The regulars win', 'The caller commentating on a regular who has won. Each regular gets their own attitude.'],
-    ['regulars told off', 'The regulars told off', 'When a regular makes a false call.'],
   ];
   const known = new Set(themes.map(([g]) => g));
   const rowsFor = (list) => list.map((text) => {
@@ -198,7 +196,6 @@ const sampleTexts = [
   'Forty-five...', // the card check
   "That's a line. Well played!", // a win
   "Ooh, unlucky. I haven't called thirty-four yet.", // a false call
-  "Sit down, Dot, that's not a line.", // a regular told off
   'Rex has it! Well done, Rex.', // a regular wins
   'No peeking! Your cards are covered.', // the pause
 ];

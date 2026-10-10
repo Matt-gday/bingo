@@ -11,7 +11,7 @@ const callerLines = load('caller-lines');
 const regularsData = load('regulars');
 const line = patterns.patterns.find((p) => p.id === 'line');
 
-const perfect = (regular) => ({ ...regular, missChance: 0, falseCallChance: 0 });
+const perfect = (regular) => ({ ...regular, missChance: 0 });
 const tableOf = (n = 3, tweak = perfect) => regularsData.regulars.slice(0, n).map(tweak);
 
 function newGame({ stageIds = ['line'], regulars = tableOf(), speedId = 'quick' } = {}) {
@@ -45,13 +45,6 @@ test('a number a regular misses is noticed one call later', () => {
   const other = bot.cards[0].grid[4][4];
   botMarks(bot, other, () => 0.99); // the next call: they notice the first one
   assert.ok(bot.marked.has('0:0,0'));
-});
-
-test('a regular who is sitting out does not mark', () => {
-  const bot = createBot(perfect(regularsData.regulars[0]), config);
-  bot.sitOut = 2;
-  for (let n = 1; n <= 75; n++) botMarks(bot, n, () => 0.99);
-  assert.equal(bot.marked.size, 0);
 });
 
 test('with perfect regulars and a player who does nothing, a regular wins the line', () => {
@@ -98,18 +91,6 @@ test('the whole night with perfect regulars ends with a result listing every sta
   assert.equal(typeof game.result.total, 'number');
 });
 
-test('a regular who shouts too soon is told off, sits out, and the game goes on', () => {
-  const regulars = tableOf(3, (r) => ({ ...r, missChance: 0, falseCallChance: r.id === 'dot' ? 1 : 0 }));
-  const game = newGame({ regulars, stageIds: ['full-house'] });
-  let told = null;
-  game.on((type, data) => { if (type === 'botFalseCall') told = data.bot; });
-  for (let t = 0; t < 60 * 8000 && !told; t += 100) game.advance(100);
-  assert.ok(told, 'someone shouted too soon');
-  assert.equal(told.sitOut, config.table.botSitOutCalls);
-  assert.equal(game.screen, 'cards', 'the player carries on playing');
-  assert.ok(callerLines.game.botFalseCall.some((l) => game.bubble.text === l.replace('{name}', told.name).replace('{pattern}', game.pattern.spoken)));
-});
-
 test('regulars do not move while a claim is being checked', () => {
   const game = newGame();
   const bot = game.bots[0];
@@ -122,13 +103,11 @@ test('regulars do not move while a claim is being checked', () => {
   assert.equal(bot.claim, null);
 });
 
-test('faces: a regular close to winning looks smug, one who just misbehaved looks sulky', () => {
+test('faces: a regular is content until they are one square from winning', () => {
   const game = newGame();
   const bot = game.bots[0];
   bot.marked.clear();
   assert.equal(game.botMood(bot), 'content');
-  bot.sitOut = 1;
-  assert.equal(game.botMood(bot), 'sulky');
 });
 
 test('a game with no regulars still works exactly as before', () => {

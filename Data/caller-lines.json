@@ -96,9 +96,6 @@
         "I can't see {pattern} there, I'm afraid."
       ]
     },
-    "botFalseCall": [
-      "Sit down, {name}, that's not {pattern}."
-    ],
     "botWins": [
       "{name} has it! Well done, {name}.",
       "That's {pattern} for {name}."

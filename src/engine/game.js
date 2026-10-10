@@ -159,7 +159,6 @@ export class Game {
   botMood(bot) {
     if (this.stageWon?.moods?.[bot.id]) return this.stageWon.moods[bot.id];
     if (bot.mood && bot.mood.until > this.clockMs) return bot.mood.name;
-    if (bot.sitOut > 0) return 'sulky';
     return this.botToGo(bot) <= 1 ? 'smug' : 'content';
   }
 
@@ -177,16 +176,12 @@ export class Game {
 
   // A regular who has the pattern shouts after a short reaction. One who is close might shout too soon.
   botConsiders(bot) {
-    if (bot.claim || bot.sitOut > 0) return;
+    if (bot.claim) return;
     const toGo = this.botToGo(bot);
     const [low, high] = bot.reactionShare; // a share of one call: slower calling gives the player more time
     const floor = (this.config.table?.minReactionSeconds ?? 0) * 1000;
     const delay = Math.max(floor, (low + Math.random() * (high - low)) * this.callMs);
-    if (toGo === 0) {
-      bot.claim = { dueAt: this.clockMs + delay, kind: 'bingo' };
-    } else if (toGo <= (this.config.table?.nearGoForFalseCall ?? 2) && Math.random() < bot.falseCallChance) {
-      bot.claim = { dueAt: this.clockMs + delay, kind: 'false' };
-    }
+    if (toGo === 0) bot.claim = { dueAt: this.clockMs + delay, kind: 'bingo' };
   }
 
   advanceBots() {
@@ -197,18 +192,9 @@ export class Game {
         const claim = bot.claim;
         bot.claim = null;
         if (claim.kind === 'bingo' && this.botToGo(bot) === 0) this.botWins(bot);
-        else this.botFalseCall(bot);
         if (this.phase === 'stageWon' || this.phase === 'over') return;
       }
     }
-  }
-
-  botFalseCall(bot) {
-    bot.sitOut = this.config.table?.botSitOutCalls ?? this.config.falseCall.sitOutCalls;
-    this.setBotMood(bot, 'sulky', 5);
-    for (const other of this.bots) if (other !== bot) this.setBotMood(other, 'shocked', 2);
-    this.say(fillLine(pickOne(this.callerLines.game.botFalseCall), { name: bot.name, pattern: this.pattern.spoken }), 'talking', 'botFalseCall');
-    this.emit('botFalseCall', { bot });
   }
 
   botWins(bot) {
@@ -437,7 +423,6 @@ export class Game {
   endCall() {
     this.lockMarks();
     if (this.sitOut > 0) this.sitOut -= 1;
-    for (const bot of this.bots) if (bot.sitOut > 0) bot.sitOut -= 1;
     this.phase = 'locking';
     this.lockElapsed = 0;
     this.emit('lock');

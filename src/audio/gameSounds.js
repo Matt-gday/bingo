@@ -58,9 +58,6 @@ export function attachGameSounds(game, { sfx, haptics, music }) {
           haptics.buzz(20);
         }
         break;
-      case 'botFalseCall':
-        sfx.play('too-slow');
-        break;
       case 'pause':
         sfx.play('pause-on');
         music?.duck(true);

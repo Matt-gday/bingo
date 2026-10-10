@@ -21,12 +21,10 @@ export function createBot(regular, config) {
     colour: regular.colour,
     look: regular.look, // how they look in 3D (see Data/avatar.json)
     missChance: regular.missChance,
-    falseCallChance: regular.falseCallChance,
     reactionShare: regular.reactionShare ?? config.table?.reactionShareDefault ?? [0.6, 1.0],
     cards: dealCards(cardsConfig),
     marked: new Set(), // "card:row,col"
     missed: [], // numbers they did not notice; they spot them one call later
-    sitOut: 0, // calls left to sit out after a false call
     claim: null, // { dueAt, kind: 'bingo' | 'false' } once they have decided to shout
     mood: null, // { name, until } a mood that lasts a little while (shocked, sulky, cheer)
   };
@@ -34,7 +32,6 @@ export function createBot(regular, config) {
 
 // The regular marks a called number on every card that has it, unless they miss it.
 export function botMarks(bot, number, rng = Math.random) {
-  if (bot.sitOut > 0) return;
   const markNumber = (wanted) => bot.cards.forEach((card, c) => {
     card.grid.forEach((row, r) => row.forEach((n, col) => {
       if (n === wanted) bot.marked.add(`${c}:${r},${col}`);
