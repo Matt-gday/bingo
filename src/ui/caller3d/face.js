@@ -16,9 +16,24 @@ export const EXPRESSIONS = {
 };
 
 const INK = '#2c1b82';
+
+// A hex colour as an rgba() string.
+function rgba(hex, alpha) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+}
 const INK_LIGHT = '#4a36b8';
 
 function lerp(a, b, t) { return a + (b - a) * t; }
+
+// New expressions for the regulars. Every expression has eyeScale (1 = normal) and eyeLid (how far the lid comes down).
+EXPRESSIONS.smug = { eyeHappy: 0, eyeSquint: 0, browRaise: 0.15, browTilt: 0.25, mouthSmile: 0.85, mouthWidth: 0.95, blush: 0.9, mouthOpenBase: 0, eyeLid: 0.42 };
+EXPRESSIONS.shocked = { eyeHappy: 0, eyeSquint: 0, browRaise: 1, browTilt: 0, mouthSmile: 0, mouthWidth: 0.5, blush: 0.6, mouthOpenBase: 0.78, eyeScale: 1.3 };
+EXPRESSIONS.sulky = { eyeHappy: 0, eyeSquint: 0.1, browRaise: -0.25, browTilt: 0.9, mouthSmile: -0.7, mouthWidth: 0.8, blush: 0.5, mouthOpenBase: 0, eyeLid: 0.28, eyeScale: 0.92 };
+for (const expression of Object.values(EXPRESSIONS)) {
+  expression.eyeScale ??= 1;
+  expression.eyeLid ??= 0;
+}
 
 export function blendExpressions(from, to, t) {
   const out = {};
@@ -30,7 +45,10 @@ export function blendExpressions(from, to, t) {
 // (in radians, from the middle of the face) into places on the picture.
 export const FACE_SPAN = { yaw: 1.8, pitch: 1.6 };
 
-export function drawFace(ctx, W, H, p) {
+export function drawFace(ctx, W, H, p, style = {}) {
+  const cheekColour = style.cheeks ?? '#FF8FB8';
+  const ballColour = style.ball ?? '#F2E9FF';
+  const eyeStyle = style.eyes ?? 'round';
   const X = (yaw) => W * (0.5 + yaw / FACE_SPAN.yaw);
   const Y = (pitch) => H * (0.5 - pitch / FACE_SPAN.pitch);
   const unit = W / FACE_SPAN.yaw; // pixels per radian
@@ -44,9 +62,9 @@ export function drawFace(ctx, W, H, p) {
     const ry = unit * 0.18 * p.blush;
     if (rx < 1) continue;
     const g = ctx.createRadialGradient(cx - rx * 0.2, cy - ry * 0.25, 1, cx, cy, rx);
-    g.addColorStop(0, 'rgba(255, 170, 205, 0.98)');
-    g.addColorStop(0.75, 'rgba(255, 140, 190, 0.88)');
-    g.addColorStop(1, 'rgba(255, 140, 190, 0)');
+    g.addColorStop(0, rgba(cheekColour, 0.98));
+    g.addColorStop(0.75, rgba(cheekColour, 0.85));
+    g.addColorStop(1, rgba(cheekColour, 0));
     ctx.fillStyle = g;
     ctx.beginPath();
     ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
@@ -64,8 +82,9 @@ export function drawFace(ctx, W, H, p) {
   for (const side of [-1, 1]) {
     const cx = X(side * 0.46) + (p.pupilX ?? 0) * unit * 0.05;
     const cy = Y(0.1) + (p.pupilY ?? 0) * unit * -0.05;
-    const w = unit * 0.4;
-    const h = unit * 0.54 * open * (1 - p.eyeSquint * 0.5) * (1 - p.eyeHappy * 0.6);
+    const eyeScale = p.eyeScale ?? 1;
+    const w = unit * 0.4 * (eyeStyle === 'dots' ? 0.7 : 1) * Math.min(1.15, eyeScale);
+    const h = unit * 0.54 * open * eyeScale * (eyeStyle === 'dots' ? 0.62 : 1) * (1 - p.eyeSquint * 0.5) * (1 - p.eyeHappy * 0.6);
     const arcAmount = Math.max(p.eyeHappy, p.eyeSquint * 0.9);
 
     // round eye (fades out as the eye turns into a happy arc)
@@ -84,10 +103,41 @@ export function drawFace(ctx, W, H, p) {
       ctx.ellipse(cx, cy, w / 2, h / 2, 0, 0, Math.PI * 2);
       ctx.fill();
       // glossy highlights
+      if (eyeStyle === 'dots') {
+        ctx.fillStyle = INK;
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, w / 2, h / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
       ctx.fillStyle = '#fff';
       ctx.beginPath();
       ctx.ellipse(cx - w * 0.14, cy - h * 0.22, w * 0.17, h * 0.15, -0.5, 0, Math.PI * 2);
       ctx.fill();
+      if (eyeStyle === 'sparkle') {
+        // big shiny glints and a little star
+        ctx.beginPath();
+        ctx.ellipse(cx - w * 0.14, cy - h * 0.22, w * 0.24, h * 0.2, -0.5, 0, Math.PI * 2);
+        ctx.fill();
+        const sx = cx + w * 0.2;
+        const sy = cy + h * 0.12;
+        const r = w * 0.17;
+        ctx.beginPath();
+        ctx.moveTo(sx, sy - r); ctx.quadraticCurveTo(sx, sy, sx + r, sy); ctx.quadraticCurveTo(sx, sy, sx, sy + r);
+        ctx.quadraticCurveTo(sx, sy, sx - r, sy); ctx.quadraticCurveTo(sx, sy, sx, sy - r);
+        ctx.fill();
+      }
+      if (eyeStyle === 'lashes') {
+        ctx.strokeStyle = INK;
+        ctx.lineCap = 'round';
+        ctx.lineWidth = unit * 0.035;
+        for (let i = 0; i < 3; i++) {
+          const a = -0.9 - i * 0.42;
+          ctx.beginPath();
+          ctx.moveTo(cx + side * Math.cos(a) * w * 0.5, cy + Math.sin(a) * h * 0.5);
+          ctx.lineTo(cx + side * Math.cos(a) * w * 0.82, cy + Math.sin(a) * h * 0.78 - unit * 0.01);
+          ctx.stroke();
+        }
+      }
       ctx.beginPath();
       ctx.arc(cx + w * 0.17, cy + h * 0.2, w * 0.07, 0, Math.PI * 2);
       ctx.fill();
@@ -95,6 +145,29 @@ export function drawFace(ctx, W, H, p) {
       ctx.beginPath();
       ctx.ellipse(cx, cy + h * 0.33, w * 0.28, h * 0.08, 0, 0, Math.PI * 2);
       ctx.fill();
+      ctx.restore();
+    }
+
+    // a lid over the top of the eye (sleepy, smug and sulky looks), in the colour of the ball
+    const lid = Math.min(0.85, Math.max(p.eyeLid ?? 0, eyeStyle === 'sleepy' ? 0.45 : 0));
+    if (lid > 0.02 && roundAlpha > 0.02 && h > 2) {
+      ctx.save();
+      ctx.globalAlpha = roundAlpha;
+      ctx.fillStyle = ballColour;
+      ctx.beginPath();
+      ctx.rect(cx - w * 0.62, cy - h * 0.62, w * 1.24, h * (0.62 + (lid - 0.5) * 1.1 + 0.12));
+      ctx.save();
+      ctx.clip();
+      ctx.fillRect(cx - w * 0.7, cy - h * 0.7, w * 1.4, h * (0.7 + lid * 0.9 - 0.4));
+      ctx.restore();
+      ctx.strokeStyle = INK;
+      ctx.lineWidth = unit * 0.03;
+      ctx.lineCap = 'round';
+      const lidY = cy - h / 2 + h * lid * 0.9;
+      ctx.beginPath();
+      ctx.moveTo(cx - w * 0.5, lidY);
+      ctx.lineTo(cx + w * 0.5, lidY);
+      ctx.stroke();
       ctx.restore();
     }
 

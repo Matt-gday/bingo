@@ -1,0 +1,965 @@
+{
+  "note": "The look of every character (the caller, the regulars and the player). A look is { ball, cheeks, eyes, hat, glasses, neck, extras }. Colours are hex. Hats, glasses and neckwear are 'items' built from simple shapes, so a new one only needs an entry here. A part has a shape (sphere, cylinder, cone, torus, box, hemisphere, or the special shapes bow and headband), its size in args, a position pos, a rotation rot in radians, an optional scale, a colour ('primary' means the colour the player picks for that item) and a finish (glossy, matte or metal). The head is a ball of radius 1 centred at 0,0,0 facing +z. Wearable prizes will point at an item by its id.",
+  "balls": [
+    {
+      "id": "lilac",
+      "name": "Lilac",
+      "colour": "#F2E9FF"
+    },
+    {
+      "id": "pink",
+      "name": "Bubblegum",
+      "colour": "#FF8FCB"
+    },
+    {
+      "id": "mint",
+      "name": "Mint",
+      "colour": "#6FE9DD"
+    },
+    {
+      "id": "lime",
+      "name": "Lime",
+      "colour": "#A6F2C4"
+    },
+    {
+      "id": "grape",
+      "name": "Grape",
+      "colour": "#D9B8FF"
+    },
+    {
+      "id": "sky",
+      "name": "Sky",
+      "colour": "#8FD3FF"
+    },
+    {
+      "id": "sun",
+      "name": "Sunshine",
+      "colour": "#FFE27A"
+    },
+    {
+      "id": "peach",
+      "name": "Peach",
+      "colour": "#FFB89A"
+    },
+    {
+      "id": "coral",
+      "name": "Coral",
+      "colour": "#FF8A80"
+    },
+    {
+      "id": "periwinkle",
+      "name": "Periwinkle",
+      "colour": "#9FB4FF"
+    },
+    {
+      "id": "snow",
+      "name": "Snow",
+      "colour": "#FFFFFF"
+    },
+    {
+      "id": "slate",
+      "name": "Slate",
+      "colour": "#B9B6D6"
+    }
+  ],
+  "cheeks": [
+    "#FF8FB8",
+    "#FF9F7A",
+    "#C58BFF",
+    "#7FDDF0",
+    "#FFC94D"
+  ],
+  "eyes": [
+    {
+      "id": "round",
+      "name": "Round"
+    },
+    {
+      "id": "lashes",
+      "name": "Lashes"
+    },
+    {
+      "id": "sparkle",
+      "name": "Sparkle"
+    },
+    {
+      "id": "sleepy",
+      "name": "Sleepy"
+    },
+    {
+      "id": "dots",
+      "name": "Dots"
+    }
+  ],
+  "defaults": {
+    "player": {
+      "ball": "#9FB4FF",
+      "cheeks": "#FF8FB8",
+      "eyes": "round",
+      "hat": null,
+      "glasses": null,
+      "neck": null,
+      "extras": []
+    },
+    "caller": {
+      "ball": "#F2E9FF",
+      "cheeks": "#FF8FB8",
+      "eyes": "round",
+      "hat": null,
+      "glasses": null,
+      "neck": "bow",
+      "neckColour": "#7B4CF0",
+      "extras": [
+        "headset"
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "party-hat",
+      "slot": "hat",
+      "name": "Party hat",
+      "colours": [
+        "#FF8FCB",
+        "#FFD84A",
+        "#2EE6D6",
+        "#7B4CF0"
+      ],
+      "parts": [
+        {
+          "shape": "cone",
+          "args": [
+            0.5,
+            1.25,
+            40
+          ],
+          "pos": [
+            0.05,
+            1.45,
+            -0.05
+          ],
+          "rot": [
+            -0.12,
+            0,
+            0.12
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "sphere",
+          "args": [
+            0.14
+          ],
+          "pos": [
+            0.2,
+            2.1,
+            -0.12
+          ],
+          "colour": "#FFFFFF"
+        },
+        {
+          "shape": "torus",
+          "args": [
+            0.43,
+            0.04,
+            36
+          ],
+          "pos": [
+            0,
+            0.99,
+            0.02
+          ],
+          "rot": [
+            1.6,
+            0,
+            0.1
+          ],
+          "colour": "#FFFFFF"
+        }
+      ]
+    },
+    {
+      "id": "beanie",
+      "slot": "hat",
+      "name": "Woolly beanie",
+      "colours": [
+        "#FF8A80",
+        "#2EE6D6",
+        "#FFD84A",
+        "#7B4CF0"
+      ],
+      "parts": [
+        {
+          "shape": "hemisphere",
+          "args": [
+            1.1
+          ],
+          "pos": [
+            0,
+            0.28,
+            0
+          ],
+          "rot": [
+            -0.12,
+            0,
+            0
+          ],
+          "colour": "primary",
+          "finish": "matte"
+        },
+        {
+          "shape": "torus",
+          "args": [
+            1.02,
+            0.12,
+            48
+          ],
+          "pos": [
+            0,
+            0.3,
+            -0.03
+          ],
+          "rot": [
+            1.45,
+            0,
+            0
+          ],
+          "colour": "#FFFFFF",
+          "finish": "matte"
+        },
+        {
+          "shape": "sphere",
+          "args": [
+            0.19
+          ],
+          "pos": [
+            0,
+            1.34,
+            -0.1
+          ],
+          "colour": "#FFFFFF",
+          "finish": "matte"
+        }
+      ]
+    },
+    {
+      "id": "cap",
+      "slot": "hat",
+      "name": "Baseball cap",
+      "colours": [
+        "#2E7CF6",
+        "#FF8A80",
+        "#2EE6D6",
+        "#222244"
+      ],
+      "parts": [
+        {
+          "shape": "hemisphere",
+          "args": [
+            1.08
+          ],
+          "pos": [
+            0,
+            0.3,
+            0
+          ],
+          "rot": [
+            -0.18,
+            0,
+            0
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "cylinder",
+          "args": [
+            0.62,
+            0.62,
+            0.07,
+            40
+          ],
+          "pos": [
+            0,
+            0.5,
+            0.88
+          ],
+          "rot": [
+            -0.35,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            0.85
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "sphere",
+          "args": [
+            0.07
+          ],
+          "pos": [
+            0,
+            1.4,
+            -0.06
+          ],
+          "colour": "#FFFFFF"
+        }
+      ]
+    },
+    {
+      "id": "top-hat",
+      "slot": "hat",
+      "name": "Top hat",
+      "colours": [
+        "#2B1B6B",
+        "#C92A86",
+        "#222222"
+      ],
+      "parts": [
+        {
+          "shape": "cylinder",
+          "args": [
+            0.58,
+            0.58,
+            0.9,
+            40
+          ],
+          "pos": [
+            0,
+            1.45,
+            0
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "cylinder",
+          "args": [
+            0.95,
+            0.95,
+            0.07,
+            48
+          ],
+          "pos": [
+            0,
+            1.0,
+            0
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "cylinder",
+          "args": [
+            0.6,
+            0.6,
+            0.14,
+            40
+          ],
+          "pos": [
+            0,
+            1.1,
+            0
+          ],
+          "colour": "#FFD84A"
+        }
+      ]
+    },
+    {
+      "id": "crown",
+      "slot": "hat",
+      "name": "Golden crown",
+      "colours": [
+        "#FFD84A",
+        "#E9E9F5"
+      ],
+      "parts": [
+        {
+          "shape": "cylinder",
+          "args": [
+            0.62,
+            0.66,
+            0.32,
+            40
+          ],
+          "pos": [
+            0,
+            1.08,
+            0
+          ],
+          "colour": "primary",
+          "finish": "metal"
+        },
+        {
+          "shape": "cone",
+          "args": [
+            0.14,
+            0.34,
+            20
+          ],
+          "pos": [
+            0,
+            1.4,
+            0.58
+          ],
+          "colour": "primary",
+          "finish": "metal"
+        },
+        {
+          "shape": "cone",
+          "args": [
+            0.14,
+            0.34,
+            20
+          ],
+          "pos": [
+            0.5,
+            1.4,
+            0.28
+          ],
+          "colour": "primary",
+          "finish": "metal"
+        },
+        {
+          "shape": "cone",
+          "args": [
+            0.14,
+            0.34,
+            20
+          ],
+          "pos": [
+            -0.5,
+            1.4,
+            0.28
+          ],
+          "colour": "primary",
+          "finish": "metal"
+        },
+        {
+          "shape": "cone",
+          "args": [
+            0.14,
+            0.34,
+            20
+          ],
+          "pos": [
+            0.5,
+            1.4,
+            -0.32
+          ],
+          "colour": "primary",
+          "finish": "metal"
+        },
+        {
+          "shape": "cone",
+          "args": [
+            0.14,
+            0.34,
+            20
+          ],
+          "pos": [
+            -0.5,
+            1.4,
+            -0.32
+          ],
+          "colour": "primary",
+          "finish": "metal"
+        },
+        {
+          "shape": "sphere",
+          "args": [
+            0.09
+          ],
+          "pos": [
+            0,
+            1.14,
+            0.64
+          ],
+          "colour": "#FF3D7F"
+        }
+      ]
+    },
+    {
+      "id": "headband",
+      "slot": "hat",
+      "name": "Headband with a bow",
+      "colours": [
+        "#FF8FCB",
+        "#7B4CF0",
+        "#2EE6D6",
+        "#FFD84A"
+      ],
+      "parts": [
+        {
+          "shape": "headband",
+          "args": [
+            1.03,
+            0.1
+          ],
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "rot": [
+            -0.28,
+            0,
+            0
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "bow",
+          "args": [
+            0.42
+          ],
+          "pos": [
+            0.62,
+            0.78,
+            0.52
+          ],
+          "rot": [
+            0.45,
+            0.55,
+            -0.7
+          ],
+          "colour": "primary"
+        }
+      ]
+    },
+    {
+      "id": "round-glasses",
+      "slot": "glasses",
+      "name": "Round glasses",
+      "colours": [
+        "#2B1B6B",
+        "#FF8FCB",
+        "#FFD84A",
+        "#2EE6D6"
+      ],
+      "parts": [
+        {
+          "shape": "torus",
+          "args": [
+            0.27,
+            0.04,
+            40
+          ],
+          "pos": [
+            0.45,
+            0.12,
+            0.93
+          ],
+          "rot": [
+            0,
+            0.42,
+            0
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "torus",
+          "args": [
+            0.27,
+            0.04,
+            40
+          ],
+          "pos": [
+            -0.45,
+            0.12,
+            0.93
+          ],
+          "rot": [
+            0,
+            -0.42,
+            0
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "cylinder",
+          "args": [
+            0.025,
+            0.025,
+            0.22,
+            12
+          ],
+          "pos": [
+            0,
+            0.15,
+            1.0
+          ],
+          "rot": [
+            0,
+            0,
+            1.5708
+          ],
+          "colour": "primary"
+        }
+      ]
+    },
+    {
+      "id": "sunglasses",
+      "slot": "glasses",
+      "name": "Cool shades",
+      "colours": [
+        "#1A1446",
+        "#C92A86",
+        "#2E7CF6"
+      ],
+      "parts": [
+        {
+          "shape": "sphere",
+          "args": [
+            0.29
+          ],
+          "pos": [
+            0.45,
+            0.12,
+            0.9
+          ],
+          "rot": [
+            0,
+            0.42,
+            0
+          ],
+          "scale": [
+            1.05,
+            0.8,
+            0.22
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "sphere",
+          "args": [
+            0.29
+          ],
+          "pos": [
+            -0.45,
+            0.12,
+            0.9
+          ],
+          "rot": [
+            0,
+            -0.42,
+            0
+          ],
+          "scale": [
+            1.05,
+            0.8,
+            0.22
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "cylinder",
+          "args": [
+            0.03,
+            0.03,
+            0.26,
+            12
+          ],
+          "pos": [
+            0,
+            0.17,
+            0.99
+          ],
+          "rot": [
+            0,
+            0,
+            1.5708
+          ],
+          "colour": "primary"
+        }
+      ]
+    },
+    {
+      "id": "heart-glasses",
+      "slot": "glasses",
+      "name": "Heart glasses",
+      "colours": [
+        "#FF3D7F",
+        "#FF8FCB",
+        "#7B4CF0"
+      ],
+      "parts": [
+        {
+          "shape": "sphere",
+          "args": [
+            0.2
+          ],
+          "pos": [
+            0.55,
+            0.2,
+            0.9
+          ],
+          "rot": [
+            0,
+            0.42,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            0.25
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "sphere",
+          "args": [
+            0.2
+          ],
+          "pos": [
+            0.33,
+            0.2,
+            0.95
+          ],
+          "rot": [
+            0,
+            0.42,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            0.25
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "cone",
+          "args": [
+            0.3,
+            0.38,
+            24
+          ],
+          "pos": [
+            0.44,
+            -0.02,
+            0.95
+          ],
+          "rot": [
+            3.14159,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            0.25
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "sphere",
+          "args": [
+            0.2
+          ],
+          "pos": [
+            -0.55,
+            0.2,
+            0.9
+          ],
+          "rot": [
+            0,
+            -0.42,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            0.25
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "sphere",
+          "args": [
+            0.2
+          ],
+          "pos": [
+            -0.33,
+            0.2,
+            0.95
+          ],
+          "rot": [
+            0,
+            -0.42,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            0.25
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "cone",
+          "args": [
+            0.3,
+            0.38,
+            24
+          ],
+          "pos": [
+            -0.44,
+            -0.02,
+            0.95
+          ],
+          "rot": [
+            3.14159,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            0.25
+          ],
+          "colour": "primary"
+        }
+      ]
+    },
+    {
+      "id": "bow",
+      "slot": "neck",
+      "name": "Bow tie",
+      "colours": [
+        "#7B4CF0",
+        "#FF8FCB",
+        "#FF3D7F",
+        "#2EE6D6",
+        "#FFD84A"
+      ],
+      "parts": [
+        {
+          "shape": "bow",
+          "args": [
+            0.72
+          ],
+          "pos": [
+            0,
+            -0.72,
+            0.7
+          ],
+          "rot": [
+            0.62,
+            0,
+            0
+          ],
+          "colour": "primary"
+        }
+      ]
+    },
+    {
+      "id": "tie",
+      "slot": "neck",
+      "name": "Long tie",
+      "colours": [
+        "#C92A86",
+        "#2E7CF6",
+        "#2EE6D6",
+        "#FFD84A"
+      ],
+      "parts": [
+        {
+          "shape": "sphere",
+          "args": [
+            0.16
+          ],
+          "pos": [
+            0,
+            -0.86,
+            0.7
+          ],
+          "scale": [
+            1.15,
+            0.9,
+            0.9
+          ],
+          "colour": "primary"
+        },
+        {
+          "shape": "cone",
+          "args": [
+            0.24,
+            0.8,
+            4
+          ],
+          "pos": [
+            0,
+            -1.3,
+            0.66
+          ],
+          "rot": [
+            3.14159,
+            0.785,
+            0
+          ],
+          "scale": [
+            0.8,
+            1,
+            0.45
+          ],
+          "colour": "primary"
+        }
+      ]
+    },
+    {
+      "id": "scarf",
+      "slot": "neck",
+      "name": "Cosy scarf",
+      "colours": [
+        "#FF8A80",
+        "#2EE6D6",
+        "#FFD84A",
+        "#7B4CF0"
+      ],
+      "parts": [
+        {
+          "shape": "torus",
+          "args": [
+            0.62,
+            0.14,
+            40
+          ],
+          "pos": [
+            0,
+            -0.88,
+            0.1
+          ],
+          "rot": [
+            1.25,
+            0,
+            0
+          ],
+          "colour": "primary",
+          "finish": "matte"
+        },
+        {
+          "shape": "box",
+          "args": [
+            0.26,
+            0.5,
+            0.1
+          ],
+          "pos": [
+            0.34,
+            -1.2,
+            0.62
+          ],
+          "rot": [
+            0,
+            0,
+            0.12
+          ],
+          "colour": "primary",
+          "finish": "matte"
+        }
+      ]
+    }
+  ]
+}

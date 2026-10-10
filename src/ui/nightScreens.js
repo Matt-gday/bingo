@@ -1,5 +1,7 @@
 import { esc, html, setText, icons, patternPreview, confetti } from './helpers.js';
-import { faceSvg, YOU_COLOUR } from './faces.js';
+import { YOU_COLOUR } from './faces.js';
+import { mountFace } from './characterView.js';
+import { defaultLook } from './caller3d/avatar.js';
 import { callerBubble } from './screens.js';
 
 // "Tonight's game" (choose the length of the night and the speed, see who is at the table)
@@ -15,8 +17,9 @@ export function tonightScreen({ config, patterns, table, chosenNight, chosenSpee
         <span class="night-pics">${night.stageIds.map((id) => patternPreview(patternById(id), 34, '#e4dbff')).join('')}</span>
       </button>`)
     .join('');
-  const seats = [{ name: 'You', colour: YOU_COLOUR, mood: 'content' }, ...table.map((r) => ({ name: r.name, colour: r.colour, mood: 'content' }))]
-    .map((s) => `<div class="seat">${faceSvg(s.colour, s.mood, 56)}<span>${esc(s.name)}</span></div>`)
+  const seatList = [{ name: 'You', colour: YOU_COLOUR, look: defaultLook('player') }, ...table];
+  const seats = seatList
+    .map((s, i) => `<div class="seat"><span class="seat-face" data-seat-face="${i}"></span><span>${esc(s.name)}</span></div>`)
     .join('');
   const speeds = config.speeds
     .map((s) => `<button class="tspeed${s.id === chosenSpeed ? ' chosen' : ''}" data-speed="${s.id}">
@@ -41,6 +44,7 @@ export function tonightScreen({ config, patterns, table, chosenNight, chosenSpee
     </div>
   </main>`);
 
+  const seatViews = seatList.map((who, i) => mountFace(el.querySelector(`[data-seat-face="${i}"]`), who, { size: 56 }));
   el.querySelectorAll('[data-night]').forEach((button) => {
     button.addEventListener('click', () => {
       el.querySelectorAll('[data-night]').forEach((b) => b.classList.toggle('chosen', b === button));
@@ -55,7 +59,7 @@ export function tonightScreen({ config, patterns, table, chosenNight, chosenSpee
   });
   el.querySelector('[data-back]').addEventListener('click', onBack);
   el.querySelector('[data-deal]').addEventListener('click', onDeal);
-  return { el, update() {} };
+  return { el, update() {}, destroy: () => seatViews.forEach((v) => v.destroy()) };
 }
 
 // ---------- Stage won ----------
@@ -77,7 +81,7 @@ export function stageWonScreen(game, { voice }) {
       </div>
       ${you
         ? `<h1 class="bingo-word">Bingo!</h1><div class="win-balls">${numbers}</div>`
-        : `<div class="bot-win">${faceSvg(bot?.colour ?? '#fff', 'cheer', 120)}<h1>${esc(won.winner.name)} got it!</h1></div>`}
+        : `<div class="bot-win"><span class="big-face" data-big-face></span><h1>${esc(won.winner.name)} got it!</h1></div>`}
       <div class="stage-pills">
         <span class="pill-dark">${you ? `Stage ${stageNumber} of ${total} won` : `${esc(won.winner.name)} won stage ${stageNumber} of ${total}`}</span>
         <span class="pill-light">${icons.gem?.(16) ?? ''}${you
@@ -104,11 +108,12 @@ export function stageWonScreen(game, { voice }) {
 
   const bubble = callerBubble(game, el, { voice, maxLines: () => 3 });
   if (you) confetti(el);
+  const bigFace = !you && bot ? mountFace(el.querySelector('[data-big-face]'), bot, { size: 120, mood: 'cheer' }) : null;
   const arc = el.querySelector('[data-arc]');
   const count = el.querySelector('[data-count]');
   const circumference = 2 * Math.PI * 18;
   arc.style.strokeDasharray = `${circumference}`;
-  const seatEls = new Map(game.bots.map((b) => [b.id, el.querySelector(`[data-seat="${b.id}"] .seat-face`)]));
+  const seatEls = new Map(game.bots.map((b) => [b.id, mountFace(el.querySelector(`[data-seat="${b.id}"] .seat-face`), b, { size: 52 })]));
   const shownMood = new Map();
 
   function update(_game, now) {
@@ -121,9 +126,9 @@ export function stageWonScreen(game, { voice }) {
       const mood = game.botMood(b);
       if (shownMood.get(b.id) !== mood) {
         shownMood.set(b.id, mood);
-        seatEls.get(b.id).innerHTML = faceSvg(b.colour, mood, 52);
+        seatEls.get(b.id).setMood(mood);
       }
     }
   }
-  return { el, update };
+  return { el, update, destroy: () => { bigFace?.destroy(); seatEls.forEach((face) => face.destroy()); } };
 }

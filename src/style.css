@@ -2267,3 +2267,45 @@ button {
 .play-bottom .sit-banner {
   flex: 0 0 auto;
 }
+
+/* ---------- Characters drawn in 3D inside small boxes ---------- */
+.seat-face,
+.big-face {
+  position: relative;
+  display: block;
+}
+.seat-face {
+  width: 46px;
+  height: 46px;
+}
+.big-face {
+  width: 120px;
+  height: 120px;
+}
+.seat-face .character-canvas,
+.big-face .character-canvas {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 190% !important;
+  height: 190% !important;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.tonight .seat-face {
+  width: 56px;
+  height: 56px;
+}
+.table-seats .seat-face {
+  width: 52px;
+  height: 52px;
+}
+.seat > b,
+.seat > span:not(.seat-face) {
+  position: relative;
+  z-index: 2;
+}
+.seat-face .character-canvas,
+.big-face .character-canvas {
+  transform: translate(-50%, -57%);
+}

@@ -2,7 +2,7 @@ import { esc, html, setText, setClass, setRing, updateBall, ballMarkup, icons, c
 import { columnLetters } from '../engine/cards.js';
 import { SpeechBubble } from './speech.js';
 import { attachCaller, emote } from './callerStage.js';
-import { faceSvg } from './faces.js';
+import { mountFace } from './characterView.js';
 import { shuffle } from '../engine/rng.js';
 import { popIn } from './speech.js';
 import { soundCard } from './soundCard.js';
@@ -384,6 +384,7 @@ export function playScreen(game, { voice, mic, settings }) {
   // anyone who is one away.
   const seatEls = new Map(game.bots.map((b) => [b.id, el.querySelector(`[data-seat="${b.id}"]`)]));
   const seatShown = new Map();
+  const seatFaces = new Map(game.bots.map((b) => [b.id, mountFace(seatEls.get(b.id).querySelector('.seat-face'), b, { size: 46 })]));
   function syncTable() {
     for (const b of game.bots) {
       const seat = seatEls.get(b.id);
@@ -394,7 +395,7 @@ export function playScreen(game, { voice, mic, settings }) {
       const key = `${mood}|${toGo}|${needs.join(',')}|${shouting}`;
       if (seatShown.get(b.id) === key) continue;
       seatShown.set(b.id, key);
-      seat.querySelector('.seat-face').innerHTML = faceSvg(b.colour, mood, 46);
+      seatFaces.get(b.id).setMood(mood);
       seat.classList.toggle('shouting', shouting);
       const tag = seat.querySelector('.togo');
       // Two or more away: "3 to go". One away: the numbers that would finish it, in magenta.
@@ -460,7 +461,7 @@ export function playScreen(game, { voice, mic, settings }) {
       setText(whyEl, game.falseCall?.short ?? '');
     }
   }
-  return { el, update };
+  return { el, update, destroy: () => seatFaces.forEach((face) => face.destroy()) };
 }
 
 // ---------- Checking (the whole check, including a failed one, is on this one screen) ----------

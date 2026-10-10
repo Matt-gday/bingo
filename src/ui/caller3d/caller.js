@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { EXPRESSIONS, blendExpressions, drawFace, FACE_SPAN } from './face.js';
+import { buildItem, itemById, cleanLook, defaultLook } from './avatar.js';
 
 // A 3D version of the bingo caller, drawn live in the browser. Everything is built from simple shapes and a
 // face that is drawn from numbers, so there are no picture or model files to load.
@@ -15,22 +16,33 @@ function glossy(color, extra = {}) {
 }
 
 export class Caller3D {
-  constructor(canvas, { size = 420 } = {}) {
+  // `shared` is { renderer, environment } from the character hub: many characters can then be drawn with one
+  // WebGL renderer. Without it, the character makes (and draws with) a renderer of its own.
+  constructor(canvas, { size = 420, shared = null, look = null, distance = 5.8 * 1.5, cameraY = -0.14 } = {}) {
     this.canvas = canvas;
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    this.renderer.setSize(size, size, false);
-    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 0.92;
+    this.ownRenderer = !shared;
+    if (shared) {
+      this.renderer = shared.renderer;
+    } else {
+      this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      this.renderer.setSize(size, size, false);
+      this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+      this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      this.renderer.toneMappingExposure = 0.92;
+    }
 
     this.scene = new THREE.Scene();
-    const pmrem = new THREE.PMREMGenerator(this.renderer);
-    this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    if (shared) {
+      this.scene.environment = shared.environment;
+    } else {
+      const pmrem = new THREE.PMREMGenerator(this.renderer);
+      this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    }
     this.scene.environmentIntensity = 0.7;
 
     this.camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
-    this.camera.position.set(0, -0.14, 5.8 * 1.5); // the picture is 50% bigger than his box, so jumps are never cut off
+    this.camera.position.set(0, cameraY, distance); // the caller's picture is 50% bigger than his box, so jumps are never cut off
 
     this.buildLights();
     this.buildCharacter();
@@ -66,7 +78,8 @@ export class Caller3D {
     this.nextBlink = 1.5;
     this.time = 0;
     this.lastDrawn = '';
-    this.paintFace();
+    this.outfit = defaultLook('caller'); // the current look (not called 'look', which is the method that turns his head)
+    this.setLook(look ?? this.outfit);
   }
 
   buildLights() {
@@ -108,35 +121,20 @@ export class Caller3D {
     const patch = new THREE.SphereGeometry(1.004, 72, 48, Math.PI / 2 - FACE_SPAN.yaw / 2, FACE_SPAN.yaw, Math.PI / 2 - FACE_SPAN.pitch / 2, FACE_SPAN.pitch);
     this.head.add(new THREE.Mesh(patch, this.faceMaterial));
 
-    // Bow tie
-    this.purpleMaterial = glossy(PURPLE, { roughness: 0.2 });
-    const bow = new THREE.Group();
-    const wing = new THREE.Shape();
-    wing.moveTo(0, 0);
-    wing.lineTo(0.52, 0.3);
-    wing.quadraticCurveTo(0.62, 0, 0.52, -0.3);
-    wing.lineTo(0, 0);
-    const wingGeometry = new THREE.ExtrudeGeometry(wing, { depth: 0.08, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.08, bevelSegments: 10, curveSegments: 32 });
-    const right = new THREE.Mesh(wingGeometry, this.purpleMaterial);
-    const left = new THREE.Mesh(wingGeometry, this.purpleMaterial);
-    left.scale.x = -1;
-    const knot = new THREE.Mesh(new THREE.SphereGeometry(0.13, 32, 24), this.purpleMaterial);
-    knot.scale.set(1.1, 1, 0.95);
-    knot.position.z = 0.1;
-    bow.add(left, right, knot);
-    bow.position.set(0, -0.74, 0.66);
-    bow.rotation.x = 0.62;
-    bow.scale.setScalar(0.64);
-    this.head.add(bow);
-    this.bow = bow;
+    // What the character wears (hat, glasses, neckwear) is rebuilt whenever the look changes.
+    this.wardrobe = new THREE.Group();
+    this.head.add(this.wardrobe);
 
-    // Headset: band over the top, ear cup on one side, microphone boom down to the mouth
+    // Headset (the caller only): band over the top, ear cup on one side, microphone boom down to the mouth
+    this.purpleMaterial = glossy(PURPLE, { roughness: 0.2 });
+    this.headset = new THREE.Group();
+    this.head.add(this.headset);
     this.greyMaterial = glossy(GREY, { roughness: 0.3 });
     const bandPoints = [];
     for (let a = 0.12; a <= 2.3; a += 0.17) {
       bandPoints.push(new THREE.Vector3(1.075 * Math.cos(a), 1.075 * Math.sin(a), -0.34 * Math.sin(a) * 1.075 + 0.02));
     }
-    this.head.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(bandPoints), 80, 0.045, 14), this.greyMaterial));
+    this.headset.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(bandPoints), 80, 0.045, 14), this.greyMaterial));
 
     const cup = new THREE.Group();
     const housing = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.2, 48), this.greyMaterial);
@@ -146,7 +144,7 @@ export class Caller3D {
     pad.position.x = 0.12;
     cup.add(housing, pad);
     cup.position.set(1.04, 0.02, -0.02);
-    this.head.add(cup);
+    this.headset.add(cup);
 
     const boom = new THREE.CatmullRomCurve3([
       new THREE.Vector3(1.06, -0.2, 0.08),
@@ -154,13 +152,13 @@ export class Caller3D {
       new THREE.Vector3(0.82, -0.56, 0.85),
       new THREE.Vector3(0.46, -0.52, 1.02),
     ]);
-    this.head.add(new THREE.Mesh(new THREE.TubeGeometry(boom, 50, 0.04, 12), this.greyMaterial));
+    this.headset.add(new THREE.Mesh(new THREE.TubeGeometry(boom, 50, 0.04, 12), this.greyMaterial));
     this.micMaterial = glossy(0x3b3a45, { roughness: 0.5, clearcoat: 0.4 });
     const mic = new THREE.Mesh(new THREE.SphereGeometry(0.12, 28, 20), this.micMaterial);
     mic.scale.set(1.5, 1, 1.1);
     mic.position.set(0.42, -0.52, 1.03);
     mic.rotation.y = 0.5;
-    this.head.add(mic);
+    this.headset.add(mic);
   }
 
   buildShadow() {
@@ -178,6 +176,34 @@ export class Caller3D {
     this.shadow.rotation.x = -Math.PI / 2;
     this.shadow.position.y = -1.32;
     this.scene.add(this.shadow);
+  }
+
+  // ---- what the character looks like ----
+
+  // Applies a look: ball colour, cheeks, eye style, and what they wear. Safe to call at any time.
+  setLook(rawLook) {
+    const look = cleanLook(rawLook);
+    this.outfit = look;
+    const ball = new THREE.Color(look.ball);
+    this.ballMaterial.color.copy(ball);
+    const hsl = {};
+    ball.getHSL(hsl);
+    this.ballMaterial.sheenColor = new THREE.Color().setHSL(hsl.h, Math.min(1, hsl.s + 0.3), Math.max(0.45, hsl.l - 0.2));
+    this.headset.visible = look.extras.includes('headset');
+    for (const child of [...this.wardrobe.children]) {
+      this.wardrobe.remove(child);
+      child.traverse((node) => {
+        node.geometry?.dispose?.();
+        node.material?.dispose?.();
+      });
+    }
+    for (const slot of ['hat', 'glasses', 'neck']) {
+      const item = itemById(look[slot]);
+      if (!item) continue;
+      this.wardrobe.add(buildItem(item, look[`${slot}Colour`]));
+    }
+    this.lastDrawn = '';
+    this.paintFace();
   }
 
   // ---- things the game can ask for ----
@@ -328,15 +354,20 @@ export class Caller3D {
     this.shadow.scale.setScalar(shadowScale);
     this.shadow.material.opacity = 0.5 + shadowScale * 0.5;
 
+    if (this.ownRenderer) this.renderer.render(this.scene, this.camera);
+  }
+
+  // Draws this character with the shared renderer, which the caller of this has already sized.
+  renderShared() {
     this.renderer.render(this.scene, this.camera);
   }
 
   paintFace(params = { ...this.face, eyeOpen: 1, mouthOpen: this.face.mouthOpenBase, pupilX: 0, pupilY: 0 }) {
     // only redraw when something visibly changed
-    const key = Object.values(params).map((v) => Math.round(v * 120)).join(',');
+    const key = `${this.outfit.eyes}${this.outfit.cheeks}${this.outfit.ball}|${Object.values(params).map((v) => Math.round(v * 120)).join(',')}`;
     if (key === this.lastDrawn) return;
     this.lastDrawn = key;
-    drawFace(this.faceCtx, this.faceCanvas.width, this.faceCanvas.height, params);
+    drawFace(this.faceCtx, this.faceCanvas.width, this.faceCanvas.height, params, { cheeks: this.outfit.cheeks, eyes: this.outfit.eyes, ball: this.outfit.ball });
     this.faceTexture.needsUpdate = true;
   }
 }

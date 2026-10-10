@@ -1,5 +1,5 @@
 {
-  "note": "Five regulars. Three sit at the table each night. Faces are drawn in code as a coloured circle with eyes and a mouth that changes with mood. All numbers are placeholders to tune.",
+  "note": "Five regulars. Three sit at the table each night. Faces are drawn in code as a coloured circle with eyes and a mouth that changes with mood. All numbers are placeholders to tune. Each regular has a look (see Data/avatar.json for the colours, eye styles and items).",
   "regularsPerNight": 3,
   "ringInChance": 0.2,
   "regulars": [
@@ -26,7 +26,18 @@
       "reactionShare": [
         0.55,
         0.8
-      ]
+      ],
+      "look": {
+        "ball": "#FF8FCB",
+        "cheeks": "#FF8FB8",
+        "eyes": "lashes",
+        "glasses": "round-glasses",
+        "glassesColour": "#2B1B6B",
+        "neck": "bow",
+        "neckColour": "#FF3D7F",
+        "hat": null,
+        "extras": []
+      }
     },
     {
       "id": "mabel",
@@ -51,7 +62,18 @@
       "reactionShare": [
         0.85,
         1.15
-      ]
+      ],
+      "look": {
+        "ball": "#6FE9DD",
+        "cheeks": "#FF9F7A",
+        "eyes": "sleepy",
+        "hat": "beanie",
+        "hatColour": "#FF8A80",
+        "neck": "scarf",
+        "neckColour": "#FFD84A",
+        "glasses": null,
+        "extras": []
+      }
     },
     {
       "id": "rex",
@@ -72,7 +94,18 @@
       "reactionShare": [
         0.4,
         1.1
-      ]
+      ],
+      "look": {
+        "ball": "#A6F2C4",
+        "cheeks": "#FF9F7A",
+        "eyes": "dots",
+        "hat": "party-hat",
+        "hatColour": "#FFD84A",
+        "neck": "tie",
+        "neckColour": "#2E7CF6",
+        "glasses": null,
+        "extras": []
+      }
     },
     {
       "id": "pearl",
@@ -97,7 +130,19 @@
       "reactionShare": [
         0.7,
         0.95
-      ]
+      ],
+      "look": {
+        "ball": "#D9B8FF",
+        "cheeks": "#C58BFF",
+        "eyes": "lashes",
+        "hat": "headband",
+        "hatColour": "#7B4CF0",
+        "glasses": "sunglasses",
+        "glassesColour": "#C92A86",
+        "neck": "bow",
+        "neckColour": "#7B4CF0",
+        "extras": []
+      }
     },
     {
       "id": "gus",
@@ -122,7 +167,18 @@
       "reactionShare": [
         0.75,
         1.0
-      ]
+      ],
+      "look": {
+        "ball": "#8FD3FF",
+        "cheeks": "#FF9F7A",
+        "eyes": "round",
+        "hat": "cap",
+        "hatColour": "#2E7CF6",
+        "neck": "tie",
+        "neckColour": "#C92A86",
+        "glasses": null,
+        "extras": []
+      }
     }
   ],
   "awayReasons": [

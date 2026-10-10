@@ -19,6 +19,7 @@ export function createBot(regular, config) {
     name: regular.name,
     pronoun: regular.pronoun,
     colour: regular.colour,
+    look: regular.look, // how they look in 3D (see Data/avatar.json)
     missChance: regular.missChance,
     falseCallChance: regular.falseCallChance,
     reactionShare: regular.reactionShare ?? config.table?.reactionShareDefault ?? [0.6, 1.0],
