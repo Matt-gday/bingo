@@ -110,8 +110,10 @@ export class Voice {
   // `protect` marks a line that must be heard in full (the false call). Anything else that arrives while
   // it is playing is skipped, not delayed: a number is only called if it can start the moment it appears.
   // `force` says the line even if the player has the caller's voice switched off (used for the opening greeting).
-  speak(text, { protect = false, force = false } = {}) {
+  // `recordedOnly` says the line only if a recording exists, so the phone's own voice is never mixed in.
+  speak(text, { protect = false, force = false, recordedOnly = false } = {}) {
     if ((!this.on && !force) || !text) return;
+    if (recordedOnly && !this.clips[text]) return;
     if (this.protecting && !protect) return;
     this.protecting = protect;
     clearTimeout(this.protectTimer);

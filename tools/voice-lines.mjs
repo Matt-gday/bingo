@@ -5,7 +5,7 @@ import { callText, capital, fillLine, numberInWords } from '../src/engine/caller
 
 const NUMBERS = Array.from({ length: 75 }, (_, i) => i + 1);
 
-export function collectLines({ callerLines, patterns, regulars }) {
+export function collectLines({ callerLines, patterns, regulars, sets }) {
   const groups = {};
   const add = (group, text) => {
     if (!text) return;
@@ -35,6 +35,26 @@ export function collectLines({ callerLines, patterns, regulars }) {
   for (const line of callerLines.game.tooSlow) add('too slow', line);
   for (const line of callerLines.game.noWinner ?? []) add('no winner', line);
   for (const line of callerLines.game.pause) add('pause', line);
+
+  // The prize table. Only lines that can be said whole are recorded: the ones with a regular's name, a set, or
+  // 'his'/'her'. Lines that name a prize or an amount are shown in the bubble only.
+  const pt = callerLines.prizeTable ?? {};
+  for (const line of [...(pt.opening ?? []), ...(pt.closing ?? []), ...(pt.banter ?? [])]) add('prize table', line);
+  const setNames = (sets?.sets ?? []).map((s) => s.name);
+  for (const regular of regulars.regulars) {
+    for (const line of pt.hint ?? []) {
+      if (line.includes('{prize}')) continue;
+      if (line.includes('{set}')) for (const set of setNames) add('prize table', fillLine(line, { name: regular.name, set }));
+      else add('prize table', fillLine(line, { name: regular.name }));
+    }
+    for (const line of [...(pt.reaction ?? []), ...(pt.leaving ?? [])]) {
+      if (line.includes('{possessive}')) continue;
+      add('prize table', fillLine(line, { name: regular.name }));
+    }
+  }
+  for (const line of pt.reaction ?? []) {
+    if (line.includes('{possessive}')) for (const possessive of ['his', 'her']) add('prize table', fillLine(line, { possessive }));
+  }
 
   for (const pattern of spoken) {
     for (const line of callerLines.game.stageOpens) add('stage opens', fillLine(line, { pattern }));

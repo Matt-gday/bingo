@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { collectLines, allLines } from '../tools/voice-lines.mjs';
 
 const load = (name) => JSON.parse(readFileSync(new URL(`../Data/${name}.json`, import.meta.url), 'utf8'));
-const input = { callerLines: load('caller-lines'), patterns: load('patterns'), regulars: load('regulars') };
+const input = { callerLines: load('caller-lines'), patterns: load('patterns'), regulars: load('regulars'), sets: load('sets') };
 
 test('every call the caller can make has a recording line', () => {
   const lines = allLines(input);

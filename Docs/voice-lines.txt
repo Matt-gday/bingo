@@ -257,6 +257,9 @@ Got a number on both cards? You can mark both, one call at a time. Just don't fo
 == splash (1) ==
 Yay, it's bingo time!
 
+== how to play (1) ==
+Four quick rules before we start.
+
 == home screen (17) ==
 Well hello there, bingo champion! I've been waiting all day for you!
 Ooh, someone's looking lucky today. Is it you? It is you!
@@ -305,6 +308,129 @@ All seventy-five balls, and no winner. That's bingo for you!
 
 == pause (1) ==
 No peeking! Your cards are covered.
+
+== prize table (121) ==
+Right, who's after what tonight?
+That's the table closed for tonight!
+Who puts a meat tray next to a unicorn?
+Lovely selection tonight, if I do say so myself.
+Dot's after anything Art & Craft tonight.
+Dot's after anything Stationery tonight.
+Dot's after anything Music tonight.
+Dot's after anything Sport tonight.
+Dot's after anything Soft Toys tonight.
+Dot's after anything Food tonight.
+Dot's after anything Home tonight.
+Dot's after anything Garden tonight.
+Dot's after anything Tools tonight.
+Dot's after anything Pink tonight.
+Dot's after anything Purple tonight.
+Dot's after anything Aqua tonight.
+Dot's after anything Rainbow tonight.
+Dot's after anything Fluffy tonight.
+Dot's after anything Sparkly tonight.
+Dot's after anything Mini tonight.
+Dot's after anything Animals tonight.
+Dot's after anything Dress-up tonight.
+Keep an eye on Dot.
+Dot has done it again. Sold!
+Ooh, Dot wanted that one.
+Dot has left the table.
+That's Dot done for the night.
+Mabel's after anything Art & Craft tonight.
+Mabel's after anything Stationery tonight.
+Mabel's after anything Music tonight.
+Mabel's after anything Sport tonight.
+Mabel's after anything Soft Toys tonight.
+Mabel's after anything Food tonight.
+Mabel's after anything Home tonight.
+Mabel's after anything Garden tonight.
+Mabel's after anything Tools tonight.
+Mabel's after anything Pink tonight.
+Mabel's after anything Purple tonight.
+Mabel's after anything Aqua tonight.
+Mabel's after anything Rainbow tonight.
+Mabel's after anything Fluffy tonight.
+Mabel's after anything Sparkly tonight.
+Mabel's after anything Mini tonight.
+Mabel's after anything Animals tonight.
+Mabel's after anything Dress-up tonight.
+Keep an eye on Mabel.
+Mabel has done it again. Sold!
+Ooh, Mabel wanted that one.
+Mabel has left the table.
+That's Mabel done for the night.
+Rex's after anything Art & Craft tonight.
+Rex's after anything Stationery tonight.
+Rex's after anything Music tonight.
+Rex's after anything Sport tonight.
+Rex's after anything Soft Toys tonight.
+Rex's after anything Food tonight.
+Rex's after anything Home tonight.
+Rex's after anything Garden tonight.
+Rex's after anything Tools tonight.
+Rex's after anything Pink tonight.
+Rex's after anything Purple tonight.
+Rex's after anything Aqua tonight.
+Rex's after anything Rainbow tonight.
+Rex's after anything Fluffy tonight.
+Rex's after anything Sparkly tonight.
+Rex's after anything Mini tonight.
+Rex's after anything Animals tonight.
+Rex's after anything Dress-up tonight.
+Keep an eye on Rex.
+Rex has done it again. Sold!
+Ooh, Rex wanted that one.
+Rex has left the table.
+That's Rex done for the night.
+Pearl's after anything Art & Craft tonight.
+Pearl's after anything Stationery tonight.
+Pearl's after anything Music tonight.
+Pearl's after anything Sport tonight.
+Pearl's after anything Soft Toys tonight.
+Pearl's after anything Food tonight.
+Pearl's after anything Home tonight.
+Pearl's after anything Garden tonight.
+Pearl's after anything Tools tonight.
+Pearl's after anything Pink tonight.
+Pearl's after anything Purple tonight.
+Pearl's after anything Aqua tonight.
+Pearl's after anything Rainbow tonight.
+Pearl's after anything Fluffy tonight.
+Pearl's after anything Sparkly tonight.
+Pearl's after anything Mini tonight.
+Pearl's after anything Animals tonight.
+Pearl's after anything Dress-up tonight.
+Keep an eye on Pearl.
+Pearl has done it again. Sold!
+Ooh, Pearl wanted that one.
+Pearl has left the table.
+That's Pearl done for the night.
+Gus's after anything Art & Craft tonight.
+Gus's after anything Stationery tonight.
+Gus's after anything Music tonight.
+Gus's after anything Sport tonight.
+Gus's after anything Soft Toys tonight.
+Gus's after anything Food tonight.
+Gus's after anything Home tonight.
+Gus's after anything Garden tonight.
+Gus's after anything Tools tonight.
+Gus's after anything Pink tonight.
+Gus's after anything Purple tonight.
+Gus's after anything Aqua tonight.
+Gus's after anything Rainbow tonight.
+Gus's after anything Fluffy tonight.
+Gus's after anything Sparkly tonight.
+Gus's after anything Mini tonight.
+Gus's after anything Animals tonight.
+Gus's after anything Dress-up tonight.
+Keep an eye on Gus.
+Gus has done it again. Sold!
+Ooh, Gus wanted that one.
+Gus has left the table.
+That's Gus done for the night.
+Snatched from under his nose!
+Snatched from under her nose!
 
 == stage opens (6) ==
 Now we're playing for a line.
@@ -453,3 +579,9 @@ That's a full house for Trev.
 That's a full house for Deb.
 That's a full house for Bruce.
 That's a full house for Joyce.
+
+== marked too early (1) ==
+I hadn't called one of those numbers when you marked it, so it doesn't count.
+
+== too many wrong marks (1) ==
+Oh no, too many wrong numbers on your cards. Your bingo night is over.

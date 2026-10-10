@@ -61,7 +61,7 @@ export function prizeTableScreen({ profile, tableRegulars, speedId, lookOnly, ca
   attachCaller(el.querySelector('[data-caller]'), { voice, mood: 'happy' });
 
   // ---------- the caller's running commentary ----------
-  let lastSaid = 0;
+  let lastSaid = performance.now(); // so the first bit of banter waits a while
   const said = new Set();
   function say(text, { force = false } = {}) {
     const now = performance.now();
@@ -69,7 +69,7 @@ export function prizeTableScreen({ profile, tableRegulars, speedId, lookOnly, ca
     lastSaid = now;
     lineEl.textContent = text;
     popIn(bubbleEl);
-    voice?.speak(text);
+    voice?.speak(text, { recordedOnly: true });
   }
 
   function setNameOf(prize) {
@@ -95,14 +95,14 @@ export function prizeTableScreen({ profile, tableRegulars, speedId, lookOnly, ca
       } else {
         sfx?.play('claim-whoosh');
         const bot = round.bots.find((b) => b.id === d.buyer);
-        say(fill(lines.reaction[1], { name: bot.name }));
+        say(fill(pickOne([lines.reaction[1], lines.reaction[2]]), { name: bot.name }));
         profiles?.touch();
       }
     } else if (type === 'broken') {
       sfx?.play('too-slow');
       say(fill(lines.reaction[0], { possessive: possessive(d.bot.regular) }), { force: true });
     } else if (type === 'leave') {
-      say(fill(lines.leaving[0], { name: d.bot.name }));
+      say(fill(pickOne(lines.leaving), { name: d.bot.name }));
     }
   }
 
@@ -249,6 +249,7 @@ export function prizeTableScreen({ profile, tableRegulars, speedId, lookOnly, ca
       ring.style.setProperty('--p', p.toFixed(3));
       ring.classList.toggle('late', p > 0.78);
     }
+    if (round && overlay.hidden && now - lastSaid > 16000) say(pickOne(lines.banter), { force: true }); // a quiet moment: a bit of banter
     const c = String(credits());
     if (creditsEl.textContent !== c) creditsEl.textContent = c;
   }

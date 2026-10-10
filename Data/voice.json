@@ -52,7 +52,13 @@
       ],
       "how to play": "[friendly, bright, welcoming, clear]",
       "marked too early": "[sympathetic, kind, gently explaining, clear]",
-      "too many wrong marks": "[disappointed, sympathetic, gentle, clear]"
+      "too many wrong marks": "[disappointed, sympathetic, gentle, clear]",
+      "prize table": [
+        "[cheerful, bright, announcing, clear]",
+        "[amused, playful, chatty, clear]",
+        "[warm, friendly, upbeat, clear]",
+        "[teasing, knowing, cheerful, clear]"
+      ]
     },
     "lines": {
       "Eyes down, everyone!": "[excited, cheerful]",
