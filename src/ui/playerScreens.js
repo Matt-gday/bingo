@@ -58,7 +58,9 @@ export function avatarScreen({ mode, name = '', look, owned = null, onSave, onBa
   let current = cleanLook(look ?? defaultLook('player'));
   let tab = 'colour';
   const isNew = mode === 'new';
-  const has = (item) => !owned || owned.includes(item.id);
+  // `owned` is a list of { item, colour } (the wardrobe). Items the player does not own yet are shown locked.
+  const ownedColours = (item) => (owned ? avatarData.items.find((i) => i.id === item.id).colours.filter((c) => owned.some((o) => o.item === item.id && o.colour.toLowerCase() === c.toLowerCase())) : item.colours);
+  const has = (item) => ownedColours(item).length > 0;
 
   const el = html(`<main class="screen">
     <div class="avatar-page">
@@ -86,12 +88,16 @@ export function avatarScreen({ mode, name = '', look, owned = null, onSave, onBa
   const chip = (label, chosen, attrs) => `<button class="chip-btn${chosen ? ' chosen' : ''}" ${attrs}>${esc(label)}</button>`;
 
   function slotOptions(slot) {
-    const items = avatarData.items.filter((i) => i.slot === slot && has(i));
+    const items = avatarData.items.filter((i) => i.slot === slot);
     const picked = itemById(current[slot]);
+    const mine = picked ? ownedColours(picked) : [];
     const colours = picked
-      ? `<div class="swatches">${picked.colours.map((c) => swatch(c, (current[`${slot}Colour`] ?? picked.colours[0]).toLowerCase() === c.toLowerCase(), `data-colour="${slot}:${c}"`)).join('')}</div>`
+      ? `<div class="swatches">${mine.map((c) => swatch(c, (current[`${slot}Colour`] ?? mine[0]).toLowerCase() === c.toLowerCase(), `data-colour="${slot}:${c}"`)).join('')}${mine.length < picked.colours.length ? '<span class="more-colours">More colours at the prize table</span>' : ''}</div>`
       : '';
-    return `<div class="chips">${chip('None', !current[slot], `data-item="${slot}:"`)}${items.map((i) => chip(i.name, current[slot] === i.id, `data-item="${slot}:${i.id}"`)).join('')}</div>${colours}`;
+    const locked = items.some((i) => !has(i)) ? '<p class="opt-hint">🔒 Win the locked ones at the prize table.</p>' : '';
+    return `<div class="chips">${chip('None', !current[slot], `data-item="${slot}:"`)}${items.map((i) => (has(i)
+      ? chip(i.name, current[slot] === i.id, `data-item="${slot}:${i.id}"`)
+      : `<button class="chip-btn locked" disabled>🔒 ${esc(i.name)}</button>`)).join('')}</div>${colours}${locked}`;
   }
 
   function render() {
@@ -120,7 +126,7 @@ export function avatarScreen({ mode, name = '', look, owned = null, onSave, onBa
     else if (t.dataset.eyes) change({ eyes: t.dataset.eyes });
     else if (t.dataset.item !== undefined) {
       const [slot, id] = t.dataset.item.split(':');
-      change({ [slot]: id || null, [`${slot}Colour`]: null });
+      change({ [slot]: id || null, [`${slot}Colour`]: id ? ownedColours(itemById(id))[0] ?? null : null });
     } else if (t.dataset.colour) {
       const [slot, colour] = t.dataset.colour.split(':');
       change({ [`${slot}Colour`]: colour });
@@ -129,6 +135,7 @@ export function avatarScreen({ mode, name = '', look, owned = null, onSave, onBa
   el.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => { tab = b.dataset.tab; render(); }));
   el.querySelector('[data-random]').addEventListener('click', () => {
     const pick = (slot) => (Math.random() < 0.6 ? randomItem(avatarData.items.filter((i) => i.slot === slot && has(i)))?.id ?? null : null);
+    const colourOf = (id) => (id ? randomItem(ownedColours(itemById(id))) : null);
     const hat = pick('hat');
     const glasses = pick('glasses');
     const neck = pick('neck');
@@ -137,9 +144,9 @@ export function avatarScreen({ mode, name = '', look, owned = null, onSave, onBa
       cheeks: randomItem(avatarData.cheeks),
       eyes: randomItem(avatarData.eyes).id,
       hat, glasses, neck,
-      hatColour: hat ? randomItem(itemById(hat).colours) : null,
-      glassesColour: glasses ? randomItem(itemById(glasses).colours) : null,
-      neckColour: neck ? randomItem(itemById(neck).colours) : null,
+      hatColour: colourOf(hat),
+      glassesColour: colourOf(glasses),
+      neckColour: colourOf(neck),
     });
   });
   // Drag or swipe the avatar to turn it. A quick flick keeps it spinning; left alone, it hops and turns back to

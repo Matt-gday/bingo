@@ -2,7 +2,7 @@ import { esc, html, icons } from './helpers.js';
 import { attachCaller } from './callerStage.js';
 import { mountFace } from './characterView.js';
 import { showPrizeArt, badgeHtml } from './prizeArt.js';
-import { data, cabinetOf, whoIsAhead, regulars, owners } from '../prizeWorld.js';
+import { data, cabinetOf, whoIsAhead, regulars, owners, regularLook } from '../prizeWorld.js';
 
 // The calm screens of the prize round: who wants what, a cabinet (the player's or a regular's), and the sets.
 
@@ -87,7 +87,7 @@ export function cabinetScreen({ profile, ownerId, onBack }) {
       <div class="cab-prizes">${prizes}</div>
     </div>
   </main>`);
-  const face = mountFace(el.querySelector('[data-face]'), you ? profile.look : regular, { size: 72 });
+  const face = mountFace(el.querySelector('[data-face]'), you ? profile.look : { ...regular, look: regularLook(regular, profile.prizes) }, { size: 72 });
   const cleanups = [];
   el.querySelectorAll('[data-art]').forEach((slot) => cleanups.push(showPrizeArt(slot, data.prizes.get(slot.dataset.art))));
   el.querySelector('[data-back]').addEventListener('click', onBack);

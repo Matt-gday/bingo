@@ -1,8 +1,9 @@
 import prizesJson from '../Data/prizes.json';
 import setsJson from '../Data/sets.json';
 import regularsData from '../Data/regulars.json';
+import avatarData from '../Data/avatar.json';
 import config from '../Data/config.json';
-import { buildPrizeData, refillTable, regularWallet, closestSet, setStatus, finishedSets, badgeFor, streetCred, ownedIds } from './engine/prizes.js';
+import { buildPrizeData, refillTable, regularWallet, closestSet, setStatus, finishedSets, badgeFor, streetCred, ownedIds, wardrobeOf } from './engine/prizes.js';
 
 // The prize world as the screens see it: the shared prize data, and one player's save made ready to use.
 
@@ -19,6 +20,25 @@ export function ensureWorld(profile) {
     state.covered = []; // the very first table is simply there, not a surprise
   }
   return state;
+}
+
+// What the player can wear: the free starter items and every wearable prize they own.
+export const playerWardrobe = (profile) => wardrobeOf(data, profile.prizes, avatarData.starterItems);
+
+const SLOT_OF = Object.fromEntries(avatarData.items.map((i) => [i.id, i.slot]));
+
+// A regular wears what they have bought: their own signature look, with each wearable they own put on over it
+// (the most recent one in each place).
+export function regularLook(regular, state) {
+  const look = { ...regular.look };
+  for (const id of ownedIds(state, regular.id)) {
+    const w = data.prizes.get(id)?.wearable;
+    if (!w) continue;
+    const slot = SLOT_OF[w.item];
+    look[slot] = w.item;
+    look[`${slot}Colour`] = w.colour;
+  }
+  return look;
 }
 
 // Everyone at tonight's table, in the order they are shown: the player first.

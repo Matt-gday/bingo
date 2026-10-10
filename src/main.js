@@ -30,7 +30,7 @@ import { pauseScreen } from './ui/pauseScreen.js';
 import { welcomeScreen, avatarScreen, howToPlayScreen, settingsScreen } from './ui/playerScreens.js';
 import { whoWantsWhatScreen, cabinetScreen, setsScreen } from './ui/prizeScreens.js';
 import { prizeTableScreen, tableClosedScreen } from './ui/prizeTableScreen.js';
-import { ensureWorld } from './prizeWorld.js';
+import { ensureWorld, playerWardrobe, regularLook } from './prizeWorld.js';
 import { defaultLook } from './ui/caller3d/avatar.js';
 
 const root = document.getElementById('app');
@@ -163,6 +163,7 @@ function showWelcome() {
 function showNewPlayer({ first }) {
   show('avatar', () => avatarScreen({
     mode: 'new',
+    owned: playerWardrobe({ prizes: { owned: {} } }),
     look: { ...defaultLook('player'), ball: ['#9FB4FF', '#FF8FCB', '#6FE9DD', '#D9B8FF', '#A6F2C4', '#8FD3FF'][Math.floor(Math.random() * 6)] },
     onBack: first ? null : (profiles.list().length ? showWelcome : null),
     onSave: ({ name, look }) => {
@@ -178,6 +179,7 @@ function showAvatarEdit() {
   if (!player) return showWelcome();
   show('avatar', () => avatarScreen({
     mode: 'edit',
+    owned: playerWardrobe(player),
     name: player.name,
     look: player.look,
     onBack: showSettings,
@@ -287,6 +289,10 @@ function showTonight() {
   game = null;
   voice.cancel();
   table = pickSome(regularsData.regulars, regularsData.regularsPerNight);
+  if (profiles.active()) {
+    ensureWorld(profiles.active());
+    table = table.map((r) => ({ ...r, look: regularLook(r, profiles.active().prizes) })); // they wear what they have bought
+  }
   show('tonight', () => tonightScreen({
     config,
     patterns,

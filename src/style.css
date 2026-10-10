@@ -3548,3 +3548,19 @@ button {
 .finish-tag + .wear-tag {
   top: 34px;
 }
+
+.chip-btn.locked {
+  color: #9a8fc9;
+  background: #f1eef9;
+  box-shadow: none;
+}
+.more-colours,
+.opt-hint {
+  display: block;
+  margin: 0;
+  font: 700 12px/1.3 var(--font-body);
+  color: #8576bf;
+}
+.swatches .more-colours {
+  align-self: center;
+}
