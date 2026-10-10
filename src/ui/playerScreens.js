@@ -142,10 +142,39 @@ export function avatarScreen({ mode, name = '', look, owned = null, onSave, onBa
       neckColour: neck ? randomItem(itemById(neck).colours) : null,
     });
   });
-  el.querySelector('[data-preview]').addEventListener('click', () => {
-    preview.setMood('cheer');
-    setTimeout(() => preview.setMood('content'), 1400);
+  // Drag or swipe the avatar to turn it. A quick flick keeps it spinning; left alone, it hops and turns back to
+  // face the front. A simple tap still makes it cheer.
+  const previewEl = el.querySelector('[data-preview]');
+  let drag = null;
+  previewEl.addEventListener('pointerdown', (event) => {
+    previewEl.setPointerCapture?.(event.pointerId);
+    drag = { x: event.clientX, lastX: event.clientX, lastT: performance.now(), vel: 0, moved: 0 };
+    preview.dragStart();
   });
+  previewEl.addEventListener('pointermove', (event) => {
+    if (!drag) return;
+    const now = performance.now();
+    const dx = event.clientX - drag.lastX;
+    const dt = Math.max(1, now - drag.lastT) / 1000;
+    drag.vel = drag.vel * 0.6 + (dx / dt) * 0.4; // pixels a second, smoothed
+    drag.moved += Math.abs(dx);
+    drag.lastX = event.clientX;
+    drag.lastT = now;
+    preview.dragBy(dx * 0.016);
+  });
+  const release = () => {
+    if (!drag) return;
+    const tapped = drag.moved < 6;
+    const speed = performance.now() - drag.lastT > 90 ? 0 : drag.vel * 0.016; // holding still before letting go: no flick
+    preview.dragEnd(speed);
+    drag = null;
+    if (tapped) {
+      preview.setMood('cheer');
+      setTimeout(() => preview.setMood('content'), 1400);
+    }
+  };
+  previewEl.addEventListener('pointerup', release);
+  previewEl.addEventListener('pointercancel', release);
   // The Enter / Done key on the keyboard just puts the keyboard away.
   nameInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {

@@ -63,6 +63,9 @@ export class Caller3D {
     this.squash = 0; // positive = squashed flat, negative = stretched tall
     this.squashVel = 0;
     this.talking = false;
+    // Turning him by hand (the avatar creator): dragging, the spin that carries on after a flick, and the
+    // turn back to face the front after a while.
+    this.manual = { angle: 0, vel: 0, dragging: false, idle: 0, home: null };
     this.spinT = 1; // 1 = not spinning
     this.spinAngle = 0;
     this.spinDir = 1;
@@ -231,6 +234,26 @@ export class Caller3D {
     this.jump(2.2);
   }
 
+  // ---- turning him by hand ----
+  dragStart() {
+    this.manual.dragging = true;
+    this.manual.vel = 0;
+    this.manual.home = null;
+    this.manual.idle = 0;
+  }
+
+  dragBy(radians) {
+    this.manual.angle += radians;
+    this.manual.idle = 0;
+  }
+
+  // Let go, at a speed in radians per second: a quick flick keeps spinning and slows down.
+  dragEnd(velocity = 0) {
+    this.manual.dragging = false;
+    this.manual.vel = Math.max(-14, Math.min(14, velocity));
+    this.manual.idle = 0;
+  }
+
   setLid(amount) {
     this.lid = amount;
   }
@@ -318,6 +341,33 @@ export class Caller3D {
     };
     this.paintFace(faceNow);
 
+    // turned by hand: it carries on after a flick and slows down; after a short rest he hops and spins back
+    // to face the front
+    const m = this.manual;
+    if (!m.dragging && !m.home) {
+      m.angle += m.vel * dt;
+      m.vel *= Math.exp(-1.6 * dt);
+      if (Math.abs(m.vel) < 0.05) m.vel = 0;
+      if (m.vel === 0 && Math.abs(m.angle) > 0.05) {
+        m.idle += dt;
+        if (m.idle > 2.2) {
+          const target = Math.round(m.angle / (Math.PI * 2)) * Math.PI * 2; // the nearest way to face the front
+          m.home = { from: m.angle, to: target, t: 0 };
+          this.jump(2.4);
+        }
+      }
+    }
+    if (m.home) {
+      m.home.t = Math.min(1, m.home.t + dt / 0.85);
+      const e = m.home.t * m.home.t * (3 - 2 * m.home.t);
+      m.angle = m.home.from + (m.home.to - m.home.from) * e;
+      if (m.home.t >= 1) {
+        m.angle = 0;
+        m.home = null;
+        m.idle = 0;
+      }
+    }
+
     // a full turn all the way round, with a little hop
     if (this.spinT < 1) {
       this.spinT = Math.min(1, this.spinT + dt / this.spinSeconds);
@@ -332,7 +382,7 @@ export class Caller3D {
     this.rollVel += (-this.roll * 70 - this.rollVel * 7) * dt; // a spring, for a wobble after a shake
     this.roll += this.rollVel * dt;
     const talkNod = this.talking ? Math.sin(t * 7.5) * 0.02 * this.talkLevel : 0;
-    this.head.rotation.y = -0.06 + this.lookYaw + this.spinAngle + Math.sin(t * 0.7) * 0.025;
+    this.head.rotation.y = -0.06 + this.lookYaw + this.spinAngle + this.manual.angle + Math.sin(t * 0.7) * 0.025;
     this.head.rotation.x = this.lookPitch + Math.sin(t * 1.1) * 0.015 + talkNod;
     this.head.rotation.z = this.roll + Math.sin(t * 0.9) * 0.012;
 

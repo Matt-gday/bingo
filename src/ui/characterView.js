@@ -16,10 +16,17 @@ export function mountFace(el, who, { size = 56, mood = 'content', frameSize } = 
   const view = hub.mount(el, lookOf(who), { cssSize: frameSize ?? Math.round(size * 1.7) });
   if (view) {
     view.setMood(mood);
-    return { setMood: (m) => view.setMood(m), setLook: (l) => view.setLook(l), destroy: () => view.destroy() };
+    return {
+      setMood: (m) => view.setMood(m),
+      setLook: (l) => view.setLook(l),
+      dragStart: () => view.character.dragStart(),
+      dragBy: (r) => view.character.dragBy(r),
+      dragEnd: (v) => view.character.dragEnd(v),
+      destroy: () => view.destroy(),
+    };
   }
   // No 3D on this phone: the flat face instead
   const draw = (m) => { el.innerHTML = faceSvg(colour, m, size); };
   draw(mood);
-  return { setMood: draw, setLook() {}, destroy() {} };
+  return { setMood: draw, setLook() {}, dragStart() {}, dragBy() {}, dragEnd() {}, destroy() {} };
 }

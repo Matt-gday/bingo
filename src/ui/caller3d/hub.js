@@ -110,3 +110,4 @@ export class CharacterHub {
 }
 
 export const hub = new CharacterHub();
+if (import.meta.env?.DEV && typeof window !== 'undefined') window.__hub = hub; // for testing in the browser console only

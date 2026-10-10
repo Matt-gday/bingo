@@ -2858,3 +2858,9 @@ button {
 .player-tile .tile-face {
   margin-bottom: 6px;
 }
+
+.avatar-preview {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
