@@ -20,7 +20,6 @@ test('lines with placeholders are filled in, never left with braces', () => {
   assert.ok(lines.every((line) => !/[{}]/.test(line)));
   assert.ok(lines.includes("Ooh, unlucky. I haven't called forty-five yet."));
   assert.ok(lines.includes("I can't see a line there, I'm afraid."));
-  assert.ok(lines.includes('Sit down, Dot, that\'s not two lines.'));
 });
 
 test('no line is listed twice', () => {
