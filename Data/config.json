@@ -117,7 +117,9 @@
   "credits": {
     "forPlaying": 2,
     "closenessMaxShareOfPayout": 0.4,
-    "note": "Closeness consolation: when a bot wins a stage, the player earns up to this share of the stage payout, scaled by how much of the pattern they had correctly marked."
+    "note": "Closeness consolation: when a bot wins a stage, the player earns up to this share of the stage payout, scaled by how much of the pattern they had correctly marked.",
+    "regularAllowance": 40,
+    "regularAllowanceNote": "What each regular also earns every night away from the bingo, so they have money to shop with and compete for prizes and sets. It is not shown on the results screen."
   },
   "prizeTable": {
     "slots": 6,
@@ -129,7 +131,9 @@
       "relaxed": 1.6,
       "steady": 1.0,
       "quick": 0.6
-    }
+    },
+    "regularStartingCredits": 60,
+    "note": "The prize table. slots: how many prizes are on it. soldBeatMs: how long 'Sold to...' shows. firstBotDelaySeconds / secondsBetweenBotArrivals: when the regulars arrive. desperationSpeedUp: a ring runs this much faster if the prize would finish one of their sets. speedScaleBySetting: rings follow the night's calling speed. regularStartingCredits: what each regular starts with in a new player's world."
   },
   "sets": {
     "targetShare": 0.6,

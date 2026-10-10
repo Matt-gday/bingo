@@ -1,5 +1,5 @@
 {
-  "note": "The look of every character (the caller, the regulars and the player). A look is { ball, cheeks, eyes, hat, glasses, neck, extras }. Colours are hex. Hats, glasses and neckwear are 'items' built from simple shapes, so a new one only needs an entry here. A part has a shape (sphere, cylinder, cone, torus, box, hemisphere, or the special shapes bow and headband), its size in args, a position pos, a rotation rot in radians, an optional scale, a colour ('primary' means the colour the player picks for that item) and a finish (glossy, matte or metal). The head is a ball of radius 1 centred at 0,0,0 facing +z. Wearable prizes will point at an item by its id.",
+  "note": "The look of every character (the caller, the regulars and the player). A look is { ball, cheeks, eyes, hat, glasses, neck, extras }. Colours are hex. Hats, glasses and neckwear are 'items' built from simple shapes, so a new one only needs an entry here. A part has a shape (sphere, cylinder, cone, torus, box, hemisphere, or the special shapes bow and headband), its size in args, a position pos, a rotation rot in radians, an optional scale, a colour ('primary' means the colour the player picks for that item) and a finish (glossy, matte or metal). The head is a ball of radius 1 centred at 0,0,0 facing +z. Wearable prizes will point at an item by its id. starterItems are the colourways every player owns from the start; every other colourway is a prize.",
   "balls": [
     {
       "id": "lilac",
@@ -958,6 +958,20 @@
           "finish": "matte"
         }
       ]
+    }
+  ],
+  "starterItems": [
+    {
+      "item": "bow",
+      "colour": "#7B4CF0"
+    },
+    {
+      "item": "round-glasses",
+      "colour": "#2B1B6B"
+    },
+    {
+      "item": "beanie",
+      "colour": "#FF8A80"
     }
   ]
 }

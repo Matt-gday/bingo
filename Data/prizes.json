@@ -1,5 +1,5 @@
 {
-  "note": "Starting prize list. Prices are placeholders to tune. Add a prize by adding an entry here and an image in Images/prizes.",
+  "note": "Prizes. Prices are placeholders to tune. Add a prize by adding an entry here and an image in Images/prizes. A prize with a 'wearable' entry (an item id from Data/avatar.json and one of its colours) can be worn on the avatar once it is owned.",
   "prizes": [
     {
       "id": "zigzag-scissors",
@@ -9,7 +9,7 @@
         "art-and-craft",
         "purple"
       ],
-      "price": 60,
+      "price": 40,
       "size": "small",
       "room": "bedroom"
     },
@@ -22,7 +22,7 @@
         "rainbow",
         "mini"
       ],
-      "price": 50,
+      "price": 35,
       "size": "small",
       "room": "bedroom"
     },
@@ -34,7 +34,7 @@
         "art-and-craft",
         "sparkly"
       ],
-      "price": 50,
+      "price": 35,
       "size": "small",
       "room": "bedroom"
     },
@@ -46,7 +46,7 @@
         "art-and-craft",
         "aqua"
       ],
-      "price": 70,
+      "price": 50,
       "size": "medium",
       "room": "bedroom"
     },
@@ -59,7 +59,7 @@
         "rainbow",
         "fluffy"
       ],
-      "price": 60,
+      "price": 40,
       "size": "small",
       "room": "bedroom"
     },
@@ -72,7 +72,7 @@
         "pink",
         "sparkly"
       ],
-      "price": 90,
+      "price": 65,
       "size": "medium",
       "room": "bedroom"
     },
@@ -84,7 +84,7 @@
         "stationery",
         "pink"
       ],
-      "price": 80,
+      "price": 55,
       "size": "small",
       "room": "bedroom"
     },
@@ -97,7 +97,7 @@
         "purple",
         "fluffy"
       ],
-      "price": 60,
+      "price": 40,
       "size": "small",
       "room": "bedroom"
     },
@@ -110,7 +110,7 @@
         "rainbow",
         "sparkly"
       ],
-      "price": 70,
+      "price": 50,
       "size": "small",
       "room": "bedroom"
     },
@@ -123,7 +123,7 @@
         "animals",
         "mini"
       ],
-      "price": 50,
+      "price": 35,
       "size": "small",
       "room": "bedroom"
     },
@@ -135,7 +135,7 @@
         "stationery",
         "aqua"
       ],
-      "price": 40,
+      "price": 30,
       "size": "small",
       "room": "bedroom"
     },
@@ -148,7 +148,7 @@
         "art-and-craft",
         "sparkly"
       ],
-      "price": 60,
+      "price": 40,
       "size": "small",
       "room": "bedroom"
     },
@@ -160,7 +160,7 @@
         "music",
         "aqua"
       ],
-      "price": 40,
+      "price": 30,
       "size": "medium",
       "room": "playroom"
     },
@@ -172,7 +172,7 @@
         "music",
         "pink"
       ],
-      "price": 110,
+      "price": 75,
       "size": "large",
       "room": "playroom"
     },
@@ -184,7 +184,7 @@
         "music",
         "sparkly"
       ],
-      "price": 70,
+      "price": 50,
       "size": "medium",
       "room": "playroom"
     },
@@ -196,7 +196,7 @@
         "music",
         "rainbow"
       ],
-      "price": 60,
+      "price": 40,
       "size": "medium",
       "room": "playroom"
     },
@@ -209,7 +209,7 @@
         "purple",
         "mini"
       ],
-      "price": 40,
+      "price": 30,
       "size": "small",
       "room": "playroom"
     },
@@ -221,7 +221,7 @@
         "music",
         "mini"
       ],
-      "price": 60,
+      "price": 40,
       "size": "small",
       "room": "playroom"
     },
@@ -233,7 +233,7 @@
         "sport",
         "pink"
       ],
-      "price": 50,
+      "price": 35,
       "size": "medium",
       "room": "playroom"
     },
@@ -244,7 +244,7 @@
       "tags": [
         "sport"
       ],
-      "price": 60,
+      "price": 40,
       "size": "medium",
       "room": "playroom"
     },
@@ -255,7 +255,7 @@
       "tags": [
         "sport"
       ],
-      "price": 90,
+      "price": 65,
       "size": "large",
       "room": "garage"
     },
@@ -268,7 +268,7 @@
         "purple",
         "sparkly"
       ],
-      "price": 140,
+      "price": 100,
       "size": "large",
       "room": "garage"
     },
@@ -280,7 +280,7 @@
         "sport",
         "aqua"
       ],
-      "price": 40,
+      "price": 30,
       "size": "medium",
       "room": "garage"
     },
@@ -292,7 +292,7 @@
         "sport",
         "rainbow"
       ],
-      "price": 60,
+      "price": 40,
       "size": "large",
       "room": "playroom"
     },
@@ -306,7 +306,7 @@
         "fluffy",
         "animals"
       ],
-      "price": 150,
+      "price": 105,
       "size": "medium",
       "room": "bedroom"
     },
@@ -320,7 +320,7 @@
         "fluffy",
         "animals"
       ],
-      "price": 150,
+      "price": 105,
       "size": "medium",
       "room": "bedroom"
     },
@@ -334,7 +334,7 @@
         "sparkly",
         "animals"
       ],
-      "price": 180,
+      "price": 125,
       "size": "medium",
       "room": "bedroom"
     },
@@ -347,7 +347,7 @@
         "aqua",
         "animals"
       ],
-      "price": 90,
+      "price": 65,
       "size": "medium",
       "room": "bedroom"
     },
@@ -360,7 +360,7 @@
         "fluffy",
         "animals"
       ],
-      "price": 100,
+      "price": 70,
       "size": "medium",
       "room": "bedroom"
     },
@@ -373,7 +373,7 @@
         "mini",
         "animals"
       ],
-      "price": 60,
+      "price": 40,
       "size": "small",
       "room": "bedroom"
     },
@@ -384,7 +384,7 @@
       "tags": [
         "food"
       ],
-      "price": 120,
+      "price": 85,
       "size": "medium",
       "room": "kitchen"
     },
@@ -395,7 +395,7 @@
       "tags": [
         "food"
       ],
-      "price": 50,
+      "price": 35,
       "size": "small",
       "room": "kitchen"
     },
@@ -407,7 +407,7 @@
         "food",
         "rainbow"
       ],
-      "price": 60,
+      "price": 40,
       "size": "small",
       "room": "kitchen"
     },
@@ -419,7 +419,7 @@
         "food",
         "pink"
       ],
-      "price": 80,
+      "price": 55,
       "size": "medium",
       "room": "kitchen"
     },
@@ -432,7 +432,7 @@
         "rainbow",
         "mini"
       ],
-      "price": 50,
+      "price": 35,
       "size": "small",
       "room": "kitchen"
     },
@@ -445,7 +445,7 @@
         "pink",
         "sparkly"
       ],
-      "price": 60,
+      "price": 40,
       "size": "small",
       "room": "kitchen"
     },
@@ -456,7 +456,7 @@
       "tags": [
         "home"
       ],
-      "price": 30,
+      "price": 20,
       "size": "small",
       "room": "kitchen"
     },
@@ -468,7 +468,7 @@
         "home",
         "pink"
       ],
-      "price": 50,
+      "price": 35,
       "size": "small",
       "room": "kitchen"
     },
@@ -480,7 +480,7 @@
         "home",
         "aqua"
       ],
-      "price": 60,
+      "price": 40,
       "size": "small",
       "room": "bathroom"
     },
@@ -493,7 +493,7 @@
         "animals",
         "mini"
       ],
-      "price": 50,
+      "price": 35,
       "size": "small",
       "room": "bathroom"
     },
@@ -506,7 +506,7 @@
         "purple",
         "fluffy"
       ],
-      "price": 80,
+      "price": 55,
       "size": "medium",
       "room": "bedroom"
     },
@@ -518,7 +518,7 @@
         "home",
         "purple"
       ],
-      "price": 150,
+      "price": 105,
       "size": "medium",
       "room": "bathroom"
     },
@@ -529,7 +529,7 @@
       "tags": [
         "garden"
       ],
-      "price": 90,
+      "price": 65,
       "size": "medium",
       "room": "garden"
     },
@@ -541,7 +541,7 @@
         "garden",
         "animals"
       ],
-      "price": 80,
+      "price": 55,
       "size": "medium",
       "room": "garden"
     },
@@ -553,7 +553,7 @@
         "garden",
         "mini"
       ],
-      "price": 50,
+      "price": 35,
       "size": "small",
       "room": "garden"
     },
@@ -565,7 +565,7 @@
         "garden",
         "animals"
       ],
-      "price": 80,
+      "price": 55,
       "size": "medium",
       "room": "garden"
     },
@@ -577,7 +577,7 @@
         "garden",
         "pink"
       ],
-      "price": 50,
+      "price": 35,
       "size": "small",
       "room": "garden"
     },
@@ -590,7 +590,7 @@
         "sparkly",
         "mini"
       ],
-      "price": 70,
+      "price": 50,
       "size": "small",
       "room": "garden"
     },
@@ -601,7 +601,7 @@
       "tags": [
         "tools"
       ],
-      "price": 60,
+      "price": 40,
       "size": "medium",
       "room": "garage"
     },
@@ -613,7 +613,7 @@
         "tools",
         "aqua"
       ],
-      "price": 50,
+      "price": 35,
       "size": "small",
       "room": "garage"
     },
@@ -626,7 +626,7 @@
         "pink",
         "mini"
       ],
-      "price": 90,
+      "price": 65,
       "size": "small",
       "room": "garage"
     },
@@ -637,7 +637,7 @@
       "tags": [
         "tools"
       ],
-      "price": 60,
+      "price": 40,
       "size": "medium",
       "room": "garage"
     },
@@ -649,7 +649,7 @@
         "tools",
         "art-and-craft"
       ],
-      "price": 80,
+      "price": 55,
       "size": "medium",
       "room": "garage"
     },
@@ -662,9 +662,321 @@
         "rainbow",
         "mini"
       ],
-      "price": 70,
+      "price": 50,
       "size": "small",
       "room": "garage"
+    },
+    {
+      "id": "wear-party-hat-pink",
+      "name": "Pink party hat",
+      "image": "Images/prizes/prize-wear-party-hat-pink.png",
+      "tags": [
+        "dress-up",
+        "pink"
+      ],
+      "price": 40,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "party-hat",
+        "colour": "#FF8FCB"
+      }
+    },
+    {
+      "id": "wear-party-hat-yellow",
+      "name": "Yellow party hat",
+      "image": "Images/prizes/prize-wear-party-hat-yellow.png",
+      "tags": [
+        "dress-up"
+      ],
+      "price": 40,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "party-hat",
+        "colour": "#FFD84A"
+      }
+    },
+    {
+      "id": "wear-beanie-aqua",
+      "name": "Aqua woolly beanie",
+      "image": "Images/prizes/prize-wear-beanie-aqua.png",
+      "tags": [
+        "dress-up",
+        "fluffy"
+      ],
+      "price": 35,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "beanie",
+        "colour": "#2EE6D6"
+      }
+    },
+    {
+      "id": "wear-cap-blue",
+      "name": "Blue baseball cap",
+      "image": "Images/prizes/prize-wear-cap-blue.png",
+      "tags": [
+        "dress-up"
+      ],
+      "price": 35,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "cap",
+        "colour": "#2E7CF6"
+      }
+    },
+    {
+      "id": "wear-cap-coral",
+      "name": "Coral baseball cap",
+      "image": "Images/prizes/prize-wear-cap-coral.png",
+      "tags": [
+        "dress-up"
+      ],
+      "price": 35,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "cap",
+        "colour": "#FF8A80"
+      }
+    },
+    {
+      "id": "wear-top-hat-midnight",
+      "name": "Midnight top hat",
+      "image": "Images/prizes/prize-wear-top-hat-midnight.png",
+      "tags": [
+        "dress-up"
+      ],
+      "price": 55,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "top-hat",
+        "colour": "#2B1B6B"
+      }
+    },
+    {
+      "id": "wear-crown-golden",
+      "name": "Golden golden crown",
+      "image": "Images/prizes/prize-wear-crown-golden.png",
+      "tags": [
+        "dress-up",
+        "sparkly"
+      ],
+      "price": 85,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "crown",
+        "colour": "#FFD84A"
+      }
+    },
+    {
+      "id": "wear-headband-pink",
+      "name": "Pink headband with a bow",
+      "image": "Images/prizes/prize-wear-headband-pink.png",
+      "tags": [
+        "dress-up",
+        "pink"
+      ],
+      "price": 30,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "headband",
+        "colour": "#FF8FCB"
+      }
+    },
+    {
+      "id": "wear-headband-purple",
+      "name": "Purple headband with a bow",
+      "image": "Images/prizes/prize-wear-headband-purple.png",
+      "tags": [
+        "dress-up",
+        "purple"
+      ],
+      "price": 30,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "headband",
+        "colour": "#7B4CF0"
+      }
+    },
+    {
+      "id": "wear-round-glasses-pink",
+      "name": "Pink round glasses",
+      "image": "Images/prizes/prize-wear-round-glasses-pink.png",
+      "tags": [
+        "dress-up",
+        "mini"
+      ],
+      "price": 30,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "round-glasses",
+        "colour": "#FF8FCB"
+      }
+    },
+    {
+      "id": "wear-sunglasses-magenta",
+      "name": "Magenta cool shades",
+      "image": "Images/prizes/prize-wear-sunglasses-magenta.png",
+      "tags": [
+        "dress-up"
+      ],
+      "price": 50,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "sunglasses",
+        "colour": "#C92A86"
+      }
+    },
+    {
+      "id": "wear-sunglasses-blue",
+      "name": "Blue cool shades",
+      "image": "Images/prizes/prize-wear-sunglasses-blue.png",
+      "tags": [
+        "dress-up"
+      ],
+      "price": 50,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "sunglasses",
+        "colour": "#2E7CF6"
+      }
+    },
+    {
+      "id": "wear-heart-glasses-red",
+      "name": "Red heart glasses",
+      "image": "Images/prizes/prize-wear-heart-glasses-red.png",
+      "tags": [
+        "dress-up",
+        "sparkly"
+      ],
+      "price": 55,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "heart-glasses",
+        "colour": "#FF3D7F"
+      }
+    },
+    {
+      "id": "wear-heart-glasses-purple",
+      "name": "Purple heart glasses",
+      "image": "Images/prizes/prize-wear-heart-glasses-purple.png",
+      "tags": [
+        "dress-up",
+        "purple"
+      ],
+      "price": 55,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "heart-glasses",
+        "colour": "#7B4CF0"
+      }
+    },
+    {
+      "id": "wear-bow-pink",
+      "name": "Pink bow tie",
+      "image": "Images/prizes/prize-wear-bow-pink.png",
+      "tags": [
+        "dress-up",
+        "mini"
+      ],
+      "price": 20,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "bow",
+        "colour": "#FF8FCB"
+      }
+    },
+    {
+      "id": "wear-bow-aqua",
+      "name": "Aqua bow tie",
+      "image": "Images/prizes/prize-wear-bow-aqua.png",
+      "tags": [
+        "dress-up",
+        "aqua"
+      ],
+      "price": 20,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "bow",
+        "colour": "#2EE6D6"
+      }
+    },
+    {
+      "id": "wear-tie-magenta",
+      "name": "Magenta long tie",
+      "image": "Images/prizes/prize-wear-tie-magenta.png",
+      "tags": [
+        "dress-up"
+      ],
+      "price": 30,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "tie",
+        "colour": "#C92A86"
+      }
+    },
+    {
+      "id": "wear-tie-blue",
+      "name": "Blue long tie",
+      "image": "Images/prizes/prize-wear-tie-blue.png",
+      "tags": [
+        "dress-up"
+      ],
+      "price": 30,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "tie",
+        "colour": "#2E7CF6"
+      }
+    },
+    {
+      "id": "wear-scarf-coral",
+      "name": "Coral cosy scarf",
+      "image": "Images/prizes/prize-wear-scarf-coral.png",
+      "tags": [
+        "dress-up",
+        "fluffy"
+      ],
+      "price": 40,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "scarf",
+        "colour": "#FF8A80"
+      }
+    },
+    {
+      "id": "wear-scarf-purple",
+      "name": "Purple cosy scarf",
+      "image": "Images/prizes/prize-wear-scarf-purple.png",
+      "tags": [
+        "dress-up",
+        "purple"
+      ],
+      "price": 40,
+      "size": "small",
+      "room": "bedroom",
+      "wearable": {
+        "item": "scarf",
+        "colour": "#7B4CF0"
+      }
     }
   ]
 }

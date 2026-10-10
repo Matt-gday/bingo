@@ -12,7 +12,8 @@ const blankPlayer = (id, name, look) => ({
   credits: 0,
   prefs: {}, // this player's own choices: speedId, nightId, raceHistory
   stats: { nights: 0, nightsWon: 0, stagesWon: 0, creditsEarned: 0 },
-  regulars: {}, // what each regular has earned against this player: { dot: { credits: 0 } }
+  regulars: {}, // each regular's wallet in this player's world: { dot: { credits: 60 } }
+  prizes: { table: [], covered: [], owned: {}, finishers: {} }, // the prize table, who owns what and who finished which set
   createdAt: Date.now(),
 });
 
@@ -21,6 +22,7 @@ export function createProfiles(storage = typeof localStorage !== 'undefined' ? l
   try {
     const saved = JSON.parse(storage?.getItem(KEY) ?? 'null');
     if (saved && Array.isArray(saved.players)) data = { ...data, ...saved };
+    for (const p of data.players) p.prizes ??= { table: [], covered: [], owned: {}, finishers: {} }; // saves from before prizes
   } catch {
     // Private browsing or damaged data: start with nobody, rather than breaking.
   }
@@ -79,6 +81,7 @@ export function createProfiles(storage = typeof localStorage !== 'undefined' ? l
       player.credits = 0;
       player.stats = blankPlayer('', '', null).stats;
       player.regulars = {};
+      player.prizes = blankPlayer('', '', null).prizes;
       player.prefs.raceHistory = [];
       save();
     },
@@ -90,7 +93,18 @@ export function createProfiles(storage = typeof localStorage !== 'undefined' ? l
     },
 
     // Records a finished night for a player: the credits they won, how it went, and what each regular earned.
-    recordNight(id, { credits, stagesWon, won, regularEarnings = {} }) {
+    // Saves whatever the prize round changed (credits spent, things bought).
+    touch() {
+      save();
+    },
+
+    spend(id, amount) {
+      const player = find(id);
+      if (player) player.credits = Math.max(0, player.credits - amount);
+      save();
+    },
+
+    recordNight(id, { credits, stagesWon, won, regularEarnings = {}, regularStart = 0 }) {
       const player = find(id);
       if (!player) return;
       player.credits += credits;
@@ -99,7 +113,7 @@ export function createProfiles(storage = typeof localStorage !== 'undefined' ? l
       player.stats.stagesWon += stagesWon;
       player.stats.creditsEarned += credits;
       for (const [regularId, earned] of Object.entries(regularEarnings)) {
-        player.regulars[regularId] = { credits: (player.regulars[regularId]?.credits ?? 0) + earned };
+        player.regulars[regularId] = { credits: (player.regulars[regularId]?.credits ?? regularStart) + earned };
       }
       save();
     },

@@ -8,8 +8,8 @@
       "family": "thing",
       "badge": "Images/badges/badge-art-and-craft.png",
       "prizeCount": 8,
-      "totalValue": 520,
-      "target": 310
+      "totalValue": 360,
+      "target": 220
     },
     {
       "id": "stationery",
@@ -17,8 +17,8 @@
       "family": "thing",
       "badge": "Images/badges/badge-stationery.png",
       "prizeCount": 6,
-      "totalValue": 360,
-      "target": 220
+      "totalValue": 250,
+      "target": 150
     },
     {
       "id": "music",
@@ -26,8 +26,8 @@
       "family": "thing",
       "badge": "Images/badges/badge-music.png",
       "prizeCount": 6,
-      "totalValue": 380,
-      "target": 230
+      "totalValue": 265,
+      "target": 160
     },
     {
       "id": "sport",
@@ -35,8 +35,8 @@
       "family": "thing",
       "badge": "Images/badges/badge-sport.png",
       "prizeCount": 6,
-      "totalValue": 440,
-      "target": 260
+      "totalValue": 310,
+      "target": 190
     },
     {
       "id": "soft-toys",
@@ -44,8 +44,8 @@
       "family": "thing",
       "badge": "Images/badges/badge-soft-toys.png",
       "prizeCount": 6,
-      "totalValue": 730,
-      "target": 440
+      "totalValue": 510,
+      "target": 310
     },
     {
       "id": "food",
@@ -53,8 +53,8 @@
       "family": "thing",
       "badge": "Images/badges/badge-food.png",
       "prizeCount": 6,
-      "totalValue": 420,
-      "target": 250
+      "totalValue": 290,
+      "target": 170
     },
     {
       "id": "home",
@@ -62,8 +62,8 @@
       "family": "thing",
       "badge": "Images/badges/badge-home.png",
       "prizeCount": 6,
-      "totalValue": 420,
-      "target": 250
+      "totalValue": 290,
+      "target": 170
     },
     {
       "id": "garden",
@@ -71,8 +71,8 @@
       "family": "thing",
       "badge": "Images/badges/badge-garden.png",
       "prizeCount": 6,
-      "totalValue": 420,
-      "target": 250
+      "totalValue": 295,
+      "target": 180
     },
     {
       "id": "tools",
@@ -80,35 +80,35 @@
       "family": "thing",
       "badge": "Images/badges/badge-tools.png",
       "prizeCount": 6,
-      "totalValue": 410,
-      "target": 250
+      "totalValue": 285,
+      "target": 170
     },
     {
       "id": "pink",
       "name": "Pink",
       "family": "colour",
       "badge": "Images/badges/badge-pink.png",
-      "prizeCount": 10,
-      "totalValue": 810,
-      "target": 490
+      "prizeCount": 12,
+      "totalValue": 635,
+      "target": 380
     },
     {
       "id": "purple",
       "name": "Purple",
       "family": "colour",
       "badge": "Images/badges/badge-purple.png",
-      "prizeCount": 7,
-      "totalValue": 680,
-      "target": 410
+      "prizeCount": 10,
+      "totalValue": 600,
+      "target": 360
     },
     {
       "id": "aqua",
       "name": "Aqua",
       "family": "colour",
       "badge": "Images/badges/badge-aqua.png",
-      "prizeCount": 7,
-      "totalValue": 390,
-      "target": 230
+      "prizeCount": 8,
+      "totalValue": 300,
+      "target": 180
     },
     {
       "id": "rainbow",
@@ -116,35 +116,35 @@
       "family": "colour",
       "badge": "Images/badges/badge-rainbow.png",
       "prizeCount": 9,
-      "totalValue": 660,
-      "target": 400
+      "totalValue": 455,
+      "target": 270
     },
     {
       "id": "fluffy",
       "name": "Fluffy",
       "family": "feel",
       "badge": "Images/badges/badge-fluffy.png",
-      "prizeCount": 6,
-      "totalValue": 600,
-      "target": 360
+      "prizeCount": 8,
+      "totalValue": 490,
+      "target": 290
     },
     {
       "id": "sparkly",
       "name": "Sparkly",
       "family": "feel",
       "badge": "Images/badges/badge-sparkly.png",
-      "prizeCount": 9,
-      "totalValue": 790,
-      "target": 470
+      "prizeCount": 11,
+      "totalValue": 695,
+      "target": 420
     },
     {
       "id": "mini",
       "name": "Mini",
       "family": "feel",
       "badge": "Images/badges/badge-mini.png",
-      "prizeCount": 11,
-      "totalValue": 640,
-      "target": 380
+      "prizeCount": 13,
+      "totalValue": 500,
+      "target": 300
     },
     {
       "id": "animals",
@@ -152,8 +152,17 @@
       "family": "feel",
       "badge": "Images/badges/badge-animals.png",
       "prizeCount": 10,
-      "totalValue": 990,
-      "target": 590
+      "totalValue": 690,
+      "target": 410
+    },
+    {
+      "id": "dress-up",
+      "name": "Dress-up",
+      "family": "thing",
+      "badge": "Images/badges/badge-dress-up.png",
+      "prizeCount": 20,
+      "totalValue": 805,
+      "target": 480
     }
   ]
 }
