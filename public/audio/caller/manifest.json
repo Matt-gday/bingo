@@ -541,7 +541,9 @@
     "Thirty-two, Buckle my shoe!": "24f92be1a448.mp3",
     "Yay, it's bingo time!": "7f21770134b1.mp3",
     "Got a number on both cards? You can mark both, one call at a time. Just don't forget!": "f503e73fd721.mp3",
-    "Four quick rules before we start.": "1b1e6a1e4741.mp3"
+    "Four quick rules before we start.": "1b1e6a1e4741.mp3",
+    "I hadn't called one of those numbers when you marked it, so it doesn't count.": "4598551f4639.mp3",
+    "Oh no, too many wrong numbers on your cards. Your bingo night is over.": "65bf04f264ed.mp3"
   },
   "hashes": {
     "Eight, Garden gate!": "968b439adaa9",
@@ -1085,7 +1087,9 @@
     "Thirty-two, Buckle my shoe!": "24f92be1a448",
     "Yay, it's bingo time!": "7f21770134b1",
     "Got a number on both cards? You can mark both, one call at a time. Just don't forget!": "f503e73fd721",
-    "Four quick rules before we start.": "1b1e6a1e4741"
+    "Four quick rules before we start.": "1b1e6a1e4741",
+    "I hadn't called one of those numbers when you marked it, so it doesn't count.": "4598551f4639",
+    "Oh no, too many wrong numbers on your cards. Your bingo night is over.": "65bf04f264ed"
   },
   "voice": "2Hz9DHqNsF6pwJt0YOtM"
 }

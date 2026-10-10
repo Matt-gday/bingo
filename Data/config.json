@@ -57,7 +57,9 @@
   "marking": {
     "marksPerCall": 1,
     "recentCallsShown": 4,
-    "lockMomentMs": 1000
+    "lockMomentMs": 1000,
+    "maxWrongMarks": 4,
+    "wrongMarksNote": "Marks placed on numbers that had not been called yet. Checked only when the player calls bingo: more than maxWrongMarks ends the night with no credits (so with 4, the 5th wrong mark is over)."
   },
   "voice": {
     "rate": 1.05,

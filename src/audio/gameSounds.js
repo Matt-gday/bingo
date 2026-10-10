@@ -44,6 +44,7 @@ export function attachGameSounds(game, { sfx, haptics, music }) {
         if (game.falseCall?.reason === 'noPattern') sfx.play('false-call'); // no cross to show, so the wah-wah
         break;
       case 'end':
+        if (data?.outcome === 'tooManyWrong') sfx.play('false-call');
         if (data?.outcome === 'win') {
           sfx.play('win-fanfare');
           haptics.buzz([60, 60, 60, 60, 120]);

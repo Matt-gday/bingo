@@ -4,13 +4,14 @@ import { isFreeSquare } from './cards.js';
 
 // Works out what the caller finds when the player claims bingo.
 //
-// A mark is valid when its number has been called. A number that is on both cards can be marked on both
+// A mark is valid when its number had already been called by the time the mark locked. Marking a number before
+// it is called never counts, even if it is called later. A number that is on both cards can be marked on both
 // (one mark per call, so the second goes on a later call) and both marks count.
 //
 // A marks list holds { card, row, col, number, seq }, where seq says the order the marks were made in.
 
 export function evaluateClaim({ cards, marks, called, pattern, config }) {
-  const calledSet = new Set(called);
+  const calledIndex = new Map(called.map((n, i) => [n, i]));
 
   const markAt = new Map(marks.map((m) => [`${m.card}:${m.row},${m.col}`, m]));
 
@@ -30,7 +31,8 @@ export function evaluateClaim({ cards, marks, called, pattern, config }) {
         }
         const number = card.grid[row][col];
         let problem = null;
-        if (!calledSet.has(number)) problem = 'notCalled';
+        if (!calledIndex.has(number)) problem = 'notCalled';
+        else if (calledIndex.get(number) > (mark.callIndex ?? Infinity)) problem = 'tooEarly'; // marked before it was called
         items.push({ card: cardIndex, row, col, number, problem });
       }
       options.push({ allMarked, items });
@@ -60,4 +62,11 @@ export function evaluateClaim({ cards, marks, called, pattern, config }) {
     failItem: failAt === -1 ? null : order[failAt],
     reason: failAt === -1 ? null : order[failAt].problem,
   };
+}
+
+// How many of a player's marks are wrong: placed on a number that had not been called when the mark locked.
+// A few are mistakes. Too many means they are just clicking numbers.
+export function wrongMarkCount(marks, called) {
+  const calledIndex = new Map(called.map((n, i) => [n, i]));
+  return marks.filter((m) => !calledIndex.has(m.number) || calledIndex.get(m.number) > (m.callIndex ?? Infinity)).length;
 }

@@ -51,6 +51,8 @@ When a claim is made, the game pauses and the caller checks the card.
 - A mark is **valid** if its number has been called and it was the first mark made for that number.
 - Reveal the numbers of the pattern **one at a time in random order**. A valid number gets a green tick. The caller reads each one aloud.
 - The wait before each reveal grows a little each time. If four are ticked and one remains, the last reveal is slow and dramatic, like the final slow-motion moment in Peggle: dim everything else, enlarge the last number, build the sound, then cut to silence before the result.
+- **A mark counts only if its number had already been called when the mark locked.** Marking a number before it is called never counts, even if it is called later.
+- **Too many wrong marks ends the night.** When the player calls bingo, the game counts marks placed on numbers that had not been called yet. Four are forgiven as honest mistakes; the fifth ends the night at once with no credits at all (`marking.maxWrongMarks` in `Data/config.json`). It is only checked when bingo is called.
 - **Stop at the first invalid number.** It gets an X, the remaining numbers are left unchecked, and the caller says why: the number was not called. A failure can come on the very first reveal.
 
 ## 6. False calls

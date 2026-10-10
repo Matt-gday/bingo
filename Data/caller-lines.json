@@ -94,6 +94,9 @@
       ],
       "noPattern": [
         "I can't see {pattern} there, I'm afraid."
+      ],
+      "tooEarly": [
+        "I hadn't called one of those numbers when you marked it, so it doesn't count."
       ]
     },
     "botWins": [
@@ -172,6 +175,9 @@
     ],
     "howTo": [
       "Four quick rules before we start."
+    ],
+    "tooManyWrong": [
+      "Oh no, too many wrong numbers on your cards. Your bingo night is over."
     ]
   },
   "shoutTest": {

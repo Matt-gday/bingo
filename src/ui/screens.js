@@ -578,16 +578,17 @@ export function resultScreen(game, { onAgain, onChange, player }) {
   const result = game.result;
   const won = result.outcome === 'win';
   const drawn = result.outcome === 'drawn';
+  const spamming = result.outcome === 'tooManyWrong';
   const lastWinner = result.stages.at(-1)?.winner;
   const winnerBot = game.bots.find((b) => b.id === lastWinner?.id);
   const finalName = result.stages.at(-1)?.pattern.name ?? game.pattern.name;
-  const title = won ? (result.stages.length > 1 ? `${finalName}!` : 'BINGO!') : drawn ? 'No winner tonight' : `${esc(lastWinner?.name ?? 'Someone')} called it`;
+  const title = spamming ? 'Night over' : won ? (result.stages.length > 1 ? `${finalName}!` : 'BINGO!') : drawn ? 'No winner tonight' : `${esc(lastWinner?.name ?? 'Someone')} called it`;
   const last = result.stages.at(-1);
   const progress = last?.progress;
-  const sub = won ? '' : drawn
+  const sub = spamming ? 'Too many wrong numbers on your cards.' : won ? '' : drawn
     ? 'All 75 numbers were called, and nobody got there.'
     : progress ? `You were ${progress.total - progress.have} ${progress.total - progress.have === 1 ? 'number' : 'numbers'} from ${esc(last.pattern.spoken)}.` : '';
-  const bubbleText = won ? 'What a night that was!' : drawn ? 'Every ball is out, and nobody got there. Better luck next time!' : 'Better luck next time.';
+  const bubbleText = spamming ? game.callerLines.game.tooManyWrong[0] : won ? 'What a night that was!' : drawn ? 'Every ball is out, and nobody got there. Better luck next time!' : 'Better luck next time.';
   const beaten = result.stages.at(-1)?.beat?.[0];
   const beatLine = won && beaten
     ? `<p class="beat-line">${beaten.seconds < 1 ? 'Photo finish! ' : ''}You beat ${esc(beaten.name)} to it, by ${beaten.seconds.toFixed(1)} seconds!</p>` : '';
@@ -596,7 +597,7 @@ export function resultScreen(game, { onAgain, onChange, player }) {
     const note = you ? 'You won it' : `${esc(r.winner.name)} won it${r.progress ? `. You had ${r.progress.have} of ${r.progress.total}` : ''}`;
     return `<div class="result-row"><span class="result-pic">${patternPreview(r.pattern, 40, '#e4dbff')}</span><span class="result-text"><b>${esc(r.pattern.name)}</b><small>${note}</small></span><b class="result-num">${r.credits}</b></div>`;
   }).join('');
-  const lines = `<div class="stage-rows result-card">${rows}
+  const lines = spamming ? `<div class="stage-rows result-card"><div class="stage-row total"><span>Credits won tonight</span><span class="who"></span><b>${icons.gem(18)} 0</b></div></div>` : `<div class="stage-rows result-card">${rows}
         ${result.forPlaying ? `<div class="stage-row"><span>For playing</span><span class="who"></span><b>${result.forPlaying}</b></div>` : ''}
         <div class="stage-row"><span>${esc(game.speed.name)} speed</span><span class="who"></span><b>× ${result.multiplier}</b></div>
         ${result.falseCalls ? `<div class="stage-row minus"><span>${result.falseCalls} false ${result.falseCalls === 1 ? 'call' : 'calls'}</span><span class="who"></span><b>less ${result.falseCalls === 1 ? 'a quarter' : `${Math.round(result.penalty * 100)}%`}</b></div>` : ''}

@@ -45,6 +45,9 @@ export function collectLines({ callerLines, patterns, regulars }) {
     }
   }
 
+  for (const line of callerLines.game.falseCall.tooEarly ?? []) add('marked too early', line);
+  for (const line of callerLines.game.tooManyWrong ?? []) add('too many wrong marks', line);
+
   // False calls that name the number: one clip for every number.
   for (const n of NUMBERS) {
     const number = numberInWords(n);

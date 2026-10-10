@@ -122,6 +122,8 @@ if (args.includes('--tester')) {
   const themes = [
     ['welcome', 'The welcome before the first number', 'One is picked at random each game. Every line is used before any repeats.'],
     ['how to play', 'How to play', 'Said when the four rules screen opens.'],
+    ['marked too early', 'A number marked before it was called', 'The false call when a mark was placed before its number came out.'],
+    ['too many wrong marks', 'Too many wrong marks', 'The night ends when too many marks are on numbers that had not been called.'],
     ['splash', 'The splash screen', 'Said as the sleeping caller wakes up on the first tap.'],
     ['home screen', 'The home screen', 'Funny welcomes the caller says on the start screen. Tapping him gives the next one.'],
     ['home tickles', 'Tickles on the home screen', 'What he says, giggling, when the player taps him on the start screen.'],

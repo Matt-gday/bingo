@@ -307,7 +307,9 @@ test('a full game with a correct claim is won after the check', () => {
 });
 
 test('a bad claim is caught during the check, then the game goes on', () => {
-  const game = newGame();
+  const lenient = { ...config, marking: { ...config.marking, maxWrongMarks: 99 } }; // this test is about the check, not the wrong-mark limit
+  const game = new Game({ config: lenient, patterns, callerLines, speedId: 'steady', stageIds: ['line'] });
+  game.start();
   const grid = game.cards[0].grid;
   // Mark a whole row without those numbers ever being called.
   game.deck = game.deck.filter((n) => !grid[0].includes(n));
@@ -534,4 +536,44 @@ test('the intro waits while paused and never starts without a welcome line', () 
   const plain = newGame();
   assert.equal(plain.phase, 'calling', 'no welcome line means the first number is called at once');
   assert.equal(plain.called.length, 1);
+});
+
+
+test('a mark placed before its number is called never counts, even if the number comes out later', () => {
+  const card = simpleCard();
+  const called = [10, 1, 2, 3, 4, 5]; // 1 to 5 are the first column; 10 is called first
+  // every number in column one was marked on call 0, before they were called
+  const marks = [0, 1, 2, 3, 4].map((r) => ({ card: 0, row: r, col: 0, number: r + 1, seq: r, callIndex: 0 }));
+  const result = evaluateClaim({ cards: [card], marks, called, pattern: line, config });
+  assert.equal(result.result, 'fail');
+  assert.equal(result.reason, 'tooEarly');
+});
+
+test('marks placed after their numbers were called are fine', () => {
+  const card = simpleCard();
+  const called = [1, 2, 3, 4, 5];
+  const marks = [0, 1, 2, 3, 4].map((r) => ({ card: 0, row: r, col: 0, number: r + 1, seq: r, callIndex: 5 }));
+  assert.equal(evaluateClaim({ cards: [card], marks, called, pattern: line, config }).result, 'win');
+});
+
+test('four wrong marks are forgiven; the fifth ends the night with no credits, checked only when bingo is called', () => {
+  const game = newGame();
+  // mark the same called-later numbers: squares whose numbers are not in the called list
+  const uncalled = [];
+  game.cards[0].grid.forEach((row, r) => row.forEach((n, c) => { if (n !== 0 && !game.called.includes(n)) uncalled.push([r, c, n]); }));
+  const wrong = (k) => uncalled.slice(0, k).map(([r, c, n], i) => ({ card: 0, row: r, col: c, number: n, seq: i, callIndex: 0 }));
+  game.marks = wrong(5);
+  assert.equal(game.screen, 'cards', 'nothing happens until they call bingo');
+  game.openShout();
+  game.submitClaim();
+  assert.equal(game.screen, 'result');
+  assert.equal(game.result.outcome, 'tooManyWrong');
+  assert.equal(game.result.total, 0);
+  assert.ok(callerLines.game.tooManyWrong.includes(game.bubble.text));
+
+  const fair = newGame();
+  fair.marks = wrong(4);
+  fair.openShout();
+  fair.submitClaim();
+  assert.notEqual(fair.screen, 'result', 'four wrong marks are allowed');
 });

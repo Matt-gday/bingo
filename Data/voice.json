@@ -50,7 +50,9 @@
         "[cheerful, consoling, amused, clear]",
         "[playful, shrugging, good-natured, clear]"
       ],
-      "how to play": "[friendly, bright, welcoming, clear]"
+      "how to play": "[friendly, bright, welcoming, clear]",
+      "marked too early": "[sympathetic, kind, gently explaining, clear]",
+      "too many wrong marks": "[disappointed, sympathetic, gentle, clear]"
     },
     "lines": {
       "Eyes down, everyone!": "[excited, cheerful]",

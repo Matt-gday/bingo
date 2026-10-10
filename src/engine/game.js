@@ -1,6 +1,6 @@
 import { dealCards, letterFor } from './cards.js';
 import { pickOne, shuffle } from './rng.js';
-import { evaluateClaim } from './check.js';
+import { evaluateClaim, wrongMarkCount } from './check.js';
 import { callText, capital, fillLine, numberInWords, sayLine } from './caller.js';
 import { createBot, botMarks, botToGo, botNeeds, playerProgress } from './table.js';
 import { planRace } from './director.js';
@@ -207,6 +207,20 @@ export class Game {
     this.lastProgress = { have: progress.have, total: progress.total };
     this.say(fillLine(pickOne(this.callerLines.game.botWins), { name: bot.name, pattern: this.pattern.spoken }), 'cheer', 'botWins');
     this.finishStage({ type: 'bot', id: bot.id, name: bot.name, colour: bot.colour }, credits);
+  }
+
+  // The night ends on the spot: no credits at all, and the caller says why.
+  endNightTooManyWrong() {
+    this.checking = null;
+    this.falseCall = null;
+    for (const bot of this.bots) bot.claim = null;
+    this.phase = 'over';
+    this.screen = 'result';
+    const result = this.buildResult('tooManyWrong');
+    result.total = 0;
+    this.result = result;
+    this.say(pickOne(this.callerLines.game.tooManyWrong), 'wince', 'tooManyWrong');
+    this.emit('end', { outcome: 'tooManyWrong' });
   }
 
   // A stage is over. If there are more stages the "Stage won" screen shows and the night carries on;
@@ -525,6 +539,12 @@ export class Game {
   submitClaim() {
     if (this.screen !== 'shout' || (this.phase !== 'calling' && this.phase !== 'locking')) return;
     this.lockMarks();
+    // Too many marks on numbers that had not been called means the player is just clicking, so the night ends.
+    // (This is only looked at when they call bingo, which is when it matters.)
+    if (wrongMarkCount(this.marks, this.called) > this.config.marking.maxWrongMarks) {
+      this.endNightTooManyWrong();
+      return;
+    }
     this.claimClock = this.clockMs; // when the player's claim went in
     const evaluation = evaluateClaim({
       cards: this.cards,
@@ -655,11 +675,13 @@ export class Game {
 
   falseCallHeadline(reason, number) {
     if (reason === 'notCalled') return `${number} not called`;
+    if (reason === 'tooEarly') return `${number} marked too early`;
     return 'Not yet!';
   }
 
   falseCallShort(reason, number) {
     if (reason === 'notCalled') return `${number} was not called`;
+    if (reason === 'tooEarly') return `${number} was marked too early`;
     return `Nothing to check yet`;
   }
 

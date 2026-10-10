@@ -343,7 +343,7 @@ function startGame() {
     if (type === 'say') {
       if (starting) return; // start() emits both a greeting and the first number
       // The false-call line and the "Here we go!" count-in are left to finish.
-      voice.speak(data.spoken ?? data.text, { protect: data.kind === 'falseCall' || data.kind === 'introCountdown' || data.kind === 'intro' });
+      voice.speak(data.spoken ?? data.text, { protect: data.kind === 'falseCall' || data.kind === 'introCountdown' || data.kind === 'intro' || data.kind === 'tooManyWrong' });
       if ((data.kind === 'introCountdown' || data.kind === 'intro') && !voice.on) game.lineFinished({ silent: true }); // no voice, nothing to wait for
     } else if (type === 'falseCall') {
       // With the voice off there is no line to wait for, so give the player a moment to read it.
