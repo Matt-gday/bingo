@@ -121,6 +121,7 @@ if (args.includes('--tester')) {
   // Writes voice-tester.html: every line, grouped by theme, with a play button. Spends nothing.
   const themes = [
     ['welcome', 'The welcome before the first number', 'One is picked at random each game. Every line is used before any repeats.'],
+    ['how to play', 'How to play', 'Said when the four rules screen opens.'],
     ['splash', 'The splash screen', 'Said as the sleeping caller wakes up on the first tap.'],
     ['home screen', 'The home screen', 'Funny welcomes the caller says on the start screen. Tapping him gives the next one.'],
     ['home tickles', 'Tickles on the home screen', 'What he says, giggling, when the player taps him on the start screen.'],

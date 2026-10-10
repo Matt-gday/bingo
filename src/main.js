@@ -187,6 +187,8 @@ function showAvatarEdit() {
 
 function showHowTo({ first }) {
   show('howto', () => howToPlayScreen({
+    voice,
+    callerLines,
     again: !first,
     onDone: () => {
       if (!first) showSettings();

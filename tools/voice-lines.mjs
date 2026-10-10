@@ -27,6 +27,7 @@ export function collectLines({ callerLines, patterns, regulars }) {
 
   for (const line of callerLines.game.intro ?? []) add('welcome', line);
   for (const line of callerLines.game.splash ?? []) add('splash', line);
+  for (const line of callerLines.game.howTo ?? []) add('how to play', line);
   for (const line of callerLines.game.home ?? []) add('home screen', line);
   for (const line of callerLines.game.homeTickle ?? []) add('home tickles', line);
   for (const line of callerLines.game.introCountdown ?? []) add('countdown', line);

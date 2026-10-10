@@ -190,7 +190,8 @@ export function avatarScreen({ mode, name = '', look, owned = null, onSave, onBa
 
 // ---------- How to play ----------
 
-export function howToPlayScreen({ onDone, again = false }) {
+export function howToPlayScreen({ onDone, voice, callerLines, again = false }) {
+  const intro = callerLines?.game?.howTo?.[0] ?? 'Four quick rules before we start.';
   const rules = [
     ['Two cards, one mark', 'Each call, mark one square on either card. Nothing is marked for you.'],
     ['Beat the ring', 'Move your mark while the ring runs. When it closes, the mark locks for good.'],
@@ -201,16 +202,18 @@ export function howToPlayScreen({ onDone, again = false }) {
     <div class="howto">
       <div class="caller-big">
         <div class="caller-img" data-caller></div>
-        <div class="speech"><span>Four quick rules before we start.</span></div>
+        <div class="speech"><span>${esc(intro)}</span></div>
       </div>
       ${rules.map(([title, text], i) => `<div class="rule-card"><span class="rule-num">${i + 1}</span><div><b>${title}</b><span>${text}</span></div></div>`).join('')}
       <div class="spacer"></div>
       <button class="btn btn-aqua" data-done>${again ? 'Back' : 'Got it!'}</button>
     </div>
   </main>`);
-  attachCaller(el.querySelector('[data-caller]'), { mood: 'happy' });
+  attachCaller(el.querySelector('[data-caller]'), { voice, mood: 'happy' });
+  // He says it as the screen opens (the bubble stays up the whole time), then waits for "Got it!".
+  const start = setTimeout(() => voice?.speak(intro), 450);
   el.querySelector('[data-done]').addEventListener('click', onDone);
-  return { el, update() {} };
+  return { el, update() {}, destroy: () => { clearTimeout(start); voice?.cancel(); } };
 }
 
 // ---------- Settings ----------
