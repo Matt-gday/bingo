@@ -33,13 +33,13 @@ export function splashScreen({ config, callerLines, voice, onDone }) {
     <div class="buttons"><button class="btn btn-aqua splash-btn" data-splash-go>Tap to start</button></div>
   </main>`);
   const callerEl = el.querySelector('[data-splash-caller]');
-  attachCaller(callerEl, { mood: 'noPeeking' }); // eyes shut: he is fast asleep
+  attachCaller(callerEl, { voice, mood: 'noPeeking' }); // eyes shut: he is fast asleep (given the voice so his mouth follows it)
   let woken = false;
   const wake = () => {
     if (woken) return;
     woken = true;
     el.classList.add('awake');
-    emote({ face: 'excited', jump: 3.4, wobble: 4, talkMs: 1200 });
+    emote({ face: 'excited', jump: 3.4, wobble: 4, talkMs: 0 });
     const line = callerLines.game.splash?.[0] ?? "Yay, it's bingo time!";
     // He always says this greeting, even if the player turned the sound off last time. In 'ambient' mode an
     // iPhone's silent switch still silences it, and the game's own mode comes back afterwards.
@@ -50,6 +50,7 @@ export function splashScreen({ config, callerLines, voice, onDone }) {
       if (finished) return;
       finished = true;
       setMode('playback');
+      emote({ face: 'neutral' }); // a closed, smiling mouth once he has finished speaking
       voice.onProtectedFinished = previous;
       onDone();
     };
