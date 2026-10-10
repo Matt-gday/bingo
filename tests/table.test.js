@@ -184,3 +184,19 @@ test('when the player wins first, the result says which regular they beat and by
   assert.equal(beat[0].name, bot.name);
   assert.ok(Math.abs(beat[0].seconds - 1.5) < 0.01);
 });
+
+test('the card check never drags: a full house takes about as long as a couple of lines', () => {
+  const game = newGame();
+  const total = (n) => {
+    const evaluation = { items: Array.from({ length: n }, () => ({})) };
+    let sum = 0;
+    for (let i = 0; i < n; i++) sum += game.revealDelay(evaluation, i);
+    return sum;
+  };
+  assert.ok(total(5) < 14000, `one line ${total(5)}`);
+  assert.ok(total(9) < 18000, `two lines ${total(9)}`);
+  assert.ok(total(24) < 30000, `full house ${total(24)}`);
+  const evaluation = { items: Array.from({ length: 24 }, () => ({})) };
+  assert.equal(game.revealDelay(evaluation, 23), config.check.finalDelayMs, 'the last number is the slowest');
+  assert.ok(game.revealDelay(evaluation, 5) <= config.check.briskDelayMs, 'numbers in the middle are quick');
+});

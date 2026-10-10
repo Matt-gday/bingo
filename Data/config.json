@@ -87,12 +87,16 @@
   },
   "check": {
     "firstDelayMs": 1800,
-    "delayGrowth": 1.3,
     "finalDelayMs": 5000,
     "resultBeatMs": 3500,
     "failLineMaxMs": 6000,
     "afterLineMs": 700,
-    "silentFailMs": 2500
+    "silentFailMs": 2500,
+    "briskDelayMs": 500,
+    "buildNumbers": 2,
+    "buildDelayMs": 1200,
+    "buildGrowth": 1.5,
+    "checkNote": "While the caller checks a claim: firstDelayMs is the wait before the first number; briskDelayMs is the wait for each number in the middle; the last buildNumbers numbers slow down (buildDelayMs, growing by buildGrowth each time); finalDelayMs is the wait before the very last number."
   },
   "falseCall": {
     "sitOutCalls": 2,

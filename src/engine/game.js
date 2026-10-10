@@ -539,10 +539,17 @@ export class Game {
     this.emit('claim');
   }
 
+  // How long to wait before revealing number `index` of a claim. The first wait sets the scene, the middle numbers
+  // tick over briskly (so a long claim like a full house does not drag), the last few build up, and the very
+  // last number takes the longest.
   revealDelay(evaluation, index) {
-    const { firstDelayMs, delayGrowth, finalDelayMs } = this.config.check;
-    const isLastNumber = index > 0 && index === evaluation.items.length - 1;
-    return isLastNumber ? finalDelayMs : firstDelayMs * delayGrowth ** index;
+    const { firstDelayMs, briskDelayMs, buildNumbers, buildDelayMs, buildGrowth, finalDelayMs } = this.config.check;
+    const count = evaluation.items.length;
+    if (index > 0 && index === count - 1) return finalDelayMs;
+    if (index === 0) return firstDelayMs;
+    const buildStart = count - 1 - buildNumbers; // the first of the slowing-down numbers
+    if (index >= buildStart) return buildDelayMs * buildGrowth ** (index - buildStart);
+    return briskDelayMs;
   }
 
   get isFinalReveal() {
