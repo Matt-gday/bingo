@@ -233,3 +233,17 @@ test('the 3, 2, 1 waits for a long welcome line to finish being said', () => {
   run(quiet, config.intro.welcomeSeconds * 1000 + config.intro.maxWelcomeWaitMs + 500);
   assert.equal(quiet.intro.stage, 'countdown');
 });
+
+test('the night total: stage credits plus a little for playing, times the speed, less a quarter per false call', () => {
+  const game = newGame({ speedId: 'steady' }); // steady pays 1.5 x
+  const stage = (id, winner, credits) => ({ pattern: patterns.patterns.find((p) => p.id === id), winner, credits });
+  game.stageResults = [stage('line', { type: 'you' }, 20), stage('two-lines', { type: 'bot', id: 'dot', name: 'Dot' }, 0), stage('full-house', { type: 'you' }, 80)];
+  game.falseCalls = 0;
+  const forPlaying = config.credits.forPlaying;
+  assert.equal(game.buildResult('win').total, Math.floor((100 + forPlaying) * 1.5));
+  game.falseCalls = 1;
+  assert.equal(game.buildResult('win').total, Math.floor((100 + forPlaying) * 1.5 * 0.75));
+  const result = game.buildResult('win');
+  assert.equal(result.stagesWon, 2);
+  assert.equal(result.regularEarnings.dot, Math.floor((40 + forPlaying) * 1.5), 'a regular earns what the stages they won pay');
+});

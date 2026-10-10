@@ -86,12 +86,13 @@ export function botNeeds(bot, pattern, config, calledSet) {
   return [...needs].sort((a, b) => a - b);
 }
 
-// How much of the pattern the player has marked correctly (0 to 1), counting only called numbers.
-// Used only to work out the small consolation when a regular wins, never shown to the player.
-export function playerCloseness({ cards, marks, called, pattern, config }) {
+// How much of the pattern the player has marked correctly, counting only called numbers: the best of every way
+// to complete it, as { have, total, ratio }. Used only to work out the small consolation when a regular wins and
+// to say how close they were afterwards, never shown to the player during play.
+export function playerProgress({ cards, marks, called, pattern, config }) {
   const calledSet = new Set(called);
   const marked = new Set(marks.filter((m) => calledSet.has(m.number)).map((m) => `${m.card}:${m.row},${m.col}`));
-  let best = 0;
+  let best = { have: 0, total: 1, ratio: 0 };
   cards.forEach((card, c) => {
     for (const squares of setsFor(pattern)) {
       let have = 0;
@@ -101,8 +102,12 @@ export function playerCloseness({ cards, marks, called, pattern, config }) {
         total += 1;
         if (marked.has(`${c}:${r},${col}`)) have += 1;
       }
-      if (total > 0) best = Math.max(best, have / total);
+      if (total > 0 && have / total > best.ratio) best = { have, total, ratio: have / total };
     }
   });
   return best;
+}
+
+export function playerCloseness(args) {
+  return playerProgress(args).ratio;
 }

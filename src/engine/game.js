@@ -2,7 +2,7 @@ import { dealCards, letterFor } from './cards.js';
 import { pickOne, shuffle } from './rng.js';
 import { evaluateClaim } from './check.js';
 import { callText, capital, fillLine, numberInWords, sayLine } from './caller.js';
-import { createBot, botMarks, botToGo, botNeeds, playerCloseness } from './table.js';
+import { createBot, botMarks, botToGo, botNeeds, playerProgress } from './table.js';
 import { planRace } from './director.js';
 
 // The rules of one game of bingo. This file knows nothing about the screen.
@@ -200,10 +200,11 @@ export class Game {
   botWins(bot) {
     if (this.screen === 'shout') this.screen = 'cards';
     this.lockMarks();
-    const closeness = playerCloseness({
+    const progress = playerProgress({
       cards: this.cards, marks: this.marks, called: this.called, pattern: this.pattern, config: this.config,
     });
-    const credits = Math.round(this.pattern.payout * this.config.credits.closenessMaxShareOfPayout * closeness);
+    const credits = Math.round(this.pattern.payout * this.config.credits.closenessMaxShareOfPayout * progress.ratio);
+    this.lastProgress = { have: progress.have, total: progress.total };
     this.say(fillLine(pickOne(this.callerLines.game.botWins), { name: bot.name, pattern: this.pattern.spoken }), 'cheer', 'botWins');
     this.finishStage({ type: 'bot', id: bot.id, name: bot.name, colour: bot.colour }, credits);
   }
@@ -218,7 +219,8 @@ export class Game {
       .filter((b) => b.claim?.kind === 'bingo' && b.claim.dueAt >= (this.claimClock ?? this.clockMs))
       .map((b) => ({ id: b.id, name: b.name, seconds: Math.max(0.1, (b.claim.dueAt - (this.claimClock ?? this.clockMs)) / 1000) }))
       .sort((a, b) => a.seconds - b.seconds);
-    this.stageResults.push({ index: this.stageIndex, pattern: this.pattern, winner, credits, numbers, beat });
+    const progress = winner.type === 'you' ? null : this.lastProgress ?? null; // how much of the pattern the player had
+    this.stageResults.push({ index: this.stageIndex, pattern: this.pattern, winner, credits, numbers, beat, progress });
     this.checking = null;
     for (const bot of this.bots) bot.claim = null;
     this.emit('stageDone', { won: winner.type === 'you' });
@@ -258,14 +260,24 @@ export class Game {
 
   buildResult(outcome) {
     const base = this.stageResults.reduce((sum, r) => sum + r.credits, 0);
+    const forPlaying = this.config.credits.forPlaying ?? 0;
     const multiplier = this.speed.creditMultiplier;
     const penalty = this.falseCalls * this.config.falseCall.creditPenaltyShare;
-    const total = Math.max(0, Math.round(base * multiplier * (1 - penalty)));
+    const total = Math.max(0, Math.floor((base + forPlaying) * multiplier * (1 - penalty)));
+    // What each regular earned tonight, by the same rules: the payout of the stages they won, plus the little
+    // everyone gets for playing, times the speed.
+    const regularEarnings = {};
+    for (const bot of this.bots) {
+      const won = this.stageResults.filter((r) => r.winner.id === bot.id).reduce((sum, r) => sum + r.pattern.payout, 0);
+      regularEarnings[bot.id] = Math.floor((won + forPlaying) * multiplier);
+    }
     return {
       outcome, falseCalls: this.falseCalls, calls: this.called.length,
-      stages: this.stageResults, base, multiplier, penalty, total,
+      stages: this.stageResults, base, forPlaying, multiplier, penalty, total, regularEarnings,
+      stagesWon: this.stageResults.filter((r) => r.winner.type === 'you').length,
     };
   }
+
 
   // ---- Starting and calling ----
 

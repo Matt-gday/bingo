@@ -1,11 +1,16 @@
-// Settings kept on this device (until Phase 4 adds a save for each player).
+// Settings. Device settings (sound, microphone) are kept on this phone for everyone. A few belong to the player
+// whose turn it is and are kept in their own save (see profiles.js): their usual speed and night, how their recent
+// stages went, and the look of their avatar.
 // Only the things the player actually changed are stored, so a new default (for example "music on")
 // reaches everyone who has not made their own choice.
 
 const KEY = 'soloBingo.settings';
 const VERSION = 2;
 
-export function createSettings(config) {
+// These belong to the active player, not the phone.
+const PLAYER_KEYS = new Set(['speedId', 'nightId', 'raceHistory']);
+
+export function createSettings(config, profiles = null) {
   const defaults = {
     speedId: 'steady',
     raceHistory: [], // how the last stages went (1 = the player won), used to keep nights fair
@@ -42,9 +47,23 @@ export function createSettings(config) {
 
   return {
     get(name) {
+      const player = profiles?.active();
+      if (player) {
+        if (name === 'avatarLook') return player.look;
+        if (PLAYER_KEYS.has(name)) return name in player.prefs ? player.prefs[name] : defaults[name];
+      }
       return name in saved ? saved[name] : defaults[name];
     },
     set(name, value) {
+      const player = profiles?.active();
+      if (player && name === 'avatarLook') {
+        profiles.update(player.id, { look: value });
+        return;
+      }
+      if (player && PLAYER_KEYS.has(name)) {
+        profiles.setPref(player.id, name, value);
+        return;
+      }
       saved[name] = value;
       save();
     },
