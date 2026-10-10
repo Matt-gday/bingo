@@ -23,6 +23,44 @@ export function completionCall(cards, positions, pattern, config) {
   return best;
 }
 
+// How fast a sensible player really gets there. They can mark only one number per call, and a number on both
+// cards can only be marked on one of them, so they finish a little later than the earliest possible call.
+// This plays the game for them with a sensible rule (mark the number where it helps most) and notes the call at
+// which each stage is first complete.
+export function playerPace(playerCards, deck, stages, config) {
+  const marked = new Set();
+  const done = stages.map(() => Infinity);
+  const progress = (c, pattern, extra) => {
+    let best = 0;
+    for (const squares of setsFor(pattern)) {
+      let have = 0;
+      for (const [r, col] of squares) {
+        if (isFreeSquare(r, col, config) || marked.has(`${c}:${r},${col}`) || extra === `${c}:${r},${col}`) have += 1;
+      }
+      best = Math.max(best, have);
+    }
+    return best;
+  };
+  const complete = (pattern) => playerCards.some((card, c) => setsFor(pattern).some((squares) => squares.every(
+    ([r, col]) => isFreeSquare(r, col, config) || marked.has(`${c}:${r},${col}`),
+  )));
+  deck.forEach((number, i) => {
+    const target = Math.max(0, done.findIndex((d) => d === Infinity));
+    let choice = null;
+    playerCards.forEach((card, c) => card.grid.forEach((row, r) => row.forEach((n, col) => {
+      if (n !== number) return;
+      const key = `${c}:${r},${col}`;
+      const score = progress(c, stages[target], key);
+      if (!choice || score > choice.score) choice = { key, score };
+    })));
+    if (choice) marked.add(choice.key);
+    stages.forEach((pattern, s) => {
+      if (done[s] === Infinity && complete(pattern)) done[s] = i + 1;
+    });
+  });
+  return done;
+}
+
 function weightedPick(weights, rng) {
   const entries = Object.entries(weights);
   const total = entries.reduce((sum, [, w]) => sum + w, 0);
@@ -43,10 +81,11 @@ export function planRace({ playerCards, deck, stages, botCount, config, rng = Ma
   const positions = [];
   deck.forEach((n, i) => { positions[n] = i + 1; });
 
+  const pace = playerPace(playerCards, deck, stages, config);
   const plan = [];
   let previous = 0;
   stages.forEach((pattern, s) => {
-    const best = completionCall(playerCards, positions, pattern, config); // the earliest a perfect player could finish
+    const best = Math.min(74, pace[s]); // when a sensible player would finish this stage
     const base = Math.max(best, previous + 1);
     const scenario = weightedPick(race.odds, rng);
     let finish;
